@@ -1,0 +1,35 @@
+{
+    "name": "suncoast-connection/claims-to-oemr",
+    "description": "Convert X12 claims files to OpenEMR database records.",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Sam Likins",
+            "email": "sam.likins@wsi-services.com"
+        }
+    ],
+    "require": {
+        "symfony/finder": "3.0.*",
+        "Illuminate/Config": "5.2.*",
+        "Illuminate/Database": "5.2.*"
+   	},
+    "autoload": {
+        "psr-4": {
+            "SunCoastConnection\\ClaimsToOEMR\\": "source/"
+        }
+    },
+    "require-dev": {
+        "laravel/homestead": "3.0.*",
+        "phploc/phploc": "3.0.*",
+        "phpunit/phpunit": "5.3.*",
+        "mockery/mockery": "0.9.*"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SunCoastConnection\\ClaimsToOEMR\\Tests\\": "tests/source"
+        }
+    },
+    "config": {
+        "preferred-install": "dist"
+    }
+}
