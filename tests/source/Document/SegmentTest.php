@@ -132,7 +132,7 @@ class SegmentTest extends BaseTestCase {
 				'AB01' => 'C',
 				'AB02' => 'D',
 				'AB03' => 'E',
-				'AB04' => ':',
+				'AB04' => ['', ''],
 				'AB05' => '123'
 			],
 			$this->getProtectedProperty(
@@ -140,6 +140,289 @@ class SegmentTest extends BaseTestCase {
 				'data'
 			),
 			'Elements were not set correctly.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::elementExists()
+	 */
+	public function testElementExistsWithMissingElement() {
+		$this->assertFalse(
+			$this->segment->elementExists('AAA'),
+			'Element should not have been found.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::elementExists()
+	 */
+	public function testElementExistsWithExistingElement() {
+		$this->setProtectedProperty(
+			$this->segment,
+			'data',
+			[ 'AAA' => 'true' ]
+		);
+
+		$this->assertTrue(
+			$this->segment->elementExists('AAA'),
+			'Element should have been found.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::subElementExists()
+	 */
+	public function testSubElementExistsWithMissingElement() {
+		$this->assertFalse(
+			$this->segment->subElementExists('AAA', 0),
+			'Element should not have been found.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::subElementExists()
+	 */
+	public function testSubElementExistsWithMissingSubElement() {
+		$this->setProtectedProperty(
+			$this->segment,
+			'data',
+			[ 'AAA' => 'true' ]
+		);
+
+		$this->assertFalse(
+			$this->segment->subElementExists('AAA', 0),
+			'Sub-element should not have been found.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::subElementExists()
+	 */
+	public function testSubElementExistsWithExistingSubElement() {
+		$this->setProtectedProperty(
+			$this->segment,
+			'data',
+			[ 'AAA' => [ 'B', 'C' ] ]
+		);
+
+		$this->assertTrue(
+			$this->segment->subElementExists('AAA', 0),
+			'Sub-element should have been found.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::element()
+	 */
+	public function testElementWithMissingElement() {
+		$this->assertNull(
+			$this->segment->element('AAA'),
+			'Element should not have been found.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::element()
+	 */
+	public function testElementWithExistingElement() {
+		$this->setProtectedProperty(
+			$this->segment,
+			'data',
+			[ 'AAA' => 'true' ]
+		);
+
+		$this->assertSame(
+			'true',
+			$this->segment->element('AAA'),
+			'Element should have been found.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::subElement()
+	 */
+	public function testSubElementWithMissingElement() {
+		$this->assertNull(
+			$this->segment->subElement('AAA', 0),
+			'Element should not have been found.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::subElement()
+	 */
+	public function testSubElementWithMissingSubElement() {
+		$this->setProtectedProperty(
+			$this->segment,
+			'data',
+			[ 'AAA' => 'true' ]
+		);
+
+		$this->assertNull(
+			$this->segment->subElement('AAA', 0),
+			'Sub-element should not have been found.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::subElement()
+	 */
+	public function testSubElementWithExistingSubElement() {
+		$this->setProtectedProperty(
+			$this->segment,
+			'data',
+			[ 'AAA' => [ 'B', 'C' ] ]
+		);
+
+		$this->assertSame(
+			'B',
+			$this->segment->subElement('AAA', 0),
+			'Sub-element should have been found.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::elementEquals()
+	 */
+	public function testElementEqualsWithMissingElement() {
+		$this->assertFalse(
+			$this->segment->elementEquals('AAA', 'true'),
+			'Element should not have been found.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::elementEquals()
+	 */
+	public function testElementEqualsWithWrongValue() {
+		$this->setProtectedProperty(
+			$this->segment,
+			'data',
+			[ 'AAA' => 'true' ]
+		);
+
+		$this->assertFalse(
+			$this->segment->elementEquals('AAA', 'false'),
+			'Element value should not have matched.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::elementEquals()
+	 */
+	public function testElementEqualsWithCorrectValue() {
+		$this->setProtectedProperty(
+			$this->segment,
+			'data',
+			[ 'AAA' => 'true' ]
+		);
+
+		$this->assertTrue(
+			$this->segment->elementEquals('AAA', 'true'),
+			'Element value should have matched.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::subElementEquals()
+	 */
+	public function testSubElementEqualsWithMissingElement() {
+		$this->assertFalse(
+			$this->segment->subElementEquals('AAA', 0, 'true'),
+			'Element should not have been found.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::subElementEquals()
+	 */
+	public function testSubElementEqualsWithMissingSubElement() {
+		$this->setProtectedProperty(
+			$this->segment,
+			'data',
+			[ 'AAA' => 'true' ]
+		);
+
+		$this->assertFalse(
+			$this->segment->subElementEquals('AAA', 0, 'true'),
+			'Sub-element should not have been found.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::subElementEquals()
+	 */
+	public function testSubElementEqualsWithWrongValue() {
+		$this->setProtectedProperty(
+			$this->segment,
+			'data',
+			[ 'AAA' => [ 'B', 'C' ] ]
+		);
+
+		$this->assertFalse(
+			$this->segment->subElementEquals('AAA', 0, 'false'),
+			'Sub-element value should not have matched.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::subElementEquals()
+	 */
+	public function testSubElementEqualsWithCorrectValue() {
+		$this->setProtectedProperty(
+			$this->segment,
+			'data',
+			[ 'AAA' => [ 'B', 'C' ] ]
+		);
+
+		$this->assertTrue(
+			$this->segment->subElementEquals('AAA', 0, 'B'),
+			'Sub-element value should have matched.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::subElementCount()
+	 */
+	public function testSubElementCountWithMissingElement() {
+		$this->assertEquals(
+			0,
+			$this->segment->subElementCount('AAA'),
+			'Sub-element should not have been found.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::subElementCount()
+	 */
+	public function testSubElementCountWithNoSubElements() {
+		$this->setProtectedProperty(
+			$this->segment,
+			'data',
+			[ 'AAA' => 'true' ]
+		);
+
+		$this->assertEquals(
+			0,
+			$this->segment->subElementCount('AAA'),
+			'Sub-element count should have been 0.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::subElementCount()
+	 */
+	public function testSubElementCountWithSubElements() {
+		$this->setProtectedProperty(
+			$this->segment,
+			'data',
+			[ 'AAA' => [ 'B', 'C' ] ]
+		);
+
+		$this->assertEquals(
+			2,
+			$this->segment->subElementCount('AAA'),
+			'Sub-element count should have been 2.'
 		);
 	}
 
@@ -156,7 +439,7 @@ class SegmentTest extends BaseTestCase {
 				'AB01' => 'C',
 				'AB02' => 'D',
 				'AB03' => 'E',
-				'AB04' => ':',
+				'AB04' => [ '', '' ],
 				'AB05' => '123'
 			]
 		);
