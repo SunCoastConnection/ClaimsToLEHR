@@ -18,18 +18,23 @@ class Segment extends Section {
 	protected $data = [];
 
 	public function parse(Raw $raw) {
-// echo $this->getName(true).' Segment Parse'.PHP_EOL;
 		$this->subSectionCount = 0;
 		$this->data = [];
 
 		$status = false;
 
 		if($raw->getSegmentDesignator() === $this->getName()) {
-// echo $this->getName(true).PHP_EOL;
 			$this->subSectionCount = 1;
 			$status = true;
 
 			$elements = $raw->getSegmentElements();
+
+			array_walk($elements, function(&$element) {
+				if(strpos($element, ':') !== false) {
+					$element = explode(':', $element);
+				}
+			});
+
 			$sequence = $this::getSequence('elementSequence');
 
 			foreach($elements as $pos => $element) {
@@ -40,25 +45,70 @@ class Segment extends Section {
 				}
 			}
 
-// // echo 'Elements: '.serialize($elements).PHP_EOL;
-// 			foreach($sequence as $pos => $element) {
-// // echo 'Pos: '.$pos.' Element: '.json_encode($element).PHP_EOL;
-// 				if(array_key_exists($pos, $elements)) {
-// 					$this->data[$element['name']] = $elements[$pos];
-// 				} else {
-// 					$this->data[$element['name']] = '';
-// 				}
-// 			}
-
 			$raw->next();
 		}
 
-// echo 'Segment Status: '.($status ? 'True' : 'False').PHP_EOL;
 		return $status;
+	}
+
+	public function elementExists($element) {
+		return array_key_exists($element, $this->data);
+	}
+
+	public function subElementExists($element, $subElement) {
+		return $this->elementExists($element) &&
+			is_array($this->data[$element]) &&
+			array_key_exists($subElement, $this->data[$element]);
+	}
+
+	public function element($element) {
+		if($this->elementExists($element)) {
+			return $this->data[$element];
+		}
+	}
+
+	public function subElement($element, $subElement) {
+		if($this->subElementExists($element, $subElement)) {
+			return $this->data[$element][$subElement];
+		}
+	}
+
+	public function elementEquals($element, $value) {
+		if(!is_array($value)) {
+			$value = [ $value ];
+		}
+
+		return $this->elementExists($element) &&
+			in_array($this->element($element), $value);
+	}
+
+	public function subElementEquals($element, $subElement, $value) {
+		if(!is_array($value)) {
+			$value = [ $value ];
+		}
+
+		return $this->subElementExists($element, $subElement) &&
+			in_array($this->subElement($element, $subElement), $value);
+	}
+
+	public function subElementCount($element) {
+		$element = $this->element($element);
+
+		if(is_array($element)) {
+			return count($element);
+		}
+
+		return 0;
 	}
 
 	public function __toString() {
 		$return = $this->data;
+
+		array_walk($return, function(&$element) {
+			if(is_array($element)) {
+				$element = implode(':', $element);
+			}
+		});
 
 		array_unshift($return, $this->getName());
 
