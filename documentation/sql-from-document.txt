@@ -1,0 +1,894 @@
+SQL From Document
+
+INSERT INTO `x12_partners` (
+	`id`,
+	`name`,
+	`id_number`,
+	`x12_version`,
+	`x12_isa01`,
+	`x12_isa02`,
+	`x12_isa03`,
+	`x12_isa04`,
+	`x12_isa05`,
+	`x12_sender_id`,
+	`x12_isa07`,
+	`x12_receiver_id`,
+	`x12_isa14`,
+	`x12_isa15`,
+	`x12_gs02`,
+	`x12_gs03`
+) VALUES (
+	x12PartnersCount
+	NM103_ele_1035						NM103	// 1000B — RECEIVER NAME
+	NM109_ele_67						NM109	// 1000B — RECEIVER NAME
+	'005010X098A1'						GS08	// FunctionalGroup
+	ISA01								ISA01	// InterchangeControl
+	ISA02								ISA02	// InterchangeControl
+	ISA03								ISA03	// InterchangeControl
+	ISA04								ISA04	// InterchangeControl
+	ISA05								ISA05	// InterchangeControl
+	ISA06								ISA06	// InterchangeControl
+	ISA07								ISA07	// InterchangeControl
+	ISA08								ISA08	// InterchangeControl
+	ISA14								ISA14	// InterchangeControl
+	ISA15								ISA15	// InterchangeControl
+	GS02								GS02	// FunctionalGroup
+	GS03								GS03	// FunctionalGroup
+)
+
+INSERT INTO `insurance_companies` (
+	`id`,
+	`name`,
+	`attn`,
+	`cms_id`,
+	`x12_receiver_id`,
+	`x12_default_partner_id`
+) VALUES (
+	global.INSURANCECOUNT
+	PrimaryPayerName					NM102	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	'Claims'
+	PrimaryPayerId						NM108	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	x12PartnersCount
+	x12PartnersCount
+)
+
+INSERT INTO `addresses` (
+	`id`,
+	`line1`,
+	`line2`,
+	`city`,
+	`state`,
+	`zip`,
+	`plus_four`,
+	`country`,
+	`foreign_id`
+) VALUES (
+	global.INSURANCECOUNT
+	PrimaryPayerAddress1				N301	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	PrimaryPayerAddress2				N302	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	PrimaryPayerCity					N401	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	PrimaryPayerState					N402	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	PrimaryPayerZip						N403	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	'NULL'
+	'NULL'
+	global.INSURANCECOUNT
+)
+
+INSERT INTO `phone_numbers` (
+	`id`,
+	`country_code`,
+	`area_code`,
+	`prefix`,
+	`number`,
+	`type`,
+	`foreign_id`
+) VALUES (
+	global.INSURANCECOUNT
+	'+1'
+	'NULL'
+	'NULL'
+	'NULL'
+	'2'
+	global.INSURANCECOUNT
+)
+
+INSERT INTO `insurance_companies` (
+	`id`,
+	`name`,
+	`attn`,
+	`cms_id`,
+	`x12_receiver_id`,
+	`x12_default_partner_id`
+) VALUES (
+	global.INSURANCECOUNT
+	SecondaryPayerName					NM102	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	'Claims'
+	SecondaryPayerId					NM108	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	x12PartnersCount
+	x12PartnersCount
+)
+
+INSERT INTO `addresses` (
+	`id`,
+	`line1`,
+	`line2`,
+	`city`,
+	`state`,
+	`zip`,
+	`plus_four`,
+	`country`,
+	`foreign_id`
+) VALUES (
+	global.INSURANCECOUNT
+	SecondaryPayerAddress1				N301	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	SecondaryPayerAddress2				N302	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	SecondaryPayerCity					N401	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	SecondaryPayerState					N402	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	SecondaryPayerZip					N403	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	'NULL'
+	'NULL'
+	global.INSURANCECOUNT
+)
+
+INSERT INTO `phone_numbers` (
+	`id`,
+	`country_code`,
+	`area_code`,
+	`prefix`,
+	`number`,
+	`type`,
+	`foreign_id`
+) VALUES (
+	global.INSURANCECOUNT
+	'+1'
+	'NULL'
+	'NULL'
+	'NULL'
+	'2'
+	global.INSURANCECOUNT
+)
+
+INSERT INTO `insurance_companies` (
+	`id`,
+	`name`,
+	`attn`,
+	`cms_id`,
+	`x12_receiver_id`,
+	`x12_default_partner_id`
+) VALUES (
+	global.INSURANCECOUNT
+	TertiaryPayerName					NM102	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	'Claims'
+	TertiaryPayerId						NM108	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	x12PartnersCount
+	x12PartnersCount
+)
+
+INSERT INTO `addresses` (
+	`id`,
+	`line1`,
+	`line2`,
+	`city`,
+	`state`,
+	`zip`,
+	`plus_four`,
+	`country`,
+	`foreign_id`
+) VALUES (
+	global.INSURANCECOUNT
+	TertiaryPayerAddress1				N301	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	TertiaryPayerAddress2				N302	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	TertiaryPayerCity					N401	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	TertiaryPayerState					N402	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	TertiaryPayerZip					N403	// 2010BB — PAYER NAME & 2330B — OTHER PAYER NAME
+	'NULL'
+	'NULL'
+	global.INSURANCECOUNT
+)
+
+INSERT INTO `phone_numbers` (
+	`id`,
+	`country_code`,
+	`area_code`,
+	`prefix`,
+	`number`,
+	`type`,
+	`foreign_id`
+) VALUES (
+	global.INSURANCECOUNT
+	'+1'
+	'NULL'
+	'NULL'
+	'NULL'
+	'2'
+	global.INSURANCECOUNT
+)
+
+INSERT INTO `facility` (
+	`id`,
+	`name`,
+	`street`,
+	`city`,
+	`state`,
+	`postal_code`,
+	`country_code`,
+	`federal_ein`,
+	`service_location`,
+	`billing_location`,
+	`accepts_assignment`,
+	`pos_code`,
+	`attn`,
+	`facility_npi`,
+	`tax_id_type`,
+	`color`,
+	`primary_business_entity`
+) VALUES (
+	global.FACILITYCOUNT
+	ServiceFacilityName					NM103	// 2310C — SERVICE FACILITY LOCATION NAME & 2330E — OTHER PAYER SERVICE FACILITY LOCATION & 2420C — SERVICE FACILITY LOCATION NAME
+	ServiceFacilityAddress1 + ' ' +		N301	// 2310C — SERVICE FACILITY LOCATION NAME & 2330E — OTHER PAYER SERVICE FACILITY LOCATION & 2420C — SERVICE FACILITY LOCATION NAME
+		ServiceFacilityAddress2			N302	// 2310C — SERVICE FACILITY LOCATION NAME & 2330E — OTHER PAYER SERVICE FACILITY LOCATION & 2420C — SERVICE FACILITY LOCATION NAME
+	ServiceFacilityCity					N401	// 2310C — SERVICE FACILITY LOCATION NAME & 2330E — OTHER PAYER SERVICE FACILITY LOCATION & 2420C — SERVICE FACILITY LOCATION NAME
+	ServiceFacilityState				N402	// 2310C — SERVICE FACILITY LOCATION NAME & 2330E — OTHER PAYER SERVICE FACILITY LOCATION & 2420C — SERVICE FACILITY LOCATION NAME
+	ServiceFacilityZip					N403	// 2310C — SERVICE FACILITY LOCATION NAME & 2330E — OTHER PAYER SERVICE FACILITY LOCATION & 2420C — SERVICE FACILITY LOCATION NAME
+	'USA'
+	''
+	'1'
+	'0'
+	'1'
+	FacilityCodeValue					CLM05	// 2300 — CLAIM INFORMATION
+	'Billing'
+	ServiceFacilityId					NM109	// 2310C — SERVICE FACILITY LOCATION NAME & 2330E — OTHER PAYER SERVICE FACILITY LOCATION & 2420C — SERVICE FACILITY LOCATION NAME
+	'EI'								?
+	'#FFCC99'
+	'0'
+)
+
+INSERT INTO `facility` (
+	`id`,
+	`name`,
+	`street`,
+	`city`,
+	`state`,
+	`postal_code`,
+	`country_code`,
+	`federal_ein`,
+	`service_location`,
+	`billing_location`,
+	`accepts_assignment`,
+	`pos_code`,
+	`attn`,
+	`facility_npi`,
+	`tax_id_type`,
+	`color`,
+	`primary_business_entity`
+) VALUES (
+	global.FACILITYCOUNT
+	BillingProviderLastName				NM103	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+	BillingProviderAddress1 + ' ' +		N301	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+		BillingProviderAddress2			N302	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+	BillingProviderCity					N401	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+	BillingProviderState				N402	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+	BillingProviderZip					N403	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+	'USA'
+	BillproEIN							REF02	// 2010AA — BILLING PROVIDER NAME & 2010AC — PAY-TO PLAN NAME & 2330B — OTHER PAYER NAME
+	'1'
+	'0'
+	'1'
+	FacilityCodeValue					CLM05	// 2300 — CLAIM INFORMATION
+	'Billing'
+	BillingProviderId					NM109	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+	'EI'								?
+	'#FFCC99'
+	'0'
+)
+
+INSERT INTO `users` (
+	`id`,
+	`username`,
+	`password`,
+	`authorized`,
+	`fname`,
+	`mname`,
+	`lname`,
+	`federaltaxid`,
+	`federaldrugid`,
+	`facility`,
+	`facility_id`,
+	`see_auth`,
+	`active`,
+	`npi`,
+	`cal_ui`,
+	`taxonomy`,
+	`calendar`,
+	`abook_type`,
+	`state_license_number`
+) VALUES (
+	ReferringId							NM109	// 2310A — REFERRING PROVIDER NAME & 2330C — OTHER PAYER REFERRING PROVIDER & 2420F — REFERRING PROVIDER NAME
+	ReferringLastName +					NM103	// 2310A — REFERRING PROVIDER NAME & 2330C — OTHER PAYER REFERRING PROVIDER & 2420F — REFERRING PROVIDER NAME
+		ReferringFirstName				NM104	// 2310A — REFERRING PROVIDER NAME & 2330C — OTHER PAYER REFERRING PROVIDER & 2420F — REFERRING PROVIDER NAME
+	'70702b9402107c11ef9d18d9daad4ff1'
+	'1'
+	ReferringFirstName					NM104	// 2310A — REFERRING PROVIDER NAME & 2330C — OTHER PAYER REFERRING PROVIDER & 2420F — REFERRING PROVIDER NAME
+	ReferringMiddleName					NM105	// 2310A — REFERRING PROVIDER NAME & 2330C — OTHER PAYER REFERRING PROVIDER & 2420F — REFERRING PROVIDER NAME
+	ReferringLastName					NM103	// 2310A — REFERRING PROVIDER NAME & 2330C — OTHER PAYER REFERRING PROVIDER & 2420F — REFERRING PROVIDER NAME
+	''
+	''
+	ServiceFacilityName					NM103	// 2310C — SERVICE FACILITY LOCATION NAME & 2330E — OTHER PAYER SERVICE FACILITY LOCATION & 2420C — SERVICE FACILITY LOCATION NAME
+	current_fac
+	'3'
+	'1'
+	ReferringId							NM109	// 2310A — REFERRING PROVIDER NAME & 2330C — OTHER PAYER REFERRING PROVIDER & 2420F — REFERRING PROVIDER NAME
+	'3'
+	''
+	'1'
+	'miscellaneous'
+	''
+)
+
+INSERT INTO `groups` (
+	`id`,
+	`name`,
+	`user`
+) VALUES (
+	ReferringId							NM109	// 2310A — REFERRING PROVIDER NAME & 2330C — OTHER PAYER REFERRING PROVIDER & 2420F — REFERRING PROVIDER NAME
+	'Default'
+	ReferringLastName +					NM103	// 2310A — REFERRING PROVIDER NAME & 2330C — OTHER PAYER REFERRING PROVIDER & 2420F — REFERRING PROVIDER NAME
+		ReferringFirstName				NM104	// 2310A — REFERRING PROVIDER NAME & 2330C — OTHER PAYER REFERRING PROVIDER & 2420F — REFERRING PROVIDER NAME
+)
+
+INSERT INTO `users` (
+	`id`,
+	`username`,
+	`password`,
+	`authorized`,
+	`fname`,
+	`mname`,
+	`lname`,
+	`federaltaxid`,
+	`federaldrugid`,
+	`facility`,
+	`facility_id`,
+	`see_auth`,
+	`active`,
+	`npi`,
+	`cal_ui`,
+	`taxonomy`,
+	`calendar`,
+	`abook_type`,
+	`state_license_number`
+) VALUES (
+	PayToProviderId						NM108	// 2010AB — PAY-TO ADDRESS NAME
+	PayToProviderLastName +				NM102	// 2010AB — PAY-TO ADDRESS NAME
+		PayToProviderFirstName			NM103	// 2010AB — PAY-TO ADDRESS NAME
+	'70702b9402107c11ef9d18d9daad4ff1'
+	'1'
+	PayToProviderFirstName				NM103	// 2010AB — PAY-TO ADDRESS NAME
+	PayToProviderMiddleName				NM104	// 2010AB — PAY-TO ADDRESS NAME
+	PayToProviderLastName				NM102	// 2010AB — PAY-TO ADDRESS NAME
+	''
+	''
+	ServiceFacilityName					NM103	// 2310C — SERVICE FACILITY LOCATION NAME & 2330E — OTHER PAYER SERVICE FACILITY LOCATION & 2420C — SERVICE FACILITY LOCATION NAME
+	current_fac
+	'3'
+	'1'
+	PayToProviderId						NM108	// 2010AB — PAY-TO ADDRESS NAME
+	'3'
+	''
+	'1'
+	'miscellaneous'
+	''
+)
+
+INSERT INTO `groups` (
+	`id`,
+	`name`,
+	`user`
+) VALUES (
+	PayToProviderId						NM108	// 2010AB — PAY-TO ADDRESS NAME
+	'Default'
+	PayToProviderLastName +				NM102	// 2010AB — PAY-TO ADDRESS NAME
+		PayToProviderFirstName			NM103	// 2010AB — PAY-TO ADDRESS NAME
+)
+
+INSERT INTO `users` (
+	`id`,
+	`username`,
+	`password`,
+	`authorized`,
+	`fname`,
+	`mname`,
+	`lname`,
+	`federaltaxid`,
+	`federaldrugid`,
+	`facility`,
+	`facility_id`,
+	`see_auth`,
+	`active`,
+	`npi`,
+	`cal_ui`,
+	`taxonomy`,
+	`calendar`,
+	`abook_type`,
+	`state_license_number`
+) VALUES (
+	OrderingId							NM109	// 2420E — ORDERING PROVIDER NAME
+	OrderingLastName +					NM103	// 2420E — ORDERING PROVIDER NAME
+		OrderingFirstName				NM104	// 2420E — ORDERING PROVIDER NAME
+	'70702b9402107c11ef9d18d9daad4ff1'
+	'1'
+	OrderingFirstName					NM104	// 2420E — ORDERING PROVIDER NAME
+	OrderingMiddleName					NM105	// 2420E — ORDERING PROVIDER NAME
+	OrderingLastName					NM103	// 2420E — ORDERING PROVIDER NAME
+	''
+	''
+	ServiceFacilityName					NM103	// 2310C — SERVICE FACILITY LOCATION NAME & 2330E — OTHER PAYER SERVICE FACILITY LOCATION & 2420C — SERVICE FACILITY LOCATION NAME
+	current_fac
+	'3'
+	'1'
+	OrderingId							NM109	// 2420E — ORDERING PROVIDER NAME
+	'3'
+	''
+	'1'
+	'miscellaneous'
+	''
+)
+
+INSERT INTO `groups` (
+	`id`,
+	`name`,
+	`user`
+) VALUES (
+	OrderingId							NM109	// 2420E — ORDERING PROVIDER NAME
+	'Default'
+	OrderingLastName +					NM103	// 2420E — ORDERING PROVIDER NAME
+		OrderingFirstName				NM104	// 2420E — ORDERING PROVIDER NAME
+)
+
+INSERT INTO `users` (
+	`id`,
+	`username`,
+	`password`,
+	`authorized`,
+	`fname`,
+	`mname`,
+	`lname`,
+	`federaltaxid`,
+	`federaldrugid`,
+	`facility`,
+	`facility_id`,
+	`see_auth`,
+	`active`,
+	`npi`,
+	`cal_ui`,
+	`taxonomy`,
+	`calendar`,
+	`abook_type`,
+	`state_license_number`
+) VALUES (
+	BillingProviderId					NM109	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+	BillingProviderLastName +			NM103	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+		BillingProviderFirstName		NM104	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+	'70702b9402107c11ef9d18d9daad4ff1'
+	'1'
+	BillingProviderFirstName			NM104	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+	BillingProviderMiddleName			NM105	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+	BillingProviderLastName				NM103	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+	''
+	''
+	ServiceFacilityName					NM103	// 2310C — SERVICE FACILITY LOCATION NAME & 2330E — OTHER PAYER SERVICE FACILITY LOCATION & 2420C — SERVICE FACILITY LOCATION NAME
+	current_fac
+	'3'
+	'1'
+	BillingProviderId					NM109	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+	'3'
+	BillingProviderTaxonomy				PRV03	// 2000A — BILLING PROVIDER HIERARCHICAL LEVEL
+	'1'
+	'miscellaneous'
+	''
+)
+
+INSERT INTO `groups` (
+	`id`,
+	`name`,
+	`user`
+) VALUES (
+	BillingProviderId					NM109	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+	'Default'
+	BillingProviderLastName +			NM103	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+		BillingProviderFirstName		NM104	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+)
+
+INSERT INTO `users` (
+	`id`,
+	`username`,
+	`password`,
+	`authorized`,
+	`fname`,
+	`mname`,
+	`lname`,
+	`federaltaxid`,
+	`federaldrugid`,
+	`facility`,
+	`facility_id`,
+	`see_auth`,
+	`active`,
+	`npi`,
+	`cal_ui`,
+	`taxonomy`,
+	`calendar`,
+	`abook_type`,
+	`state_license_number`
+) VALUES (
+	RenderingId							NM109	// 2310B — RENDERING PROVIDER NAME & 2330D — OTHER PAYER RENDERING PROVIDER & 2420A — RENDERING PROVIDER NAME
+	RenderingLastName +					NM103	// 2310B — RENDERING PROVIDER NAME & 2330D — OTHER PAYER RENDERING PROVIDER & 2420A — RENDERING PROVIDER NAME
+		RenderingFirstName				NM104	// 2310B — RENDERING PROVIDER NAME & 2330D — OTHER PAYER RENDERING PROVIDER & 2420A — RENDERING PROVIDER NAME
+	'70702b9402107c11ef9d18d9daad4ff1'
+	'1'
+	RenderingFirstName					NM104	// 2310B — RENDERING PROVIDER NAME & 2330D — OTHER PAYER RENDERING PROVIDER & 2420A — RENDERING PROVIDER NAME
+	RenderingMiddleName					NM105	// 2310B — RENDERING PROVIDER NAME & 2330D — OTHER PAYER RENDERING PROVIDER & 2420A — RENDERING PROVIDER NAME
+	RenderingLastName					NM103	// 2310B — RENDERING PROVIDER NAME & 2330D — OTHER PAYER RENDERING PROVIDER & 2420A — RENDERING PROVIDER NAME
+	''
+	''
+	ServiceFacilityName					NM103	// 2310C — SERVICE FACILITY LOCATION NAME & 2330E — OTHER PAYER SERVICE FACILITY LOCATION & 2420C — SERVICE FACILITY LOCATION NAME
+	current_fac
+	'3'
+	'1'
+	RenderingId							NM109	// 2310B — RENDERING PROVIDER NAME & 2330D — OTHER PAYER RENDERING PROVIDER & 2420A — RENDERING PROVIDER NAME
+	'3'
+	RenderingTaxonomy					PRV03	// 2310B — RENDERING PROVIDER NAME
+	'1'
+	'miscellaneous'
+	''
+)
+
+INSERT INTO `groups` (
+	`id`,
+	`name`,
+	`user`
+) VALUES (
+	RenderingId							NM109	// 2310B — RENDERING PROVIDER NAME & 2330D — OTHER PAYER RENDERING PROVIDER & 2420A — RENDERING PROVIDER NAME
+	'Default'
+	RenderingLastName +					NM103	// 2310B — RENDERING PROVIDER NAME & 2330D — OTHER PAYER RENDERING PROVIDER & 2420A — RENDERING PROVIDER NAME
+		RenderingFirstName				NM104	// 2310B — RENDERING PROVIDER NAME & 2330D — OTHER PAYER RENDERING PROVIDER & 2420A — RENDERING PROVIDER NAME
+)
+
+INSERT INTO `patient_data` (
+	`id`,
+	`language`,
+	`fname`,
+	`lname`,
+	`mname`,
+	`DOB`,
+	`street`,
+	`postal_code`,
+	`city`,
+	`state`,
+	`date`,
+	`sex`,
+	`providerID`,
+	`pubpid`,
+	`pid`
+) VALUES (
+	global.PATIENTCOUNT
+	'English'
+	PatientFirstName					NM103	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME & 2330A — OTHER SUBSCRIBER NAME
+	PatientLastName						NM102	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME & 2330A — OTHER SUBSCRIBER NAME
+	PatientMiddleName					NM104	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME & 2330A — OTHER SUBSCRIBER NAME
+	PatientDOB							DMG02	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME
+	PatientAddress1 + ' ' +				N301	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME & 2330A — OTHER SUBSCRIBER NAME
+		PatientAddress2					N302	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME & 2330A — OTHER SUBSCRIBER NAME
+	PatientZip							N403	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME & 2330A — OTHER SUBSCRIBER NAME
+	PatientCity							N401	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME & 2330A — OTHER SUBSCRIBER NAME
+	PatientState						N402	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME & 2330A — OTHER SUBSCRIBER NAME
+	Dos1								DTP02	// 2400 — SERVICE LINE NUMBER
+	PatientSex							DMG03	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME
+	userstableid						?
+	current_pat
+	current_pat
+)
+
+INSERT INTO `insurance_data` (
+	`id`,
+	`type`,
+	`provider`,
+	`plan_name`,
+	`policy_number`,
+	`group_number`,
+	`subscriber_lname`,
+	`subscriber_mname`,
+	`subscriber_fname`,
+	`subscriber_relationship`,
+	`subscriber_DOB`,
+	`subscriber_street`,
+	`subscriber_postal_code`,
+	`subscriber_city`,
+	`subscriber_state`,
+	`subscriber_country`,
+	`subscriber_sex`,
+	`accept_assignment`,
+	`pid`,
+	`date`
+) VALUES (
+	global.INSDATACOUNT
+	'primary'
+	pins								?
+	PrimaryPlanName						SBR04	// 2000B — SUBSCRIBER HIERARCHICAL LEVEL & 2320 — OTHER SUBSCRIBER INFORMATION
+	PrimarySubscriberId					NM108	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	PrimaryPolicy						SBR03	// 2000B — SUBSCRIBER HIERARCHICAL LEVEL & 2320 — OTHER SUBSCRIBER INFORMATION
+	PrimarySubscriberLastName			NM102	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	PrimarySubscriberMiddleName			NM104	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	PrimarySubscriberFirstName			NM103	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	PrimarySubscriberRelation			SBR02	// 2000B — SUBSCRIBER HIERARCHICAL LEVEL & 2320 — OTHER SUBSCRIBER INFORMATION
+	PrimarySubscriberDOB				DMG02	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME
+	PrimarySubscriberAddress1+ ' ' +	N301	// 2010BA — SUBSCRIBER NAME
+		PrimarySubscriberAddress2		N302	// 2010BA — SUBSCRIBER NAME
+	PrimarySubscriberZip				N403	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	PrimarySubscriberCity				N401	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	PrimarySubscriberState				N402	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	'USA'
+	PrimarySubscriberSex				DMG03	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME
+	ProviderAcceptAssignmentCode		CLM08	// 2300 — CLAIM INFORMATION
+	current_pat
+	Dos1								DTP02	// 2400 — SERVICE LINE NUMBER
+)
+
+INSERT INTO `insurance_data` (
+	`id`,
+	`type`,
+	`provider`,
+	`plan_name`,
+	`policy_number`,
+	`group_number`,
+	`subscriber_lname`,
+	`subscriber_mname`,
+	`subscriber_fname`,
+	`subscriber_relationship`,
+	`subscriber_DOB`,
+	`subscriber_street`,
+	`subscriber_postal_code`,
+	`subscriber_city`,
+	`subscriber_state`,
+	`subscriber_country`,
+	`subscriber_sex`,
+	`accept_assignment`,
+	`pid`,
+	`date`
+) VALUES (
+	global.INSDATACOUNT
+	'secondary'
+	pins								?
+	SecondaryPlanName					SBR04	// 2000B — SUBSCRIBER HIERARCHICAL LEVEL & 2320 — OTHER SUBSCRIBER INFORMATION
+	SecondarySubscriberId				NM108	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	SecondaryPolicy						SBR03	// 2000B — SUBSCRIBER HIERARCHICAL LEVEL & 2320 — OTHER SUBSCRIBER INFORMATION
+	SecondarySubscriberLastName			NM102	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	SecondarySubscriberMiddleName		NM104	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	SecondarySubscriberFirstName		NM103	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	SecondarySubscriberRelation			SBR02	// 2000B — SUBSCRIBER HIERARCHICAL LEVEL & 2320 — OTHER SUBSCRIBER INFORMATION
+	SecondarySubscriberDOB				DMG03	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME
+	SecondarySubscriberAddress1+ ' ' +	N301	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+		SecondarySubscriberAddress2		N302	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	SecondarySubscriberZip				N403	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	SecondarySubscriberCity				N401	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	SecondarySubscriberState			N402	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	'USA'
+	SecondarySubscriberSex				DMG03	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME
+	ProviderAcceptAssignmentCode		CLM08	// 2300 — CLAIM INFORMATION
+	current_pat
+	Dos1								DTP02	// 2400 — SERVICE LINE NUMBER
+)
+
+INSERT INTO `insurance_data` (
+	`id`,
+	`type`,
+	`provider`,
+	`plan_name`,
+	`policy_number`,
+	`group_number`,
+	`subscriber_lname`,
+	`subscriber_mname`,
+	`subscriber_fname`,
+	`subscriber_relationship`,
+	`subscriber_DOB`,
+	`subscriber_street`,
+	`subscriber_postal_code`,
+	`subscriber_city`,
+	`subscriber_state`,
+	`subscriber_country`,
+	`subscriber_sex`,
+	`accept_assignment`,
+	`pid`,
+	`date`
+) VALUES (
+	global.INSDATACOUNT
+	'tertiary'
+	pins								?
+	TertiaryPlanname					SBR04	// 2000B — SUBSCRIBER HIERARCHICAL LEVEL & 2320 — OTHER SUBSCRIBER INFORMATION
+	TertiarySubscriberId				NM108	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	TertiaryPolicy						SBR03	// 2000B — SUBSCRIBER HIERARCHICAL LEVEL & 2320 — OTHER SUBSCRIBER INFORMATION
+	TertiarySubscriberLastName			NM102	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	TertiarySubscriberMiddleName		NM104	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	TertiarySubscriberFirstName			NM103	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	TertiarySubscriberRelation			SBR02	// 2000B — SUBSCRIBER HIERARCHICAL LEVEL & 2320 — OTHER SUBSCRIBER INFORMATION
+	TertiarySubscriberDOB				DMG03	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME
+	TertiarySubscriberAddress1 + ' ' +	N301	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+		TertiarySubscriberAddress2		N302	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	TertiarySubscriberZip				N403	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	TertiarySubscriberCity				N401	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	TertiarySubscriberState				N402	// 2010BA — SUBSCRIBER NAME & 2330A — OTHER SUBSCRIBER NAME
+	'USA'
+	TertiarySubscriberSex				DMG03	// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME
+	ProviderAcceptAssignmentCode		CLM08	// 2300 — CLAIM INFORMATION
+	current_pat
+	Dos1								DTP02	// 2400 — SERVICE LINE NUMBER
+)
+
+INSERT INTO `form_encounter` (
+	`id`,
+	`date`,
+	`reason`,
+	`facility`,
+	`facility_id`,
+	`pid`,
+	`encounter`,
+	`onset_date`,
+	`sensitivity`,
+	`billing_note`,
+	`pc_catid`,
+	`last_level_billed`,
+	`last_level_closed`,
+	`last_stmt_date`,
+	`stmt_count`,
+	`provider_id`,
+	`supervisor_id`,
+	`invoice_refno`,
+	`referral_source`,
+	`billing_facility`
+) VALUES (
+	global.ENCOUNTERCOUNT
+	Dos1								DTP02	// 2400 — SERVICE LINE NUMBER
+	'Imported Encounter'
+	BillingProviderLastName				NM103	// 2010AA — BILLING PROVIDER NAME & 2330G — OTHER PAYER BILLING PROVIDER
+	current_fac
+	current_pat
+	ClaimId								CLM01	// 2300 — CLAIM INFORMATION
+	'0000-00-00 00:00:00'
+	'normal'
+	'NULL'
+	'1'
+	'0'
+	'0'
+	'NULL'
+	'0'
+	current_pro
+	'0'
+	''
+	''
+	current_fac
+)
+
+INSERT INTO `forms` (
+	`id`,
+	`date`,
+	`encounter`,
+	`form_name`,
+	`form_id`,
+	`pid`,
+	`user`,
+	`groupname`,
+	`authorized`,
+	`deleted`,
+	`formdir`
+) VALUES (
+	global.ENCOUNTERCOUNT
+	Dos1								DTP02	// 2400 — SERVICE LINE NUMBER
+	ClaimId								CLM01	// 2300 — CLAIM INFORMATION
+	'New PatientIent Encounter'
+	global.ENCOUNTERCOUNT
+	current_pat
+	current_pro
+	'Default'
+	'1'
+	'0'
+	'newpatient'
+)
+
+INSERT INTO `billing` (
+	`id`,
+	`date`,
+	`code_type`,
+	`code`, `pid`,
+	`provider_id`,
+	`user`,
+	`groupname`,
+	`authorized`,
+	`encounter`,
+	`code_text`,
+	`billed`,
+	`activity`,
+	`payer_id`,
+	`bill_process`,
+	`bill_date`,
+	`process_date`,
+	`process_file`,
+	`modifier`,
+	`units`,
+	`fee`,
+	`justify`
+) VALUES (
+	global.BILLINGCOUNT
+	Dos1								DTP02	// 2400 — SERVICE LINE NUMBER
+	'CPT4'
+	Tx[pow]								SV101	// 2400 — SERVICE LINE NUMBER
+	current_pat
+	current_pro
+	current_pro
+	'Default'
+	'1'
+	ClaimId								CLM01	// 2300 — CLAIM INFORMATION
+	''
+	'0'
+	'1'
+	current_ins
+	'0'
+	'NULL'
+	'NULL'
+	'NULL'
+	TxMod[pow]							SV101	// 2400 — SERVICE LINE NUMBER
+	TxUnits[pow]						SV104	// 2400 — SERVICE LINE NUMBER
+	TxAmount[pow]						SV102	// 2400 — SERVICE LINE NUMBER
+	Dx[1]								HI**-2	// 2300 — CLAIM INFORMATION
+)
+
+INSERT INTO `billing` (
+	`id`,
+	`date`,
+	`code_type`,
+	`code`,
+	`pid`,
+	`provider_id`,
+	`user`,
+	`groupname`,
+	`authorized`,
+	`encounter`,
+	`code_text`,
+	`billed`,
+	`activity`,
+	`payer_id`,
+	`bill_process`,
+	`bill_date`,
+	`process_date`,
+	`process_file`,
+	`modifier`,
+	`units`,
+	`fee`,
+	`justify`
+) VALUES (
+	global.BILLINGCOUNT
+	Dos1								DTP02	// 2400 — SERVICE LINE NUMBER
+	DxType[pow] == 'ABK' ?				HI**-1	// 2300 — CLAIM INFORMATION
+		'ICD10' : 'ICD9'
+	Dx[pow]								HI**-2	// 2300 — CLAIM INFORMATION
+	current_pat
+	current_pro
+	current_pro
+	'Default'
+	'1'
+	ClaimId								CLM01	// 2300 — CLAIM INFORMATION
+	''
+	'0'
+	'1'
+	current_ins
+	'0'
+	'NULL'
+	'NULL'
+	'NULL'
+	''
+	'1'
+	'0'
+	''
+)
+
+
+
+
+

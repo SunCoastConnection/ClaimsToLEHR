@@ -1,0 +1,128 @@
+#!/usr/bin/env php
+<?php
+
+namespace SunCoastConnection\ClaimsToOEMR;
+
+use \ErrorException,
+	\SunCoastConnection\ClaimsToOEMR\Database,
+	\SunCoastConnection\ClaimsToOEMR\Database\Cache,
+	\SunCoastConnection\ClaimsToOEMR\Document\Options,
+	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
+	\SunCoastConnection\ClaimsToOEMR\X12N837,
+	\Symfony\Component\Finder\Finder;
+
+
+set_error_handler(__NAMESPACE__.'\exceptions_error_handler');
+
+function exceptions_error_handler($severity, $message, $filename, $lineno) {
+	if(error_reporting() !== 0 && (error_reporting() & $severity)) {
+		throw new ErrorException($message, 0, $severity, $filename, $lineno);
+	}
+}
+
+function exitError($message, $errorCode = 0) {
+	echo $message;
+	exit($errorCode);
+}
+
+echo 'Setting up autoloading...'.PHP_EOL;
+
+//** LOAD AUTOLOADER **//
+$autoload = include(__DIR__.'/vendor/autoload.php');
+
+if($autoload == false) {
+	is_dir(dirname($autoloadPath)) || exitError(
+		'Application has not been installed correctly.'.PHP_EOL.
+			'Navigate to: '.__DIR__.PHP_EOL.
+			'Run: composer install --no-dev'.PHP_EOL,
+		1
+	);
+
+	file_exists($autoloadPath) || exitError(
+		'Autoload component is missing: '.$autoloadPath.PHP_EOL,
+		1
+	);
+
+	is_readable($autoloadPath) || exitError(
+		'Autoload component is not readable: '.$autoloadPath.PHP_EOL,
+		1
+	);
+}
+
+echo 'Loading configurations...'.PHP_EOL;
+
+//** GET CONFIGURATION OPTIONS **//
+$options = Options::getNew(require_once(__DIR__.'/config/app.php'));
+
+if(!file_exists($options->get('Database.database'))) {
+	touch($options->get('Database.database')) || exitError(
+		'Database missing and can not be created: '.$options->get('Database.database').PHP_EOL,
+		1
+	);
+}
+
+$options->set('App.Database', Database::getNew($options));
+
+
+$cmd = array_shift($argv);
+$cmdOption = array_shift($argv);
+
+switch($cmdOption) {
+	case 'migrate':
+		c2eMigrate($options);
+		break;
+
+	case 'parse':
+		c2eParse($options);
+		break;
+
+	default:
+		exitError('Unknown option: '.$cmdOption, 1);
+		break;
+}
+
+function c2eMigrate($options) {
+	include(__DIR__.'/Database/migrate.php');
+}
+
+function c2eParse($options) {
+	$inboxPath		= $options->get('Inbox.Path');
+	$inboxPattern	= $options->get('Inbox.Pattern');
+
+	$finder = new Finder;
+	$finder->files()
+		->in($inboxPath)
+		->name($inboxPattern);
+
+	//** TESTING **//
+	echo 'Found the following files in directory: '.$inboxPath.PHP_EOL;
+
+	foreach($finder as $file) {
+		echo " - Filename:\t\t".$file->getRealpath().PHP_EOL;
+		echo " - Filesize:\t\t".$file->getSize().PHP_EOL;
+
+		c2eClaimLoad($options, $file);
+	}
+}
+
+function c2eClaimLoad($options, $file) {
+	$raw = Raw::getNew($file->getContents());
+	echo " - Segments:\t\t".count($raw).PHP_EOL;
+
+	$document = X12N837::getNew($options);
+	$document->parse($raw);
+
+	// echo " - Document:\t\t".var_export($document, true).PHP_EOL;
+	// echo " - Raw:\t\t\t".$document.PHP_EOL;
+	// exit;
+
+	c2eClaimCache($options, $document);
+}
+
+function c2eClaimCache($options, $document) {
+	$openEMR = Cache::getNew($options->get('App.Database'));
+
+	$openEMR->processDocument($document);
+
+	exit;
+}
