@@ -4,7 +4,7 @@ namespace SunCoastConnection\ClaimsToOEMR\Models;
 
 use \Illuminate\Database\Eloquent\Model as Eloquent;
 
-class x12Partners extends Eloquent {
+class X12Partners extends Eloquent {
 	protected $table = 'x12_partners';
 
 	public $timestamps = false;
