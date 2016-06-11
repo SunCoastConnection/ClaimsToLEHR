@@ -2,11 +2,9 @@
 
 return [
 
-	'App' => [
-		'WorkingPath' => __DIR__,
-		'AutoloadPath' => __DIR__.'/vendor/autoload.php',
-		'InboxPath' => __DIR__.'/INBOX',
-		'InboxPattern' => '*.txt',
+	'Inbox' => [
+		'Path' => __DIR__.'/../INBOX',
+		'Pattern' => '*.txt',
 	],
 
 	'Database' => [
@@ -16,7 +14,7 @@ return [
 		// 'password'	=> 'secret',
 
 		'driver'	=> 'sqlite',
-		'database'	=> __DIR__.'/database.sqlite',
+		'database'	=> __DIR__.'/../cache/database.sqlite',
 	],
 
 	'Aliases' => [
