@@ -99,6 +99,75 @@ class EnvelopTest extends BaseTestCase {
 	}
 
 	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Envelop::getHeader()
+	 */
+	public function testGetHeader() {
+		$header = [
+			'A',
+			'B',
+			'C',
+		];
+
+		$this->setProtectedProperty(
+			$this->envelop,
+			'header',
+			$header
+		);
+
+		$this->assertEquals(
+			$header,
+			$this->envelop->getHeader(),
+			'Header value not returned.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Envelop::getDescendant()
+	 */
+	public function testGetDescendant() {
+		$descendant = [
+			'A',
+			'B',
+			'C',
+		];
+
+		$this->setProtectedProperty(
+			$this->envelop,
+			'descendant',
+			$descendant
+		);
+
+		$this->assertEquals(
+			$descendant,
+			$this->envelop->getDescendant(),
+			'Descendant value not returned.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Envelop::getTrailer()
+	 */
+	public function testGetTrailer() {
+		$trailer = [
+			'A',
+			'B',
+			'C',
+		];
+
+		$this->setProtectedProperty(
+			$this->envelop,
+			'trailer',
+			$trailer
+		);
+
+		$this->assertEquals(
+			$trailer,
+			$this->envelop->getTrailer(),
+			'Trailer value not returned.'
+		);
+	}
+
+	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Envelop::__toString()
 	 */
 	public function testToString() {

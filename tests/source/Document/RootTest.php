@@ -59,6 +59,29 @@ class RootTest extends BaseTestCase {
 	}
 
 	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Root::getDescendant()
+	 */
+	public function testGetDescendant() {
+		$descendant = [
+			'A',
+			'B',
+			'C',
+		];
+
+		$this->setProtectedProperty(
+			$this->root,
+			'descendant',
+			$descendant
+		);
+
+		$this->assertEquals(
+			$descendant,
+			$this->root->getDescendant(),
+			'Descendant value not returned.'
+		);
+	}
+
+	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Root::__toString()
 	 */
 	public function testToString() {

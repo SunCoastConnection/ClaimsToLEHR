@@ -92,6 +92,52 @@ class LoopTest extends BaseTestCase {
 	}
 
 	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Loop::getHeader()
+	 */
+	public function testGetHeader() {
+		$header = [
+			'A',
+			'B',
+			'C',
+		];
+
+		$this->setProtectedProperty(
+			$this->loop,
+			'header',
+			$header
+		);
+
+		$this->assertEquals(
+			$header,
+			$this->loop->getHeader(),
+			'Header value not returned.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Loop::getDescendant()
+	 */
+	public function testGetDescendant() {
+		$descendant = [
+			'A',
+			'B',
+			'C',
+		];
+
+		$this->setProtectedProperty(
+			$this->loop,
+			'descendant',
+			$descendant
+		);
+
+		$this->assertEquals(
+			$descendant,
+			$this->loop->getDescendant(),
+			'Descendant value not returned.'
+		);
+	}
+
+	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Loop::__toString()
 	 */
 	public function testToString() {
