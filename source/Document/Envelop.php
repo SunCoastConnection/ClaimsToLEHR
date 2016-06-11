@@ -52,6 +52,18 @@ class Envelop extends Section {
 		return $status;
 	}
 
+	public function getHeader() {
+		return $this->header;
+	}
+
+	public function getDescendant() {
+		return $this->descendant;
+	}
+
+	public function getTrailer() {
+		return $this->trailer;
+	}
+
 	public function __toString() {
 		return implode('', array_merge(
 			$this->header,

@@ -41,6 +41,14 @@ class Loop extends Section {
 		return $status;
 	}
 
+	public function getHeader() {
+		return $this->header;
+	}
+
+	public function getDescendant() {
+		return $this->descendant;
+	}
+
 	public function __toString() {
 		return implode('', array_merge(
 			$this->header,

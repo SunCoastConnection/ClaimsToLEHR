@@ -30,6 +30,10 @@ class Root extends Section {
 		return $status;
 	}
 
+	public function getDescendant() {
+		return $this->descendant;
+	}
+
 	public function __toString() {
 		return implode('', $this->descendant);
 	}
