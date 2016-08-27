@@ -120,9 +120,9 @@ function c2eClaimLoad($options, $file) {
 }
 
 function c2eClaimCache($options, $document) {
-	$openEMR = Cache::getNew($options->get('App.Database'));
+	$cache = Cache::getNew($options->get('App.Database'));
 
-	$openEMR->processDocument($document);
+	$cache->processDocument($document);
 
-	exit;
+	// exit;
 }
