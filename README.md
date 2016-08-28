@@ -1,5 +1,42 @@
 # Claims To OpenEMR
 
+## Delimiters
+
+A delimiter is a character used to separate two data or component elements or to
+terminate a segment.  The delimiters are an integral part of the data.
+Delimiters are specified in the interchange header segment, ISA.  The ISA
+segment can be considered in implementations compliant with this guide (All
+positions within each of the data elements must be filled) to be a 105 byte
+fixed length record, followed by a segment terminator.  The data element
+separator is byte number 4; the repetition separator is byte number 83; the
+component element separator is byte number 105; and the segment terminator is
+the byte that immediately follows the component element separator.  Once
+specified in the interchange header, the delimiters are not to be used in a data
+element value elsewhere in the interchange.
+
+### Interchange Control Header
+
+	ISA*00*..........*01*SECRET....*ZZ*SUBMITTERS.ID..*ZZ*RECEIVERS.ID...*030101*1253*^*00501*000000905*1*T*:~
+	   D                                                                              R                     CS
+
+### Delimiters
+
+	+---------------+---------------+-------------------------------+
+	|	CHARACTER	|	NAME		|	DELIMITER					|
+	+---------------+---------------+-------------------------------+
+	|	*			|	Asterisk	|	Data Element Separator		|
+	|	^			|	Carat		|	Repetition Separator		|
+	|	:			|	Colon		|	Component Element Separator	|
+	|	~			|	Tilde		|	Segment Terminator			|
+	+---------------+---------------+-------------------------------+
+
+The delimiters above are for illustration purposes only and are not specific
+recommendations or requirements.  Be aware that an application system may use
+some valid delimiter characters within the application data.  Occurrences of
+delimiter characters in transmitted data within a data element will result in
+errors in translation.  The existence of asterisks (*) within transmitted
+application data is a known issue that can affect translation software.
+
 
 ## X12 Specifications
 
@@ -30,6 +67,7 @@
 
 
 ### 837 - Health Care Claim		Functional Group ID: HC
+
 
 #### Loops
 
@@ -120,6 +158,7 @@
 
 
 #### 837 Standard
+
 
 ##### Table 1 - Header
 
@@ -274,59 +313,59 @@
 
 #### X12 Specifications with *#& Standard Segments
 
-	\\--[ FILE - Communications Transport Protocol ]----------------------------/
-	\\--[ ISA - Interchange Control Header ]--------------------------------/	|
-	\\--[ GS - Functional Group Header ]--------------------------------/	|	|
-	\\--[ ST - Transaction Set Header ]-----------------------------/	|	|	|
-		[ Data - BHT ]												|	|	|	|
-	\\--[ LOOP 1000 - 10 ]--------------------------------------/	|	|	|	|
-		[ Data - NM1, N3, N4 ]									|	|	|	|	|
-	//----------------------------------------------------------\	|	|	|	|
-	\\--[ LOOP 2000 - >1 ]--------------------------------------/	|	|	|	|
-		[ Data - PRV, SBR, PAT ]								|	|	|	|	|
-	\\--[ LOOP 2010 - 10 ]----------------------------------/	|	|	|	|	|
-		[ Data - NM1, N3, N4, DMG, REF ]					|	|	|	|	|	|
-	//------------------------------------------------------\	|	|	|	|	|
-	\\--[ LOOP 2300 - 100 ]---------------------------------/	|	|	|	|	|
-		[ Data - CLM, DTP, REF, NTE, HI ]					|	|	|	|	|	|
-	\\--[ LOOP 2305 - 6 ]-------------------------------\	|	|	|	|	|	|
-		[ Data - *NONE* ]								|	|	|	|	|	|	|
-	//--------------------------------------------------\	|	|	|	|	|	|
-	\\--[ LOOP 2310 - 9 ]-------------------------------/	|	|	|	|	|	|
-		[ Data - NM1, N3, N4, PRV ]						|	|	|	|	|	|	|
-	//--------------------------------------------------\	|	|	|	|	|	|
-	\\--[ LOOP 2320 - 10 ]------------------------------/	|	|	|	|	|	|
-		[ Data - SBR ]									|	|	|	|	|	|	|
-	\\--[ LOOP 2330 - 10 ]--------------------------/	|	|	|	|	|	|	|
-		[ Data - NM1, N3, N4, REF ]					|	|	|	|	|	|	|	|
-	//----------------------------------------------\	|	|	|	|	|	|	|
-	//--------------------------------------------------\	|	|	|	|	|	|
-	\\--[ LOOP 2400 - >1 ]------------------------------/	|	|	|	|	|	|
-		[ Data - SV1, DTP, NTE ]						|	|	|	|	|	|	|
-	\\--[ LOOP 2410 - >1 ]--------------------------/	|	|	|	|	|	|	|
-		[ Data - *NONE* ]							|	|	|	|	|	|	|	|
-	//----------------------------------------------\	|	|	|	|	|	|	|
-	\\--[ LOOP 2420 - 10 ]--------------------------/	|	|	|	|	|	|	|
-		[ Data - NM1, N3, N4, PRV ]					|	|	|	|	|	|	|	|
-	//----------------------------------------------\	|	|	|	|	|	|	|
-	\\--[ LOOP 2430 - >1 ]--------------------------/	|	|	|	|	|	|	|
-		[ Data - *NONE* ]							|	|	|	|	|	|	|	|
-	//----------------------------------------------\	|	|	|	|	|	|	|
-	\\--[ LOOP 2440 - >1 ]--------------------------/	|	|	|	|	|	|	|
-		[ Data - *NONE* ]							|	|	|	|	|	|	|	|
-	//----------------------------------------------\	|	|	|	|	|	|	|
-	//--------------------------------------------------\	|	|	|	|	|	|
-	//------------------------------------------------------\	|	|	|	|	|
-	//----------------------------------------------------------\	|	|	|	|
-	//--[ SE - Transaction Set Trailer ]----------------------------\	|	|	|
-	//--[ GE - Functional Group Trailer ]-------------------------------\	|	|
-	\\--[ GS - Functional Group Header ]--------------------------------/	|	|
-	\\--[ ST - Transaction Set Header ]-----------------------------/	|	|	|
-		{...}														|	|	|	|
-	//--[ SE - Transaction Set Trailer ]----------------------------\	|	|	|
-	//--[ GE - Functional Group Trailer ]-------------------------------\	|	|
-	//--[ IEA - Interchange Control Trailer ]-------------------------------\	|
-	//--[ FILE - Communications Transport Trailer ]-----------------------------\
+	\\--[ FILE - Communications Transport Protocol ]----------------/
+	\\--[ ISA - Interchange Control Header ]--------------------/	|
+	\\--[ GS - Functional Group Header ]--------------------/	|	|
+	\\--[ ST - Transaction Set Header ]-----------------/	|	|	|
+		[ Data - BHT ]									|	|	|	|
+	\\--[ LOOP 1000 - 10 ]--------------------------/	|	|	|	|
+		[ Data - NM1, N3, N4 ]						|	|	|	|	|
+	//----------------------------------------------\	|	|	|	|
+	\\--[ LOOP 2000 - >1 ]--------------------------/	|	|	|	|
+		[ Data - PRV, SBR, PAT ]					|	|	|	|	|
+	\\--[ LOOP 2010 - 10 ]----------------------/	|	|	|	|	|
+		[ Data - NM1, N3, N4, DMG, REF ]		|	|	|	|	|	|
+	//------------------------------------------\	|	|	|	|	|
+	\\--[ LOOP 2300 - 100 ]---------------------/	|	|	|	|	|
+		[ Data - CLM, DTP, REF, NTE, HI ]		|	|	|	|	|	|
+	\\--[ LOOP 2305 - 6 ]-------------------/	|	|	|	|	|	|
+		[ Data - *NONE* ]					|	|	|	|	|	|	|
+	//--------------------------------------\	|	|	|	|	|	|
+	\\--[ LOOP 2310 - 9 ]-------------------/	|	|	|	|	|	|
+		[ Data - NM1, N3, N4, PRV ]			|	|	|	|	|	|	|
+	//--------------------------------------\	|	|	|	|	|	|
+	\\--[ LOOP 2320 - 10 ]------------------/	|	|	|	|	|	|
+		[ Data - SBR ]						|	|	|	|	|	|	|
+	\\--[ LOOP 2330 - 10 ]--------------/	|	|	|	|	|	|	|
+		[ Data - NM1, N3, N4, REF ]		|	|	|	|	|	|	|	|
+	//----------------------------------\	|	|	|	|	|	|	|
+	//--------------------------------------\	|	|	|	|	|	|
+	\\--[ LOOP 2400 - >1 ]------------------/	|	|	|	|	|	|
+		[ Data - SV1, DTP, NTE ]			|	|	|	|	|	|	|
+	\\--[ LOOP 2410 - >1 ]--------------/	|	|	|	|	|	|	|
+		[ Data - *NONE* ]				|	|	|	|	|	|	|	|
+	//----------------------------------\	|	|	|	|	|	|	|
+	\\--[ LOOP 2420 - 10 ]--------------/	|	|	|	|	|	|	|
+		[ Data - NM1, N3, N4, PRV ]		|	|	|	|	|	|	|	|
+	//----------------------------------\	|	|	|	|	|	|	|
+	\\--[ LOOP 2430 - >1 ]--------------/	|	|	|	|	|	|	|
+		[ Data - *NONE* ]				|	|	|	|	|	|	|	|
+	//----------------------------------\	|	|	|	|	|	|	|
+	\\--[ LOOP 2440 - >1 ]--------------/	|	|	|	|	|	|	|
+		[ Data - *NONE* ]				|	|	|	|	|	|	|	|
+	//----------------------------------\	|	|	|	|	|	|	|
+	//--------------------------------------\	|	|	|	|	|	|
+	//------------------------------------------\	|	|	|	|	|
+	//----------------------------------------------\	|	|	|	|
+	//--[ SE - Transaction Set Trailer ]----------------\	|	|	|
+	//--[ GE - Functional Group Trailer ]-------------------\	|	|
+	\\--[ GS - Functional Group Header ]--------------------/	|	|
+	\\--[ ST - Transaction Set Header ]-----------------/	|	|	|
+		{...}											|	|	|	|
+	//--[ SE - Transaction Set Trailer ]----------------\	|	|	|
+	//--[ GE - Functional Group Trailer ]-------------------\	|	|
+	//--[ IEA - Interchange Control Trailer ]-------------------\	|
+	//--[ FILE - Communications Transport Trailer ]-----------------\
 
 
 #### 837 Segment Detail

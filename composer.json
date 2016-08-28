@@ -22,7 +22,8 @@
         "laravel/homestead": "3.0.*",
         "phploc/phploc": "3.0.*",
         "phpunit/phpunit": "5.3.*",
-        "mockery/mockery": "0.9.*"
+        "mockery/mockery": "0.9.*",
+        "mikey179/vfsStream": "1.6.*"
     },
     "autoload-dev": {
         "psr-4": {

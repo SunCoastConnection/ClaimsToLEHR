@@ -7,6 +7,13 @@ class X12N837 {
 	protected $workingDirectory = '';	// Path to working directory
 	protected $singleMode = false;
 
+	protected $delimiters = [
+		'data'			=> '*',
+		'repetition'	=> '^',
+		'component'		=> ':',
+		'segment'		=> '~',
+	];
+
 	protected $database;
 
 	protected $currentFile = [];		// File names
@@ -30,6 +37,7 @@ class X12N837 {
 		$finder->files()
 			->in($this->workingDirectory)
 			->name('*');
+			// ->name('FOGLE_RONALD_6058_CLAIM_2016_05_19_PPC150020160524_11143968.txt');
 
 		foreach($finder as $file) {
 			$this->currentFile[] = $file->getFilename();
@@ -71,22 +79,72 @@ class X12N837 {
 		$this->data = new X12N837Data;
 	}
 
+	protected function setInterchangeData($string) {
+		if(substr($string, 0, 3) == 'ISA') {
+			$this->delimiters = [
+				'data' => $string[3],
+				'repetition' => $string[82],
+				'component' => $string[104],
+				'segment' => $string[105],
+			];
+		}
+	}
+
+	protected function correctSingleMode($string) {
+		$match1 = implode(
+			$this->delimiters['data'],
+			[ 'HL', '1', '', '20', '1' ]
+		);
+
+		$replace1 = '@@@@@@@@';
+
+		$match2 = implode(
+			$this->delimiters['data'],
+			[ '', '20', '1' ]
+		).$this->delimiters['segment'];
+
+		$replace2 = $this->delimiters['segment'].
+			implode(
+				$this->delimiters['data'],
+				[ 'SE', '28', '0003' ]
+			).$this->delimiters['segment'].
+			implode(
+				$this->delimiters['data'],
+				[ 'ST', '837', '0004', '005010X222A1' ]
+			).$this->delimiters['segment'];
+
+		return str_replace(
+			$replace1,
+			$match1,
+			str_replace(
+				$match2,
+				$replace2,
+				str_replace(
+					$match1,
+					$replace1,
+					$string
+				)
+			)
+		);
+	}
+
 	protected function readFile($fileName) {
 		$string = file_get_contents($this->workingDirectory.'/'.$fileName);
 
+		$string = str_replace([ "\r", "\n" ], '', $string);
+
+		$this->setInterchangeData($string);
+
 		if($this->singleMode) {
-			$string = str_replace('HL*1**20*1', '@@@@@@@@', $string);
-			$string = str_replace('**20*1~', '~SE*28*0003~ST*837*0004*005010X222A1~', $string);
-			$string = str_replace('@@@@@@@@', 'HL*1**20*1', $string);
-			// $string = str_replace('\'', '\\\'', $string);
+			$string = $this->correctSingleMode($string);
 		}
 
-		$this->segment = array_filter(explode('~', $string));
+		$this->segment = array_filter(explode($this->delimiters['segment'], $string));
 	}
 
-	protected function parseSegment($index, $delimiter = '*') {
+	protected function parseSegment($index) {
 		return explode(
-			$delimiter,
+			$this->delimiters['data'],
 			$this->index($this->segment, $index)
 		);
 	}
@@ -320,7 +378,7 @@ class X12N837 {
 		$this->data->claimid = $this->index($segment, 0);
 		$this->data->claimamt = $this->index($segment, 1);
 
-		$element5 = explode(':', $this->index($segment, 4));
+		$element5 = explode($this->delimiters['component'], $this->index($segment, 4));
 
 		$this->data->facilitycodevalue = $this->index($element5, 0);
 		$this->data->facilitycodequalifier = $this->index($element5, 1);
@@ -444,11 +502,11 @@ class X12N837 {
 
 		// echo "Function:\t".__FUNCTION__.PHP_EOL;
 
-		$element1 = explode(':', $this->index($segment, 0));
+		$element1 = explode($this->delimiters['component'], $this->index($segment, 0));
 
 		if($this->indexEquals($element1, 0, ['ABK', 'BK'])) {
 			foreach($segment as $subElement) {
-				$subElement = explode(':', $subElement);
+				$subElement = explode($this->delimiters['component'], $subElement);
 
 				if(count($subElement) < 2) {
 					break;
@@ -1242,7 +1300,7 @@ class X12N837 {
 
 		// echo "Function:\t".__FUNCTION__.PHP_EOL;
 
-		$element1 = explode(':', $this->index($segment, 0));	// See if is HC or WK
+		$element1 = explode($this->delimiters['component'], $this->index($segment, 0));	// See if is HC or WK
 
 		if($this->indexEquals($element1, 0, ['HC', 'WK'])) {
 			$this->data->tx[] = $this->index($element1, 1);
@@ -2372,9 +2430,9 @@ class X12N837Data {
 	public $txamount;
 }
 
-include('vendor/autoload.php');
+include(__DIR__.'/../vendor/autoload.php');
 
-$parser = new X12N837(__DIR__.'/INBOX');
+$parser = new X12N837(__DIR__.'/../INBOX');
 
 $database = new X12N837Database;
 $parser->setDatabase($database);

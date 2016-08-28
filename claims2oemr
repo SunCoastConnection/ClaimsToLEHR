@@ -54,7 +54,7 @@ echo 'Loading configurations...'.PHP_EOL;
 //** GET CONFIGURATION OPTIONS **//
 $options = Options::getNew(require_once(__DIR__.'/config/app.php'));
 
-if(!file_exists($options->get('Database.database'))) {
+if($options->get('Database.driver') === 'sqlite' && !file_exists($options->get('Database.database'))) {
 	touch($options->get('Database.database')) || exitError(
 		'Database missing and can not be created: '.$options->get('Database.database').PHP_EOL,
 		1
@@ -106,7 +106,9 @@ function c2eParse($options) {
 }
 
 function c2eClaimLoad($options, $file) {
-	$raw = Raw::getNew($file->getContents());
+	$raw = Raw::getNew($options);
+	$raw->parse($file->getContents());
+
 	echo " - Segments:\t\t".count($raw).PHP_EOL;
 
 	$document = X12N837::getNew($options);

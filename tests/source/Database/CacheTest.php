@@ -15,7 +15,7 @@ class CacheTest extends BaseTestCase {
 		parent::setUp();
 
 		$this->cache = $this->getMockery(
-			OpenEMR::class
+			Cache::class
 		)->makePartial();
 	}
 

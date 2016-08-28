@@ -12,11 +12,11 @@ abstract class Section {
 
 	protected $parentName;
 
-	protected $subSectionCount = 0;
+	protected $subSections = [];
+
+	protected $subSectionDelimiter = '';
 
 	abstract public function parse(Raw $raw);
-
-	abstract public function __toString();
 
 	static public function getNew(Options $options, $parentName = '/') {
 		return new static($options, $parentName);
@@ -49,7 +49,13 @@ abstract class Section {
 	}
 
 	public function getSubSectionCount() {
-		return $this->subSectionCount;
+		$return = 0;
+
+		foreach($this->subSections as $section) {
+			$return += count($section);
+		}
+
+		return $return;
 	}
 
 	protected function options(Options $setOptions = null) {
@@ -74,8 +80,6 @@ abstract class Section {
 			'repeat' => 1,
 		];
 
-		$objectsCount = count($objects);
-
 		$status = false;
 
 		foreach($sequence as $sectionData) {
@@ -93,8 +97,6 @@ abstract class Section {
 				}
 			}
 		}
-
-		$this->subSectionCount += (count($objects) - $objectsCount);
 
 // echo 'Parse Segment Status: '.($status ? 'True' : 'False').PHP_EOL;
 		return $status;
@@ -127,6 +129,19 @@ abstract class Section {
 
 // echo 'Parse Section Status: '.($status ? 'True' : 'False').PHP_EOL;
 		return $status;
+	}
+
+	public function __toString() {
+		$return = '';
+
+		foreach($this->subSections as $section) {
+			$return .= implode(
+				$this->subSectionDelimiter,
+				$section
+			);
+		}
+
+		return $return;
 	}
 
 }

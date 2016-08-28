@@ -143,12 +143,12 @@ class SectionTest extends BaseTestCase {
 	public function testGetSubSectionCount() {
 		$this->setProtectedProperty(
 			$this->section,
-			'subSectionCount',
-			123
+			'subSections',
+			[1, 2, 3]
 		);
 
 		$this->assertEquals(
-			123,
+			3,
 			$this->section->getSubSectionCount(),
 			'Sub-section count returned incorrectly.'
 		);
@@ -225,10 +225,12 @@ class SectionTest extends BaseTestCase {
 			'Process did not succeed.'
 		);
 
-		$this->assertAttributeEquals(
+		$this->assertCount(
 			0,
-			'subSectionCount',
-			$this->section,
+			$this->getProtectedProperty(
+				$this->section,
+				'subSections'
+			),
 			'Sub-section count set incorrectly.'
 		);
 	}
