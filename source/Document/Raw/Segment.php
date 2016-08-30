@@ -17,7 +17,7 @@ class Segment extends Section {
 	}
 
 	protected $subSections = [
-		'data' => [],
+		'elements' => [],
 	];
 
 	public function __construct(Options $options, $parentName = '/') {
@@ -27,7 +27,7 @@ class Segment extends Section {
 	}
 
 	public function parse(Raw $raw) {
-		$this->subSections['data'] = [];
+		$this->subSections['elements'] = [];
 
 		$status = false;
 
@@ -36,9 +36,9 @@ class Segment extends Section {
 
 			$elements = $raw->getSegmentElements();
 
-			array_walk($elements, function(&$element) {
-				$component = $this->options()->get('Document.delimiters.component');
+			$component = $this->options()->get('Document.delimiters.component');
 
+			array_walk($elements, function(&$element) use ($component) {
 				if(strpos($element, $component) !== false) {
 					$element = explode($component, $element);
 				}
@@ -48,9 +48,9 @@ class Segment extends Section {
 
 			foreach($elements as $pos => $element) {
 				if(array_key_exists($pos, $sequence)) {
-					$this->subSections['data'][$sequence[$pos]['name']] = $element;
+					$this->subSections['elements'][$sequence[$pos]['name']] = $element;
 				} else {
-					$this->subSections['data'][count($this->subSections['data'])] = $element;
+					$this->subSections['elements'][count($this->subSections['elements'])] = $element;
 				}
 			}
 
@@ -61,24 +61,12 @@ class Segment extends Section {
 	}
 
 	public function elementExists($element) {
-		return array_key_exists($element, $this->subSections['data']);
-	}
-
-	public function subElementExists($element, $subElement) {
-		return $this->elementExists($element) &&
-			is_array($this->subSections['data'][$element]) &&
-			array_key_exists($subElement, $this->subSections['data'][$element]);
+		return array_key_exists($element, $this->subSections['elements']);
 	}
 
 	public function element($element) {
 		if($this->elementExists($element)) {
-			return $this->subSections['data'][$element];
-		}
-	}
-
-	public function subElement($element, $subElement) {
-		if($this->subElementExists($element, $subElement)) {
-			return $this->subSections['data'][$element][$subElement];
+			return $this->subSections['elements'][$element];
 		}
 	}
 
@@ -91,29 +79,10 @@ class Segment extends Section {
 			in_array($this->element($element), $value);
 	}
 
-	public function subElementEquals($element, $subElement, $value) {
-		if(!is_array($value)) {
-			$value = [ $value ];
-		}
-
-		return $this->subElementExists($element, $subElement) &&
-			in_array($this->subElement($element, $subElement), $value);
-	}
-
-	public function subElementCount($element) {
-		$element = $this->element($element);
-
-		if(is_array($element)) {
-			return count($element);
-		}
-
-		return 0;
-	}
-
 	public function __toString() {
 		$data = $this->subSections;
 
-		array_walk($this->subSections['data'], function(&$element) {
+		array_walk($this->subSections['elements'], function(&$element) {
 			if(is_array($element)) {
 				$element = implode(
 					$this->options()->get('Document.delimiters.component'),
