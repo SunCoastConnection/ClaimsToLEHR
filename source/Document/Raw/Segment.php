@@ -1,8 +1,9 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Document;
+namespace SunCoastConnection\ClaimsToOEMR\Document\Raw;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw,
+use \SunCoastConnection\ClaimsToOEMR\Document\Options,
+	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
 	\SunCoastConnection\ClaimsToOEMR\Document\Section;
 
 class Segment extends Section {

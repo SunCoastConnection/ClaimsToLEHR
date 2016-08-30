@@ -1,6 +1,6 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Document;
+namespace SunCoastConnection\ClaimsToOEMR\Document\Section;
 
 use \SunCoastConnection\ClaimsToOEMR\Document\Raw,
 	\SunCoastConnection\ClaimsToOEMR\Document\Section;

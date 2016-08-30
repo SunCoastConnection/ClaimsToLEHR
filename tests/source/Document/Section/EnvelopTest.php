@@ -1,11 +1,11 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Document;
+namespace SunCoastConnection\ClaimsToOEMR\Tests\Document\Section;
 
 use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Document\Envelop,
 	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
-	\SunCoastConnection\ClaimsToOEMR\Document\Section;
+	\SunCoastConnection\ClaimsToOEMR\Document\Section,
+	\SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop;
 
 class EnvelopTest extends BaseTestCase {
 
@@ -20,7 +20,7 @@ class EnvelopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Envelop::parse()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop::parse()
 	 */
 	public function testParseWithNoHeaderSegment() {
 		$raw = $this->getMockery(
@@ -50,7 +50,7 @@ class EnvelopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Envelop::parse()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop::parse()
 	 */
 	public function testParseWithHeaderSegment() {
 		$raw = $this->getMockery(
@@ -93,7 +93,7 @@ class EnvelopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Envelop::getHeader()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop::getHeader()
 	 */
 	public function testGetHeader() {
 		$header = [
@@ -116,7 +116,7 @@ class EnvelopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Envelop::getDescendant()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop::getDescendant()
 	 */
 	public function testGetDescendant() {
 		$descendant = [
@@ -139,7 +139,7 @@ class EnvelopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Envelop::getTrailer()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop::getTrailer()
 	 */
 	public function testGetTrailer() {
 		$trailer = [
@@ -162,7 +162,7 @@ class EnvelopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Envelop::__toString()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop::__toString()
 	 */
 	public function testToString() {
 		$this->setProtectedProperty(

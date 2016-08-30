@@ -4,7 +4,7 @@ namespace SunCoastConnection\ClaimsToOEMR\Document;
 
 use \SunCoastConnection\ClaimsToOEMR\Document\Options,
 	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
-	\SunCoastConnection\ClaimsToOEMR\Document\Segment;
+	\SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
 
 abstract class Section {
 

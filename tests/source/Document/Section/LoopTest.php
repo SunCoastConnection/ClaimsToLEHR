@@ -1,11 +1,11 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Document;
+namespace SunCoastConnection\ClaimsToOEMR\Tests\Document\Section;
 
 use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Document\Loop,
 	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
-	\SunCoastConnection\ClaimsToOEMR\Document\Section;
+	\SunCoastConnection\ClaimsToOEMR\Document\Section,
+	\SunCoastConnection\ClaimsToOEMR\Document\Section\Loop;
 
 class LoopTest extends BaseTestCase {
 
@@ -20,7 +20,7 @@ class LoopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Loop::parse()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Loop::parse()
 	 */
 	public function testParseWithNoHeaderSegment() {
 		$raw = $this->getMockery(
@@ -50,7 +50,7 @@ class LoopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Loop::parse()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Loop::parse()
 	 */
 	public function testParseWithHeaderSegment() {
 		$raw = $this->getMockery(
@@ -86,7 +86,7 @@ class LoopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Loop::getHeader()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Loop::getHeader()
 	 */
 	public function testGetHeader() {
 		$header = [
@@ -109,7 +109,7 @@ class LoopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Loop::getDescendant()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Loop::getDescendant()
 	 */
 	public function testGetDescendant() {
 		$descendant = [
@@ -132,7 +132,7 @@ class LoopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Loop::__toString()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Loop::__toString()
 	 */
 	public function testToString() {
 		$this->setProtectedProperty(

@@ -7,7 +7,7 @@ use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
 	\SunCoastConnection\ClaimsToOEMR\Document\Options,
 	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
 	\SunCoastConnection\ClaimsToOEMR\Document\Section,
-	\SunCoastConnection\ClaimsToOEMR\Document\Segment;
+	\SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
 
 class SectionTest extends BaseTestCase {
 

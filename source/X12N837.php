@@ -2,7 +2,7 @@
 
 namespace SunCoastConnection\ClaimsToOEMR;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Root;
+use \SunCoastConnection\ClaimsToOEMR\Document\Section\Root;
 
 // TODO: Cleanup, rename, and replace properties with sub-objects
 class X12N837 extends Root {

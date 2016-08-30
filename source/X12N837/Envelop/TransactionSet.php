@@ -2,7 +2,7 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\X12N837\Envelop;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Envelop;
+use \SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop;
 
 class TransactionSet extends Envelop {
 
