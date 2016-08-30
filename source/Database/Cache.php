@@ -4,7 +4,7 @@ namespace SunCoastConnection\ClaimsToOEMR\Database;
 
 use \SunCoastConnection\ClaimsToOEMR\Database,
 	\SunCoastConnection\ClaimsToOEMR\X12N837,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Envelop,
+	\SunCoastConnection\ClaimsToOEMR\X12N837\Envelope,
 	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop,
 	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment;
 
@@ -64,7 +64,7 @@ class Cache {
 		}
 	}
 
-	protected function processInterchangeControl(Envelop\InterchangeControl $interchangeControl) {
+	protected function processInterchangeControl(Envelope\InterchangeControl $interchangeControl) {
 		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$data = [];
@@ -85,7 +85,7 @@ class Cache {
 		}
 	}
 
-	protected function processFunctionalGroup(Envelop\FunctionalGroup $functionalGroup, array &$data) {
+	protected function processFunctionalGroup(Envelope\FunctionalGroup $functionalGroup, array &$data) {
 		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$header = $functionalGroup->getHeader();
@@ -110,7 +110,7 @@ class Cache {
 		}
 	}
 
-	protected function processTransactionSet(Envelop\TransactionSet $transactionSet, array &$data) {
+	protected function processTransactionSet(Envelope\TransactionSet $transactionSet, array &$data) {
 		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$header = $transactionSet->getHeader();

@@ -1,10 +1,10 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\X12N837\Envelop;
+namespace SunCoastConnection\ClaimsToOEMR\X12N837\Envelope;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop;
+use \SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope;
 
-class TransactionSet extends Envelop {
+class TransactionSet extends Envelope {
 
 	static protected $headerSequence = [
 		['name' => 'ST', 'required' => true, 'repeat' => 1],

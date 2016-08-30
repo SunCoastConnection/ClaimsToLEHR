@@ -5,95 +5,95 @@ namespace SunCoastConnection\ClaimsToOEMR\Tests\Document\Section;
 use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
 	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
 	\SunCoastConnection\ClaimsToOEMR\Document\Section,
-	\SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop;
+	\SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope;
 
-class EnvelopTest extends BaseTestCase {
+class EnvelopeTest extends BaseTestCase {
 
-	protected $envelop;
+	protected $envelope;
 
 	public function setUp() {
 		parent::setUp();
 
-		$this->envelop = $this->getMockery(
-			Envelop::class
+		$this->envelope = $this->getMockery(
+			Envelope::class
 		)->makePartial();
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop::parse()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope::parse()
 	 */
 	public function testParseWithNoHeaderSegment() {
 		$raw = $this->getMockery(
 			Raw::class
 		)->makePartial();
 
-		$this->envelop->shouldAllowMockingProtectedMethods();
+		$this->envelope->shouldAllowMockingProtectedMethods();
 
-		$this->envelop->shouldReceive('getSequence')
+		$this->envelope->shouldReceive('getSequence')
 			->once()
 			->with('headerSequence')
 			->andReturn([]);
 
-		$this->envelop->shouldReceive('parseSequence')
+		$this->envelope->shouldReceive('parseSequence')
 			->andReturn(false);
 
 		$this->assertFalse(
-			$this->envelop->parse($raw),
+			$this->envelope->parse($raw),
 			'Parse should have returned false.'
 		);
 
 		$this->assertEquals(
 			0,
-			$this->envelop->getSubSectionCount(),
+			$this->envelope->getSubSectionCount(),
 			'Sub-section count not set correctly.'
 		);
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop::parse()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope::parse()
 	 */
 	public function testParseWithHeaderSegment() {
 		$raw = $this->getMockery(
 			Raw::class
 		)->makePartial();
 
-		$this->envelop->shouldAllowMockingProtectedMethods();
+		$this->envelope->shouldAllowMockingProtectedMethods();
 
-		$this->envelop->shouldReceive('getSequence')
+		$this->envelope->shouldReceive('getSequence')
 			->with('headerSequence')
 			->andReturn([]);
 
-		$this->envelop->shouldReceive('parseSequence')
+		$this->envelope->shouldReceive('parseSequence')
 			->andReturn(true);
 
-		$this->envelop->shouldReceive('getSequence')
+		$this->envelope->shouldReceive('getSequence')
 			->with('descendantSequence')
 			->andReturn([]);
 
-		$this->envelop->shouldReceive('parseSequence')
+		$this->envelope->shouldReceive('parseSequence')
 			->andReturn(true);
 
-		$this->envelop->shouldReceive('getSequence')
+		$this->envelope->shouldReceive('getSequence')
 			->with('trailerSequence')
 			->andReturn([]);
 
-		$this->envelop->shouldReceive('parseSequence')
+		$this->envelope->shouldReceive('parseSequence')
 			->andReturn(true);
 
 		$this->assertTrue(
-			$this->envelop->parse($raw),
+			$this->envelope->parse($raw),
 			'Parse should have returned false.'
 		);
 
 		$this->assertEquals(
 			0,
-			$this->envelop->getSubSectionCount(),
+			$this->envelope->getSubSectionCount(),
 			'Sub-section count not set correctly.'
 		);
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop::getHeader()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope::getHeader()
 	 */
 	public function testGetHeader() {
 		$header = [
@@ -103,20 +103,20 @@ class EnvelopTest extends BaseTestCase {
 		];
 
 		$this->setProtectedProperty(
-			$this->envelop,
+			$this->envelope,
 			'subSections',
 			['header' => $header]
 		);
 
 		$this->assertEquals(
 			$header,
-			$this->envelop->getHeader(),
+			$this->envelope->getHeader(),
 			'Header value not returned.'
 		);
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop::getDescendant()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope::getDescendant()
 	 */
 	public function testGetDescendant() {
 		$descendant = [
@@ -126,20 +126,20 @@ class EnvelopTest extends BaseTestCase {
 		];
 
 		$this->setProtectedProperty(
-			$this->envelop,
+			$this->envelope,
 			'subSections',
 			['descendant' => $descendant]
 		);
 
 		$this->assertEquals(
 			$descendant,
-			$this->envelop->getDescendant(),
+			$this->envelope->getDescendant(),
 			'Descendant value not returned.'
 		);
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop::getTrailer()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope::getTrailer()
 	 */
 	public function testGetTrailer() {
 		$trailer = [
@@ -149,24 +149,24 @@ class EnvelopTest extends BaseTestCase {
 		];
 
 		$this->setProtectedProperty(
-			$this->envelop,
+			$this->envelope,
 			'subSections',
 			['trailer' => $trailer]
 		);
 
 		$this->assertEquals(
 			$trailer,
-			$this->envelop->getTrailer(),
+			$this->envelope->getTrailer(),
 			'Trailer value not returned.'
 		);
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop::__toString()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope::__toString()
 	 */
 	public function testToString() {
 		$this->setProtectedProperty(
-			$this->envelop,
+			$this->envelope,
 			'subSections',
 			[
 				'header' =>  [
@@ -189,8 +189,8 @@ class EnvelopTest extends BaseTestCase {
 
 		$this->assertSame(
 			'ABCDEFGHI',
-			(string) $this->envelop,
-			'Envelop object did not return the correct string.'
+			(string) $this->envelope,
+			'Envelope object did not return the correct string.'
 		);
 	}
 

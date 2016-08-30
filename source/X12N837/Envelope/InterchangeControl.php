@@ -1,10 +1,10 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\X12N837\Envelop;
+namespace SunCoastConnection\ClaimsToOEMR\X12N837\Envelope;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Section\Envelop;
+use \SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope;
 
-class InterchangeControl extends Envelop {
+class InterchangeControl extends Envelope {
 
 	static protected $headerSequence = [
 		['name' => 'ISA', 'required' => true, 'repeat' => 1],

@@ -28,10 +28,10 @@ return [
 	],
 
 	'Aliases' => [
-		// Envelop Classes
-		'InterchangeControl' => \SunCoastConnection\ClaimsToOEMR\X12N837\Envelop\InterchangeControl::class,
-		'FunctionalGroup' => \SunCoastConnection\ClaimsToOEMR\X12N837\Envelop\FunctionalGroup::class,
-		'TransactionSet' => \SunCoastConnection\ClaimsToOEMR\X12N837\Envelop\TransactionSet::class,
+		// Envelope Classes
+		'InterchangeControl' => \SunCoastConnection\ClaimsToOEMR\X12N837\Envelope\InterchangeControl::class,
+		'FunctionalGroup' => \SunCoastConnection\ClaimsToOEMR\X12N837\Envelope\FunctionalGroup::class,
+		'TransactionSet' => \SunCoastConnection\ClaimsToOEMR\X12N837\Envelope\TransactionSet::class,
 
 		// Loop Classes
 		'Loop1000' => \SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop1000::class,
