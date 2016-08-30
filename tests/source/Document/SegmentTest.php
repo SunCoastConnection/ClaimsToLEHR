@@ -3,6 +3,7 @@
 namespace SunCoastConnection\ClaimsToOEMR\Tests\Document;
 
 use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
+	\SunCoastConnection\ClaimsToOEMR\Document\Options,
 	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
 	\SunCoastConnection\ClaimsToOEMR\Document\Segment;
 
@@ -41,6 +42,33 @@ class SegmentTest extends BaseTestCase {
 			$elementNames,
 			$this->segment->getElementNames(),
 			'Array of element names was expected.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Segment::__construct()
+	 */
+	public function testConstruct() {
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
+		$options->set('Document.delimiters.data', '*');
+
+		$this->segment->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options')
+			->once()
+			->with($options);
+
+		$this->segment->__construct($options);
+
+		$this->assertEquals(
+			'*',
+			$this->getProtectedProperty(
+				$this->segment,
+				'subSectionDelimiter'
+			),
+			'Sub-Section delimiter not set correctly.'
 		);
 	}
 
@@ -89,6 +117,16 @@ class SegmentTest extends BaseTestCase {
 			['name' => 'AB05', 'required' => false],
 		];
 
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
+		$options->set('Document.delimiters.component', ':');
+
+		$this->segment->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options')
+			->andReturn($options);
+
 		$raw = $this->getMockery(
 			Raw::class
 		);
@@ -118,26 +156,28 @@ class SegmentTest extends BaseTestCase {
 			'Segment match should return true.'
 		);
 
-		$this->assertEquals(
+		$this->assertCount(
 			1,
 			$this->getProtectedProperty(
 				$this->segment,
-				'subSectionCount'
+				'subSections'
 			),
 			'Sub-section count should return 1.'
 		);
 
 		$this->assertEquals(
 			[
-				'AB01' => 'C',
-				'AB02' => 'D',
-				'AB03' => 'E',
-				'AB04' => ['', ''],
-				'AB05' => '123'
+				'data' => [
+							'AB01' => 'C',
+							'AB02' => 'D',
+							'AB03' => 'E',
+							'AB04' => ['', ''],
+							'AB05' => '123'
+				]
 			],
 			$this->getProtectedProperty(
 				$this->segment,
-				'data'
+				'subSections'
 			),
 			'Elements were not set correctly.'
 		);
@@ -159,8 +199,8 @@ class SegmentTest extends BaseTestCase {
 	public function testElementExistsWithExistingElement() {
 		$this->setProtectedProperty(
 			$this->segment,
-			'data',
-			[ 'AAA' => 'true' ]
+			'subSections',
+			[ 'data' => [ 'AAA' => 'true' ] ]
 		);
 
 		$this->assertTrue(
@@ -185,8 +225,8 @@ class SegmentTest extends BaseTestCase {
 	public function testSubElementExistsWithMissingSubElement() {
 		$this->setProtectedProperty(
 			$this->segment,
-			'data',
-			[ 'AAA' => 'true' ]
+			'subSections',
+			[ 'data' => [ 'AAA' => 'true' ] ]
 		);
 
 		$this->assertFalse(
@@ -201,8 +241,8 @@ class SegmentTest extends BaseTestCase {
 	public function testSubElementExistsWithExistingSubElement() {
 		$this->setProtectedProperty(
 			$this->segment,
-			'data',
-			[ 'AAA' => [ 'B', 'C' ] ]
+			'subSections',
+			[ 'data' => [ 'AAA' => [ 'B', 'C' ] ] ]
 		);
 
 		$this->assertTrue(
@@ -227,8 +267,8 @@ class SegmentTest extends BaseTestCase {
 	public function testElementWithExistingElement() {
 		$this->setProtectedProperty(
 			$this->segment,
-			'data',
-			[ 'AAA' => 'true' ]
+			'subSections',
+			[ 'data' => [ 'AAA' => 'true' ] ]
 		);
 
 		$this->assertSame(
@@ -254,8 +294,8 @@ class SegmentTest extends BaseTestCase {
 	public function testSubElementWithMissingSubElement() {
 		$this->setProtectedProperty(
 			$this->segment,
-			'data',
-			[ 'AAA' => 'true' ]
+			'subSections',
+			[ 'data' => [ 'AAA' => 'true' ] ]
 		);
 
 		$this->assertNull(
@@ -270,8 +310,8 @@ class SegmentTest extends BaseTestCase {
 	public function testSubElementWithExistingSubElement() {
 		$this->setProtectedProperty(
 			$this->segment,
-			'data',
-			[ 'AAA' => [ 'B', 'C' ] ]
+			'subSections',
+			[ 'data' => [ 'AAA' => [ 'B', 'C' ] ] ]
 		);
 
 		$this->assertSame(
@@ -297,8 +337,8 @@ class SegmentTest extends BaseTestCase {
 	public function testElementEqualsWithWrongValue() {
 		$this->setProtectedProperty(
 			$this->segment,
-			'data',
-			[ 'AAA' => 'true' ]
+			'subSections',
+			[ 'data' => [ 'AAA' => 'true' ] ]
 		);
 
 		$this->assertFalse(
@@ -313,8 +353,8 @@ class SegmentTest extends BaseTestCase {
 	public function testElementEqualsWithCorrectValue() {
 		$this->setProtectedProperty(
 			$this->segment,
-			'data',
-			[ 'AAA' => 'true' ]
+			'subSections',
+			[ 'data' => [ 'AAA' => 'true' ] ]
 		);
 
 		$this->assertTrue(
@@ -339,8 +379,8 @@ class SegmentTest extends BaseTestCase {
 	public function testSubElementEqualsWithMissingSubElement() {
 		$this->setProtectedProperty(
 			$this->segment,
-			'data',
-			[ 'AAA' => 'true' ]
+			'subSections',
+			[ 'data' => [ 'AAA' => 'true' ] ]
 		);
 
 		$this->assertFalse(
@@ -355,8 +395,8 @@ class SegmentTest extends BaseTestCase {
 	public function testSubElementEqualsWithWrongValue() {
 		$this->setProtectedProperty(
 			$this->segment,
-			'data',
-			[ 'AAA' => [ 'B', 'C' ] ]
+			'subSections',
+			[ 'data' => [ 'AAA' => [ 'B', 'C' ] ] ]
 		);
 
 		$this->assertFalse(
@@ -371,8 +411,8 @@ class SegmentTest extends BaseTestCase {
 	public function testSubElementEqualsWithCorrectValue() {
 		$this->setProtectedProperty(
 			$this->segment,
-			'data',
-			[ 'AAA' => [ 'B', 'C' ] ]
+			'subSections',
+			[ 'data' => [ 'AAA' => [ 'B', 'C' ] ] ]
 		);
 
 		$this->assertTrue(
@@ -398,8 +438,8 @@ class SegmentTest extends BaseTestCase {
 	public function testSubElementCountWithNoSubElements() {
 		$this->setProtectedProperty(
 			$this->segment,
-			'data',
-			[ 'AAA' => 'true' ]
+			'subSections',
+			[ 'data' => [ 'AAA' => 'true' ] ]
 		);
 
 		$this->assertEquals(
@@ -415,8 +455,8 @@ class SegmentTest extends BaseTestCase {
 	public function testSubElementCountWithSubElements() {
 		$this->setProtectedProperty(
 			$this->segment,
-			'data',
-			[ 'AAA' => [ 'B', 'C' ] ]
+			'subSections',
+			[ 'data' => [ 'AAA' => [ 'B', 'C' ] ] ]
 		);
 
 		$this->assertEquals(
@@ -432,16 +472,35 @@ class SegmentTest extends BaseTestCase {
 	public function testToString() {
 		// $this->markTestIncomplete('Not yet implemented');
 
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
+		$options->set('Document.delimiters.component', ':');
+		$options->set('Document.delimiters.segment', '~');
+
+		$this->segment->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options')
+			->andReturn($options);
+
 		$this->setProtectedProperty(
 			$this->segment,
-			'data',
+			'subSections',
 			[
-				'AB01' => 'C',
-				'AB02' => 'D',
-				'AB03' => 'E',
-				'AB04' => [ '', '' ],
-				'AB05' => '123'
+				'data' => [
+					'AB01' => 'C',
+					'AB02' => 'D',
+					'AB03' => 'E',
+					'AB04' => [ '', '' ],
+					'AB05' => '123'
+				]
 			]
+		);
+
+		$this->setProtectedProperty(
+			$this->segment,
+			'subSectionDelimiter',
+			'*'
 		);
 
 		$this->segment->shouldReceive('getName')

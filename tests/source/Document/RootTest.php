@@ -50,10 +50,7 @@ class RootTest extends BaseTestCase {
 
 		$this->assertEquals(
 			0,
-			$this->getProtectedProperty(
-				$this->root,
-				'subSectionCount'
-			),
+			$this->root->getSubSectionCount(),
 			'Sub-section count not set correctly.'
 		);
 	}
@@ -70,8 +67,8 @@ class RootTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->root,
-			'descendant',
-			$descendant
+			'subSections',
+			['descendant' => $descendant]
 		);
 
 		$this->assertEquals(
@@ -85,14 +82,16 @@ class RootTest extends BaseTestCase {
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Root::__toString()
 	 */
 	public function testToString() {
+		$descendant = [
+			'A',
+			'B',
+			'C',
+		];
+
 		$this->setProtectedProperty(
 			$this->root,
-			'descendant',
-			[
-				'A',
-				'B',
-				'C',
-			]
+			'subSections',
+			['descendant' => $descendant]
 		);
 
 		$this->assertSame(

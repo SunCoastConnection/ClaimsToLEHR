@@ -470,7 +470,7 @@ class Database {
 	}
 
 	public function storeX12Partner(array $data) {
-		echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
+		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$id = $this->findRecord($this->x12Partners, $data, [
 			'x12_gs03',

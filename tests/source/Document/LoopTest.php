@@ -44,10 +44,7 @@ class LoopTest extends BaseTestCase {
 
 		$this->assertEquals(
 			0,
-			$this->getProtectedProperty(
-				$this->loop,
-				'subSectionCount'
-			),
+			$this->loop->getSubSectionCount(),
 			'Sub-section count not set correctly.'
 		);
 	}
@@ -83,10 +80,7 @@ class LoopTest extends BaseTestCase {
 
 		$this->assertEquals(
 			0,
-			$this->getProtectedProperty(
-				$this->loop,
-				'subSectionCount'
-			),
+			$this->loop->getSubSectionCount(),
 			'Sub-section count not set correctly.'
 		);
 	}
@@ -103,8 +97,8 @@ class LoopTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->loop,
-			'header',
-			$header
+			'subSections',
+			['header' => $header]
 		);
 
 		$this->assertEquals(
@@ -126,8 +120,8 @@ class LoopTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->loop,
-			'descendant',
-			$descendant
+			'subSections',
+			['descendant' => $descendant]
 		);
 
 		$this->assertEquals(
@@ -143,20 +137,17 @@ class LoopTest extends BaseTestCase {
 	public function testToString() {
 		$this->setProtectedProperty(
 			$this->loop,
-			'header',
+			'subSections',
 			[
-				'A',
-				'B',
-			]
-		);
-
-		$this->setProtectedProperty(
-			$this->loop,
-			'descendant',
-			[
-				'C',
-				'D',
-				'E',
+				'header' => [
+					'A',
+					'B',
+				],
+				'descendant' => [
+					'C',
+					'D',
+					'E',
+				],
 			]
 		);
 

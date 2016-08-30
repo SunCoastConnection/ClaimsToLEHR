@@ -44,10 +44,7 @@ class EnvelopTest extends BaseTestCase {
 
 		$this->assertEquals(
 			0,
-			$this->getProtectedProperty(
-				$this->envelop,
-				'subSectionCount'
-			),
+			$this->envelop->getSubSectionCount(),
 			'Sub-section count not set correctly.'
 		);
 	}
@@ -90,10 +87,7 @@ class EnvelopTest extends BaseTestCase {
 
 		$this->assertEquals(
 			0,
-			$this->getProtectedProperty(
-				$this->envelop,
-				'subSectionCount'
-			),
+			$this->envelop->getSubSectionCount(),
 			'Sub-section count not set correctly.'
 		);
 	}
@@ -110,8 +104,8 @@ class EnvelopTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->envelop,
-			'header',
-			$header
+			'subSections',
+			['header' => $header]
 		);
 
 		$this->assertEquals(
@@ -133,8 +127,8 @@ class EnvelopTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->envelop,
-			'descendant',
-			$descendant
+			'subSections',
+			['descendant' => $descendant]
 		);
 
 		$this->assertEquals(
@@ -156,8 +150,8 @@ class EnvelopTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->envelop,
-			'trailer',
-			$trailer
+			'subSections',
+			['trailer' => $trailer]
 		);
 
 		$this->assertEquals(
@@ -173,31 +167,23 @@ class EnvelopTest extends BaseTestCase {
 	public function testToString() {
 		$this->setProtectedProperty(
 			$this->envelop,
-			'header',
+			'subSections',
 			[
-				'A',
-				'B',
-			]
-		);
-
-		$this->setProtectedProperty(
-			$this->envelop,
-			'descendant',
-			[
-				'C',
-				'D',
-				'E',
-			]
-		);
-
-		$this->setProtectedProperty(
-			$this->envelop,
-			'trailer',
-			[
-				'F',
-				'G',
-				'H',
-				'I',
+				'header' =>  [
+					'A',
+					'B',
+				],
+				'descendant' => [
+					'C',
+					'D',
+					'E',
+				],
+				'trailer' => [
+					'F',
+					'G',
+					'H',
+					'I',
+				],
 			]
 		);
 

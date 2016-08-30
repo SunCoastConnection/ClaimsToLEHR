@@ -4,39 +4,9 @@ namespace SunCoastConnection\ClaimsToOEMR\Database;
 
 use \SunCoastConnection\ClaimsToOEMR\Database,
 	\SunCoastConnection\ClaimsToOEMR\X12N837,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Envelop\FunctionalGroup,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Envelop\InterchangeControl,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Envelop\TransactionSet,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop1000,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2000,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2010,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2300,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2305,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2310,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2320,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2330,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2400,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2410,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2420,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2430,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2440,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\BHT,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\CLM,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\DMG,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\DTP,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\GS,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\HI,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\ISA,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\N3,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\N4,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\NM1,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\NTE,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\PAT,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\PRV,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\REF,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\SBR,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\ST,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\SV1;
+	\SunCoastConnection\ClaimsToOEMR\X12N837\Envelop,
+	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop,
+	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment;
 
 class Cache {
 
@@ -55,9 +25,9 @@ class Cache {
 	}
 
 	public function processDocument(X12N837 $document) {
-		echo " - Document Length:\t".strlen($document).PHP_EOL;
+		// echo " - Document Length:\t".strlen($document).PHP_EOL;
 
-		echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
+		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$descendant = $document->getDescendant();
 
@@ -79,7 +49,7 @@ class Cache {
 			if($segment && (is_null($segmentMatches) || in_array(get_class($segment), $segmentMatches))) {
 				next($segmentGroup);
 
-				echo " - Segment:\t\t".$segment->getName(true).PHP_EOL;
+				// echo " - Segment:\t\t".$segment->getName(true).PHP_EOL;
 
 				return $segment;
 			}
@@ -94,8 +64,8 @@ class Cache {
 		}
 	}
 
-	protected function processInterchangeControl(InterchangeControl $interchangeControl) {
-		echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
+	protected function processInterchangeControl(Envelop\InterchangeControl $interchangeControl) {
+		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$data = [];
 
@@ -103,7 +73,7 @@ class Cache {
 
 		$data['ISA'] = $this->findNextSegment(
 			$header,
-			[ ISA::class ]
+			[ Segment\ISA::class ]
 		);
 
 		$descendant = $interchangeControl->getDescendant();
@@ -115,34 +85,42 @@ class Cache {
 		}
 	}
 
-	protected function processFunctionalGroup(FunctionalGroup $functionalGroup, array &$data) {
-		echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
+	protected function processFunctionalGroup(Envelop\FunctionalGroup $functionalGroup, array &$data) {
+		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$header = $functionalGroup->getHeader();
 
-		$data['GS'] = $this->findNextSegment(
+		$isa = $data['ISA'];
+		$gs = $this->findNextSegment(
 			$header,
-			[ GS::class ]
+			[ Segment\GS::class ]
 		);
 
 		$descendant = $functionalGroup->getDescendant();
 
 		if(is_array($descendant)) {
 			foreach($descendant as $section) {
+				$data = [
+					'ISA' => $isa,
+					'GS' => $gs,
+				];
+
 				$this->processTransactionSet($section, $data);
 			}
 		}
 	}
 
-	protected function processTransactionSet(TransactionSet $transactionSet, array &$data) {
-		echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
+	protected function processTransactionSet(Envelop\TransactionSet $transactionSet, array &$data) {
+		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$header = $transactionSet->getHeader();
 
 		$segment = $this->findNextSegment(
 			$header,
-			[ BHT::class ]
+			[ Segment\BHT::class ]
 		);
+
+		// echo " - Segment: ".$segment.PHP_EOL;
 
 		if($segment && !$segment->elementEquals('BHT06', 'RP')) {
 			$descendant = $transactionSet->getDescendant();
@@ -150,11 +128,11 @@ class Cache {
 			if(is_array($descendant)) {
 				foreach($descendant as $section) {
 					switch(get_class($section)) {
-						case Loop1000::class:
+						case Loop\Loop1000::class:
 							$this->processLoop1000($section, $data);
 							break;
 
-						case Loop2000::class:
+						case Loop\Loop2000::class:
 							$this->processLoop2000($section, $data);
 							break;
 					}
@@ -163,8 +141,8 @@ class Cache {
 		}
 	}
 
-	protected function processLoop1000(Loop1000 $loop1000, array &$data) {
-		echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
+	protected function processLoop1000(Loop\Loop1000 $loop1000, array &$data) {
+		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$header = $loop1000->getHeader();
 
@@ -172,15 +150,15 @@ class Cache {
 			$segment = $this->findNextSegment(
 				$header,
 				[
-					NM1::class,
-					N3::class,
-					N4::class,
+					Segment\NM1::class,
+					Segment\N3::class,
+					Segment\N4::class,
 				]
 			);
 
 			if($segment) {
 				switch(get_class($segment)) {
-					case NM1::class:
+					case Segment\NM1::class:
 						$data['LastNM1'] = $segment;
 
 						switch($segment->element('NM101')) {
@@ -206,7 +184,7 @@ class Cache {
 										'x12_gs03' => $data['GS']->element('GS03'),
 									]);
 
-									$this->removeData($data, [ 'ISA', 'GS' ]);
+									// $this->removeData($data, [ 'ISA', 'GS' ]);
 								}
 								break;
 							case '41':
@@ -216,13 +194,13 @@ class Cache {
 								break;
 						}
 						break;
-					case N3::class:
+					case Segment\N3::class:
 						// if($data['LastNM1']->elementEquals('NM101', '41')) {
 						// 	$data['SubmitterAddress1'] = $segment->element('N301');	// ?
 						// 	$data['SubmitterAddress2'] = $segment->element('N302');	// ?
 						// }
 						break;
-					case N4::class:
+					case Segment\N4::class:
 						// if($data['LastNM1']->elementEquals('NM101', '41')) {
 						// 	$data['SubmitterCity'] = $segment->element('N401');		// ?
 						// 	$data['SubmitterState'] = $segment->element('N402');	// ?
@@ -234,8 +212,8 @@ class Cache {
 		} while(!is_null($segment));
 	}
 
-	protected function processLoop2000(Loop2000 $loop2000, array &$data) {
-		echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
+	protected function processLoop2000(Loop\Loop2000 $loop2000, array &$data) {
+		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$header = $loop2000->getHeader();
 
@@ -243,51 +221,47 @@ class Cache {
 			$segment = $this->findNextSegment(
 				$header,
 				[
-					PRV::class,
-					SBR::class,
-					PAT::class,
+					Segment\PRV::class,
+					Segment\SBR::class,
+					Segment\PAT::class,
 				]
 			);
 
 			if($segment) {
 				switch(get_class($segment)) {
-					case PRV::class:
+					case Segment\PRV::class:
 						// 2000A — BILLING PROVIDER HIERARCHICAL LEVEL
-						// storeUser
 						if($segment->elementEquals('PRV01', 'BI')) {
-							$data['BillingProviderTaxonomy'] = $segment->element('PRV03');
+							$data['BillingProviderTaxonomy'] = $segment->element('PRV03');	// storeUsers
 						}
 						break;
-					case SBR::class:
+					case Segment\SBR::class:
 						// 2000B — SUBSCRIBER HIERARCHICAL LEVEL
 						switch($segment->element('SBR01')) {
 							case 'P':
-								// storeInsuranceData
 								$data['CurrentInsuranceType'] = 1;
 
-								$data['PrimarySubscriberRelation'] = ($segment->elementEquals('SBR02', '18') ? 'self' : '');
-								$data['PrimaryPolicy'] = $segment->element('SBR03');
-								$data['PrimaryPlanName'] = $segment->element('SBR04');
+								$data['PrimarySubscriberRelation'] = ($segment->elementEquals('SBR02', '18') ? 'self' : '');	// storeInsuranceData
+								$data['PrimaryPolicy'] = $segment->element('SBR03');	// storeInsuranceData
+								$data['PrimaryPlanName'] = $segment->element('SBR04');	// storeInsuranceData
 								break;
 							case 'S':
-								// storeInsuranceData
 								$data['CurrentInsuranceType'] = 2;
 
-								$data['SecondarySubscriberRelation'] = ($segment->elementEquals('SBR02', '18') ? 'self' : '');
-								$data['SecondaryPolicy'] = $segment->element('SBR03');
-								$data['SecondaryPlanName'] = $segment->element('SBR04');
+								$data['SecondarySubscriberRelation'] = ($segment->elementEquals('SBR02', '18') ? 'self' : '');	// storeInsuranceData
+								$data['SecondaryPolicy'] = $segment->element('SBR03');	// storeInsuranceData
+								$data['SecondaryPlanName'] = $segment->element('SBR04');	// storeInsuranceData
 								break;
 							case 'T':
-								// storeInsuranceData
 								$data['CurrentInsuranceType'] = 3;
 
-								$data['TertiarySubscriberRelation'] = ($segment->elementEquals('SBR02', '18') ? 'self' : '');
-								$data['TertiaryPolicy'] = $segment->element('SBR03');
-								$data['TertiaryPlanName'] = $segment->element('SBR04');
+								$data['TertiarySubscriberRelation'] = ($segment->elementEquals('SBR02', '18') ? 'self' : '');	// storeInsuranceData
+								$data['TertiaryPolicy'] = $segment->element('SBR03');	// storeInsuranceData
+								$data['TertiaryPlanName'] = $segment->element('SBR04');	// storeInsuranceData
 								break;
 						}
 						break;
-					case PAT::class:
+					case Segment\PAT::class:
 						// 2000B — SUBSCRIBER HIERARCHICAL LEVEL
 						if(array_key_exists('CurrentInsuranceType', $data)) {
 							switch($data['CurrentInsuranceType']) {
@@ -307,6 +281,8 @@ class Cache {
 									}
 									break;
 							}
+						} else {
+							echo 'Missing: CurrentInsuranceType ['.__FILE__.':'.__LINE__.']'.PHP_EOL;
 						}
 						break;
 				}
@@ -318,11 +294,11 @@ class Cache {
 		if(is_array($descendant)) {
 			foreach($descendant as $section) {
 				switch(get_class($section)) {
-					case Loop2010::class:
+					case Loop\Loop2010::class:
 						$this->processLoop2010($section, $data);
 						break;
 
-					case Loop2300::class:
+					case Loop\Loop2300::class:
 						$this->processLoop2300($section, $data);
 						break;
 				}
@@ -330,8 +306,8 @@ class Cache {
 		}
 	}
 
-	protected function processLoop2010(Loop2010 $loop2010, array &$data) {
-		echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
+	protected function processLoop2010(Loop\Loop2010 $loop2010, array &$data) {
+		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$header = $loop2010->getHeader();
 
@@ -339,138 +315,129 @@ class Cache {
 			$segment = $this->findNextSegment(
 				$header,
 				[
-					NM1::class,
-					N3::class,
-					N4::class,
-					DMG::class,
-					REF::class,
+					Segment\NM1::class,
+					Segment\N3::class,
+					Segment\N4::class,
+					Segment\DMG::class,
+					Segment\REF::class,
 				]
 			);
 
 			if($segment) {
 				switch(get_class($segment)) {
-					case NM1::class:
+					case Segment\NM1::class:
 						$data['LastNM1'] = $segment;
 
 						switch($segment->element('NM101')) {
 							case '85':
 								// 2010AA — BILLING PROVIDER NAME
-								// storeFacility
-								// storeUser
-								// storeGroup
-								// storeFormEncounter
 								$data['BillingType'] = $segment->element('NM102');	// ?
-								$data['BillingProviderlastName'] = $segment->element('NM103');
-								$data['BillingProviderFirstName'] = $segment->element('NM104');
-								$data['BillingProviderMiddleName'] = $segment->element('NM105');
+								$data['BillingProviderLastName'] = $segment->element('NM103');	// storeFacility	// storeUser	// storeGroup	// storeFormEncounter
+								$data['BillingProviderFirstName'] = $segment->element('NM104');	// storeUser	// storeGroup
+								$data['BillingProviderMiddleName'] = $segment->element('NM105');	// storeUser
 								$data['BillingProviderSuffix'] = $segment->element('NM107');	// ?
-								$data['BillingProviderId'] = $segment->element('NM109');
+								$data['BillingProviderId'] = $segment->element('NM109');	// storeFacility	// storeUser	// storeGroup
 								break;
 							case '87':
 								// 2010AB — PAY-TO ADDRESS NAME
-								// storeUser
-								// storeGroup
 								$data['PayToType'] = $segment->element('NM101');	// ?
-								$data['PayToProviderLastName'] = $segment->element('NM102');
-								$data['PayToProviderFirstName'] = $segment->element('NM103');
-								$data['PayToProviderMiddleName'] = $segment->element('NM104');
+								$data['PayToProviderLastName'] = $segment->element('NM102');	// storeUser	// storeGroup
+								$data['PayToProviderFirstName'] = $segment->element('NM103');	// storeUser	// storeGroup
+								$data['PayToProviderMiddleName'] = $segment->element('NM104');	// storeUser
 								$data['PayToProviderSuffix'] = $segment->element('NM106');	// ?
-								$data['PayToProviderId'] = $segment->element('NM108');
+								$data['PayToProviderId'] = $segment->element('NM108');	// storeUser	// storeGroup
 								break;
 							case 'IL':
 								// 2010BA — SUBSCRIBER NAME
-								switch($data['CurrentInsuranceType']) {
-									case 1:
-										// storeInsuranceData
-										$data['PrimarySubscriberLastName'] = $segment->element('NM102');
-										$data['PrimarySubscriberFirstName'] = $segment->element('NM103');
-										$data['PrimarySubscriberMiddleName'] = $segment->element('NM104');
-										$data['PrimarySubscriberSuffix'] = $segment->element('NM106');	// ?
-										$data['PrimarySubscriberId'] = $segment->element('NM108');
+								if(array_key_exists('CurrentInsuranceType', $data)) {
+									switch($data['CurrentInsuranceType']) {
+										case 1:
+											$data['PrimarySubscriberLastName'] = $segment->element('NM102');	// storeInsuranceData
+											$data['PrimarySubscriberFirstName'] = $segment->element('NM103');	// storeInsuranceData
+											$data['PrimarySubscriberMiddleName'] = $segment->element('NM104');	// storeInsuranceData
+											$data['PrimarySubscriberSuffix'] = $segment->element('NM106');	// ?
+											$data['PrimarySubscriberId'] = $segment->element('NM108');	// storeInsuranceData
 
-										if($data['PrimarySubscriberRelation'] == 'self') {
-											// storePatientData
-											$data['PatientLastName'] = $segment->element('NM102');
-											$data['PatientFirstName'] = $segment->element('NM103');
-											$data['PatientMiddleName'] = $segment->element('NM104');
-											$data['PatientSuffix'] = $segment->element('NM106');	// ?
-											$data['PatientId'] = $segment->element('NM108');	// ?
-										}
-										break;
-									case 2:
-										// storeInsuranceData
-										$data['SecondarySubscriberLastName'] = $segment->element('NM102');
-										$data['SecondarySubscriberFirstName'] = $segment->element('NM103');
-										$data['SecondarySubscriberMiddleName'] = $segment->element('NM104');
-										$data['SecondarySubscriberSuffix'] = $segment->element('NM106');
-										$data['SecondarySubscriberId'] = $segment->element('NM108');
+											if($data['PrimarySubscriberRelation'] == 'self') {
+												$data['PatientLastName'] = $segment->element('NM102');	// storePatientData
+												$data['PatientFirstName'] = $segment->element('NM103');	// storePatientData
+												$data['PatientMiddleName'] = $segment->element('NM104');	// storePatientData
+												$data['PatientSuffix'] = $segment->element('NM106');	// ?
+												$data['PatientId'] = $segment->element('NM108');	// ?
+											}
+											break;
+										case 2:
+											$data['SecondarySubscriberLastName'] = $segment->element('NM102');	// storeInsuranceData
+											$data['SecondarySubscriberFirstName'] = $segment->element('NM103');	// storeInsuranceData
+											$data['SecondarySubscriberMiddleName'] = $segment->element('NM104');	// storeInsuranceData
+											$data['SecondarySubscriberSuffix'] = $segment->element('NM106');	// ?
+											$data['SecondarySubscriberId'] = $segment->element('NM108');	// storeInsuranceData
 
-										if($data['SecondarySubscriberRelation'] == 'self' && $data['PatientLastName'] == '') {
-											// storePatientData
-											$data['PatientLastName'] = $segment->element('NM102');
-											$data['PatientFirstName'] = $segment->element('NM103');
-											$data['PatientMiddleName'] = $segment->element('NM104');
-											$data['PatientSuffix'] = $segment->element('NM106');	// ?
-											$data['PatientId'] = $segment->element('NM108');	// ?
-										}
-										break;
-									case 3:
-										// storeInsuranceData
-										$data['TertiarySubscriberLastName'] = $segment->element('NM102');
-										$data['TertiarySubscriberFirstName'] = $segment->element('NM103');
-										$data['TertiarySubscriberMiddleName'] = $segment->element('NM104');
-										$data['TertiarySubscriberSuffix'] = $segment->element('NM106');
-										$data['TertiarySubscriberId'] = $segment->element('NM108');
+											if($data['SecondarySubscriberRelation'] == 'self' && (!array_key_exists('PatientLastName', $data) || $data['PatientLastName'] == '')) {
+												$data['PatientLastName'] = $segment->element('NM102');	// storePatientData
+												$data['PatientFirstName'] = $segment->element('NM103');	// storePatientData
+												$data['PatientMiddleName'] = $segment->element('NM104');	// storePatientData
+												$data['PatientSuffix'] = $segment->element('NM106');	// ?
+												$data['PatientId'] = $segment->element('NM108');	// ?
+											}
+											break;
+										case 3:
+											$data['TertiarySubscriberLastName'] = $segment->element('NM102');	// storeInsuranceData
+											$data['TertiarySubscriberFirstName'] = $segment->element('NM103');	// storeInsuranceData
+											$data['TertiarySubscriberMiddleName'] = $segment->element('NM104');	// storeInsuranceData
+											$data['TertiarySubscriberSuffix'] = $segment->element('NM106');	// ?
+											$data['TertiarySubscriberId'] = $segment->element('NM108');	// storeInsuranceData
 
-										if($data['TertiarySubscriberRelation'] == 'self' && $data['PatientLastName'] == '') {
-											// storePatientData
-											$data['PatientLastName'] = $segment->element('NM102');
-											$data['PatientFirstName'] = $segment->element('NM103');
-											$data['PatientMiddleName'] = $segment->element('NM104');
-											$data['PatientSuffix'] = $segment->element('NM106');	// ?
-											$data['PatientId'] = $segment->element('NM108');	// ?
-										}
-										break;
+											if($data['TertiarySubscriberRelation'] == 'self' && (!array_key_exists('PatientLastName', $data) || $data['PatientLastName'] == '')) {
+												$data['PatientLastName'] = $segment->element('NM102');	// storePatientData
+												$data['PatientFirstName'] = $segment->element('NM103');	// storePatientData
+												$data['PatientMiddleName'] = $segment->element('NM104');	// storePatientData
+												$data['PatientSuffix'] = $segment->element('NM106');	// ?
+												$data['PatientId'] = $segment->element('NM108');	// ?
+											}
+											break;
+									}
+								} else {
+									echo 'Missing: CurrentInsuranceType ['.__FILE__.':'.__LINE__.']'.PHP_EOL;
 								}
 								break;
 							case 'PR':
 								// 2010BB — PAYER NAME
-								switch($data['CurrentInsuranceType']) {
-									case 1:
-										// storeInsuranceCompany
-										$data['PrimaryPayerName'] = $segment->element('NM102');
-										$data['PrimaryPayerId'] = $segment->element('NM108');
-										break;
-									case 2:
-										// storeInsuranceCompany
-										$data['SecondaryPayerName'] = $segment->element('NM102');
-										$data['SecondaryPayerId'] = $segment->element('NM108');
-										break;
-									case 3:
-										// storeInsuranceCompany
-										$data['TertiaryPayerName'] = $segment->element('NM102');
-										$data['TertiaryPayerId'] = $segment->element('NM108');
-										break;
+								if(array_key_exists('CurrentInsuranceType', $data)) {
+									switch($data['CurrentInsuranceType']) {
+										case 1:
+											$data['PrimaryPayerName'] = $segment->element('NM102');	// storeInsuranceCompany
+											$data['PrimaryPayerId'] = $segment->element('NM108');	// storeInsuranceCompany
+											break;
+										case 2:
+											$data['SecondaryPayerName'] = $segment->element('NM102');	// storeInsuranceCompany
+											$data['SecondaryPayerId'] = $segment->element('NM108');	// storeInsuranceCompany
+											break;
+										case 3:
+											$data['TertiaryPayerName'] = $segment->element('NM102');	// storeInsuranceCompany
+											$data['TertiaryPayerId'] = $segment->element('NM108');	// storeInsuranceCompany
+											break;
+									}
+								} else {
+									echo 'Missing: CurrentInsuranceType ['.__FILE__.':'.__LINE__.']'.PHP_EOL;
 								}
 								break;
 							case 'QC':
 								// 2010CA — PATIENT NAME
-								// storePatientData
-								$data['PatientLastName'] = $segment->element('NM102');
-								$data['PatientFirstName'] = $segment->element('NM103');
-								$data['PatientMiddleName'] = $segment->element('NM104');
+								$data['PatientLastName'] = $segment->element('NM102');	// storePatientData
+								$data['PatientFirstName'] = $segment->element('NM103');	// storePatientData
+								$data['PatientMiddleName'] = $segment->element('NM104');	// storePatientData
 								$data['PatientSuffix'] = $segment->element('NM106');	// ?
 								$data['PatientId'] = $segment->element('NM108');	// ?
 								break;
 						}
 						break;
-					case N3::class:
+					case Segment\N3::class:
 						switch($data['LastNM1']->element('NM101')) {
 							case '85':
 								// 2010AA — BILLING PROVIDER NAME
-								// storeFacility
-								$data['BillingProviderAddress1'] = $segment->element('N301');
-								$data['BillingProviderAddress2'] = $segment->element('N302');
+								$data['BillingProviderAddress1'] = $segment->element('N301');	// storeFacility
+								$data['BillingProviderAddress2'] = $segment->element('N302');	// storeFacility
 								break;
 							case '87':
 								// 2010AB — PAY-TO ADDRESS NAME
@@ -479,77 +446,74 @@ class Cache {
 								break;
 							case 'IL':
 								// 2010BA — SUBSCRIBER NAME
-								switch($data['CurrentInsuranceType']) {
-									case 1:
-										// storeInsuranceData
-										$data['PrimarySubscriberAddress1'] = $segment->element('N301');
-										$data['PrimarySubscriberAddress2'] = $segment->element('N302');
+								if(array_key_exists('CurrentInsuranceType', $data)) {
+									switch($data['CurrentInsuranceType']) {
+										case 1:
+											$data['PrimarySubscriberAddress1'] = $segment->element('N301');	// storeInsuranceData
+											$data['PrimarySubscriberAddress2'] = $segment->element('N302');	// storeInsuranceData
 
-										if($data['PrimarySubscriberRelation'] == 'self') {
-											// storePatientData
-											$data['PatientAddress1'] = $segment->element('N301');
-											$data['PatientAddress2'] = $segment->element('N302');
-										}
-										break;
-									case 2:
-										// storeInsuranceData
-										$data['SecondarySubscriberAddress1'] = $segment->element('N301');
-										$data['SecondarySubscriberAddress2'] = $segment->element('N302');
+											if($data['PrimarySubscriberRelation'] == 'self') {
+												$data['PatientAddress1'] = $segment->element('N301');	// storePatientData
+												$data['PatientAddress2'] = $segment->element('N302');	// storePatientData
+											}
+											break;
+										case 2:
+											$data['SecondarySubscriberAddress1'] = $segment->element('N301');	// storeInsuranceData
+											$data['SecondarySubscriberAddress2'] = $segment->element('N302');	// storeInsuranceData
 
-										if($data['SecondarySubscriberRelation'] == 'self' && $data['PatientAddress1'] == '') {
-											// storePatientData
-											$data['PatientAddress1'] = $segment->element('N301');
-											$data['PatientAddress2'] = $segment->element('N302');
-										}
-										break;
-									case 3:
-										// storeInsuranceData
-										$data['TertiarySubscriberAddress1'] = $segment->element('N301');
-										$data['TertiarySubscriberAddress2'] = $segment->element('N302');
+											if($data['SecondarySubscriberRelation'] == 'self' && (!array_key_exists('PatientAddress1', $data) || $data['PatientAddress1'] == '')) {
+												$data['PatientAddress1'] = $segment->element('N301');	// storePatientData
+												$data['PatientAddress2'] = $segment->element('N302');	// storePatientData
+											}
+											break;
+										case 3:
+											$data['TertiarySubscriberAddress1'] = $segment->element('N301');	// storeInsuranceData
+											$data['TertiarySubscriberAddress2'] = $segment->element('N302');	// storeInsuranceData
 
-										if($data['TertiarySubscriberRelation'] == 'self' && $data['PatientAddress1'] == '') {
-											// storePatientData
-											$data['PatientAddress1'] = $segment->element('N301');
-											$data['PatientAddress2'] = $segment->element('N302');
-										}
-										break;
+											if($data['TertiarySubscriberRelation'] == 'self' && (!array_key_exists('PatientAddress1', $data) || $data['PatientAddress1'] == '')) {
+												$data['PatientAddress1'] = $segment->element('N301');	// storePatientData
+												$data['PatientAddress2'] = $segment->element('N302');	// storePatientData
+											}
+											break;
+									}
+								} else {
+									echo 'Missing: CurrentInsuranceType ['.__FILE__.':'.__LINE__.']'.PHP_EOL;
 								}
 								break;
 							case 'PR':
 								// 2010BB — PAYER NAME
-								switch($data['CurrentInsuranceType']) {
-									case 1:
-										// storeAddresses
-										$data['PrimaryPayerAddress1'] = $segment->element('N301');
-										$data['PrimaryPayerAddress2'] = $segment->element('N302');
-										break;
-									case 2:
-										// storeAddresses
-										$data['SecondaryPayerAddress1'] = $segment->element('N301');
-										$data['SecondaryPayerAddress2'] = $segment->element('N302');
-										break;
-									case 3:
-										// storeAddresses
-										$data['TertiaryPayerAddress1'] = $segment->element('N301');
-										$data['TertiaryPayerAddress2'] = $segment->element('N303');
-										break;
+								if(array_key_exists('CurrentInsuranceType', $data)) {
+									switch($data['CurrentInsuranceType']) {
+										case 1:
+											$data['PrimaryPayerAddress1'] = $segment->element('N301');	// storeAddresses
+											$data['PrimaryPayerAddress2'] = $segment->element('N302');	// storeAddresses
+											break;
+										case 2:
+											$data['SecondaryPayerAddress1'] = $segment->element('N301');	// storeAddresses
+											$data['SecondaryPayerAddress2'] = $segment->element('N302');	// storeAddresses
+											break;
+										case 3:
+											$data['TertiaryPayerAddress1'] = $segment->element('N301');	// storeAddresses
+											$data['TertiaryPayerAddress2'] = $segment->element('N303');	// storeAddresses
+											break;
+									}
+								} else {
+									echo 'Missing: CurrentInsuranceType ['.__FILE__.':'.__LINE__.']'.PHP_EOL;
 								}
 							case 'QC':
 								// 2010CA — PATIENT NAME
-								// storePatientData
-								$data['PatientAddress1'] = $segment->element('N301');
-								$data['PatientAddress2'] = $segment->element('N302');
+								$data['PatientAddress1'] = $segment->element('N301');	// storePatientData
+								$data['PatientAddress2'] = $segment->element('N302');	// storePatientData
 								break;
 						}
 						break;
-					case N4::class:
+					case Segment\N4::class:
 						switch($data['LastNM1']->element('NM101')) {
 							case '85':
 								// 2010AA — BILLING PROVIDER NAME
-								// storeFacility
-								$data['BillingProviderCity'] = $segment->element('N401');
-								$data['BillingProviderState'] = $segment->element('N402');
-								$data['BillingProviderZip'] = $segment->element('N403');
+								$data['BillingProviderCity'] = $segment->element('N401');	// storeFacility
+								$data['BillingProviderState'] = $segment->element('N402');	// storeFacility
+								$data['BillingProviderZip'] = $segment->element('N403');	// storeFacility
 								break;
 							case '87':
 								// 2010AB — PAY-TO ADDRESS NAME
@@ -559,133 +523,128 @@ class Cache {
 								break;
 							case 'IL':
 								// 2010BA — SUBSCRIBER NAME
-								switch($data['CurrentInsuranceType']) {
-									case 1:
-										// storeInsuranceData
-										$data['PrimarySubscriberCity'] = $segment->element('N401');
-										$data['PrimarySubscriberState'] = $segment->element('N402');
-										$data['PrimarySubscriberZip'] = $segment->element('N403');
+								if(array_key_exists('CurrentInsuranceType', $data)) {
+									switch($data['CurrentInsuranceType']) {
+										case 1:
+											$data['PrimarySubscriberCity'] = $segment->element('N401');	// storeInsuranceData
+											$data['PrimarySubscriberState'] = $segment->element('N402');	// storeInsuranceData
+											$data['PrimarySubscriberZip'] = $segment->element('N403');	// storeInsuranceData
 
-										if($data['PrimarySubscriberRelation'] == 'self') {
-											// storePatientData
-											$data['PatientCity'] = $segment->element('N401');
-											$data['PatientState'] = $segment->element('N402');
-											$data['PatientZip'] = $segment->element('N403');
-										}
-										break;
-									case 2:
-										// storeInsuranceData
-										$data['SecondarySubscriberCity'] = $segment->element('N401');
-										$data['SecondarySubscriberState'] = $segment->element('N402');
-										$data['SecondarySubscriberZip'] = $segment->element('N403');
+											if($data['PrimarySubscriberRelation'] == 'self') {
+												$data['PatientCity'] = $segment->element('N401');	// storePatientData
+												$data['PatientState'] = $segment->element('N402');	// storePatientData
+												$data['PatientZip'] = $segment->element('N403');	// storePatientData
+											}
+											break;
+										case 2:
+											$data['SecondarySubscriberCity'] = $segment->element('N401');	// storeInsuranceData
+											$data['SecondarySubscriberState'] = $segment->element('N402');	// storeInsuranceData
+											$data['SecondarySubscriberZip'] = $segment->element('N403');	// storeInsuranceData
 
-										if($data['SecondarySubscriberRelation'] == 'self' && $data['PatientCity'] == '') {
-											// storePatientData
-											$data['PatientCity'] = $segment->element('N401');
-											$data['PatientState'] = $segment->element('N402');
-											$data['PatientZip'] = $segment->element('N403');
-										}
-										break;
-									case 3:
-										// storeInsuranceData
-										$data['TertiarySubscriberCity'] = $segment->element('N401');
-										$data['TertiarySubscriberState'] = $segment->element('N402');
-										$data['TertiarySubscriberZip'] = $segment->element('N403');
+											if($data['SecondarySubscriberRelation'] == 'self' && (!array_key_exists('PatientCity', $data) || $data['PatientCity'] == '')) {
+												$data['PatientCity'] = $segment->element('N401');	// storePatientData
+												$data['PatientState'] = $segment->element('N402');	// storePatientData
+												$data['PatientZip'] = $segment->element('N403');	// storePatientData
+											}
+											break;
+										case 3:
+											$data['TertiarySubscriberCity'] = $segment->element('N401');	// storeInsuranceData
+											$data['TertiarySubscriberState'] = $segment->element('N402');	// storeInsuranceData
+											$data['TertiarySubscriberZip'] = $segment->element('N403');	// storeInsuranceData
 
-										if($data['TertiarySubscriberRelation'] == 'self' && $data['PatientCity'] == '') {
-											// storePatientData
-											$data['PatientCity'] = $segment->element('N401');
-											$data['PatientState'] = $segment->element('N402');
-											$data['PatientZip'] = $segment->element('N403');
-										}
-										break;
+											if($data['TertiarySubscriberRelation'] == 'self' && (!array_key_exists('PatientCity', $data) || $data['PatientCity'] == '')) {
+												$data['PatientCity'] = $segment->element('N401');	// storePatientData
+												$data['PatientState'] = $segment->element('N402');	// storePatientData
+												$data['PatientZip'] = $segment->element('N403');	// storePatientData
+											}
+											break;
+									}
+								} else {
+									echo 'Missing: CurrentInsuranceType ['.__FILE__.':'.__LINE__.']'.PHP_EOL;
 								}
 								break;
 							case 'PR':
 								// 2010BB — PAYER NAME
-								switch($data['CurrentInsuranceType']) {
-									case 1:
-										// storeAddress
-										$data['PrimaryPayerCity'] = $segment->element('N401');
-										$data['PrimaryPayerState'] = $segment->element('N402');
-										$data['PrimaryPayerZip'] = $segment->element('N403');
-										break;
-									case 2:
-										// storeAddress
-										$data['SecondaryPayerCity'] = $segment->element('N401');
-										$data['SecondaryPayerState'] = $segment->element('N402');
-										$data['SecondaryPayerZip'] = $segment->element('N403');
-										break;
-									case 3:
-										// storeAddress
-										$data['TertiaryPayerCity'] = $segment->element('N401');
-										$data['TertiaryPayerState'] = $segment->element('N402');
-										$data['TertiaryPayerZip'] = $segment->element('N403');
-										break;
+								if(array_key_exists('CurrentInsuranceType', $data)) {
+									switch($data['CurrentInsuranceType']) {
+										case 1:
+											$data['PrimaryPayerCity'] = $segment->element('N401');	// storeAddress
+											$data['PrimaryPayerState'] = $segment->element('N402');	// storeAddress
+											$data['PrimaryPayerZip'] = $segment->element('N403');	// storeAddress
+											break;
+										case 2:
+											$data['SecondaryPayerCity'] = $segment->element('N401');	// storeAddress
+											$data['SecondaryPayerState'] = $segment->element('N402');	// storeAddress
+											$data['SecondaryPayerZip'] = $segment->element('N403');	// storeAddress
+											break;
+										case 3:
+											$data['TertiaryPayerCity'] = $segment->element('N401');	// storeAddress
+											$data['TertiaryPayerState'] = $segment->element('N402');	// storeAddress
+											$data['TertiaryPayerZip'] = $segment->element('N403');	// storeAddress
+											break;
+									}
+								} else {
+									echo 'Missing: CurrentInsuranceType ['.__FILE__.':'.__LINE__.']'.PHP_EOL;
 								}
 								break;
 							case 'QC':
 								// 2010CA — PATIENT NAME
-								// storePatientData
-								$data['PatientCity'] = $segment->element('N401');
-								$data['PatientState'] = $segment->element('N402');
-								$data['PatientZip'] = $segment->element('N403');
+								$data['PatientCity'] = $segment->element('N401');	// storePatientData
+								$data['PatientState'] = $segment->element('N402');	// storePatientData
+								$data['PatientZip'] = $segment->element('N403');	// storePatientData
 								break;
 						}
 						break;
-					case DMG::class:
+					case Segment\DMG::class:
 						// 2010BA — SUBSCRIBER NAME & 2010CA — PATIENT NAME
 						$data['SubDOB'] = $segment->element('DMG02');	// ?
 						$data['SubSex'] = $segment->element('DMG03');	// ?
 
-						switch($data['CurrentInsuranceType']) {
-							case 1:
-								// storeInsuranceData
-								$data['PrimarySubscriberDOB'] = $segment->element('DMG02');
-								$data['PrimarySubscriberSex'] = $segment->element('DMG03');
+						if(array_key_exists('CurrentInsuranceType', $data)) {
+							switch($data['CurrentInsuranceType']) {
+								case 1:
+									$data['PrimarySubscriberDOB'] = $segment->element('DMG02');	// storeInsuranceData
+									$data['PrimarySubscriberSex'] = $segment->element('DMG03');	// storeInsuranceData
 
-								if($data['PrimarySubscriberRelation'] == 'self') {
-									// storePatientData
-									$data['PatientDOB'] = $segment->element('DMG02');
-									$data['PatientSex'] = $segment->element('DMG03');
-								}
-								break;
-							case 2:
-								// storeInsuranceData
-								$data['SecondarySubscriberDOB'] = $segment->element('DMG02');
-								$data['SecondarySubscriberSex'] = $segment->element('DMG03');
+									if($data['PrimarySubscriberRelation'] == 'self') {
+										$data['PatientDOB'] = $segment->element('DMG02');	// storePatientData
+										$data['PatientSex'] = $segment->element('DMG03');	// storePatientData
+									}
+									break;
+								case 2:
+									$data['SecondarySubscriberDOB'] = $segment->element('DMG02');	// storeInsuranceData
+									$data['SecondarySubscriberSex'] = $segment->element('DMG03');	// storeInsuranceData
 
-								if($data['SecondarySubscriberRelation'] == 'self') {
-									// storePatientData
-									$data['PatientDOB'] = $segment->element('DMG02');
-									$data['PatientSex'] = $segment->element('DMG03');
-								}
-								break;
-							case 3:
-								// storeInsuranceData
-								$data['TertiarySubscriberDOB'] = $segment->element('DMG02');
-								$data['TertiarySubscriberSex'] = $segment->element('DMG03');
+									if($data['SecondarySubscriberRelation'] == 'self') {
+										$data['PatientDOB'] = $segment->element('DMG02');	// storePatientData
+										$data['PatientSex'] = $segment->element('DMG03');	// storePatientData
+									}
+									break;
+								case 3:
+									$data['TertiarySubscriberDOB'] = $segment->element('DMG02');	// storeInsuranceData
+									$data['TertiarySubscriberSex'] = $segment->element('DMG03');	// storeInsuranceData
 
-								if($data['TertiarySubscriberRelation'] == 'self') {
-									// storePatientData
-									$data['PatientDOB'] = $segment->element('DMG02');
-									$data['PatientSex'] = $segment->element('DMG03');
-								}
-								break;
+									if($data['TertiarySubscriberRelation'] == 'self') {
+										$data['PatientDOB'] = $segment->element('DMG02');	// storePatientData
+										$data['PatientSex'] = $segment->element('DMG03');	// storePatientData
+									}
+									break;
+							}
+						} else {
+							echo 'Missing: CurrentInsuranceType ['.__FILE__.':'.__LINE__.']'.PHP_EOL;
 						}
 						break;
-					case REF::class:
+					case Segment\REF::class:
 						// 2010AA — BILLING PROVIDER NAME & 2010AC — PAY-TO PLAN NAME
-						// storeFacility
-						$data['BillingProviderEIN'] = $segment->element('REF02');
+						$data['BillingProviderEIN'] = $segment->element('REF02');	// storeFacility
 						break;
 				}
 			}
 		} while(!is_null($segment));
 	}
 
-	protected function processLoop2300(Loop2300 $loop2300, array &$data) {
-		echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
+	protected function processLoop2300(Loop\Loop2300 $loop2300, array &$data) {
+		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$header = $loop2300->getHeader();
 
@@ -703,46 +662,40 @@ class Cache {
 
 			if($segment) {
 				switch(get_class($segment)) {
-					case CLM::class:
+					case Segment\CLM::class:
 						// 2300 — CLAIM INFORMATION
-						// storeFormEncounter
-						// storeForms
-						// storeBilling
-						$data['ClaimId'] = $segment->element('CLM01');
+						$data['ClaimId'] = $segment->element('CLM01');	// storeFormEncounter	// storeForms	// storeBilling
 						$data['ClaimAmount'] = $segment->element('CLM02');	// ?
 
-						// storeFacility
-						$data['FacilityCodeValue'] = $segment->subElement('CLM05', 0);
+						$data['FacilityCodeValue'] = $segment->subElement('CLM05', 0);	// storeFacility
 						$data['FacilityCodeQualifier'] = $segment->subElement('CLM05', 1);	// ?
 						$data['FrequencyTypeCode'] = $segment->subElement('CLM05', 2);	// ?
 
-						// storeInsuranceData
 						$data['ProviderSignatureOnFile'] = $segment->element('CLM07');	// ?
-						$data['ProviderAcceptAssignmentCode'] = ($segment->elementEquals('CLM08', 'A') ? 'true' : '');
+						$data['ProviderAcceptAssignmentCode'] = ($segment->elementEquals('CLM08', 'A') ? 'true' : '');	// storeInsuranceData
 						$data['BenefitIndicator'] = $segment->element('CLM09');	// ?
 						$data['ReleaseOfInformation'] = $segment->element('CLM10');	// ?
 						break;
-					case DTP::class:
+					case Segment\DTP::class:
 						// 2300 — CLAIM INFORMATION
 						if($segment->elementEquals('DTP01', '431')) {
 							$data['Dos2'] = $segment->element('DTP03');	// ?
 						}
 						break;
-					case REF::class:
+					case Segment\REF::class:
 						// 2300 — CLAIM INFORMATION
 						if($segment->elementEquals('REF01', 'EA')) {
 							$data['MedicalRecordNumber'] = $segment->element('REF02');	// ?
 						}
 						break;
-					case NTE::class:
+					case Segment\NTE::class:
 						// 2300 — CLAIM INFORMATION
 						if($segment->elementEquals('NTE01', 'ADD')) {
 							$data['NoteDesc'] = $segment->element('NTE02');	// ?
 						}
 						break;
-					case HI::class:
+					case Segment\HI::class:
 						// 2300 — CLAIM INFORMATION
-						// storeBilling
 						if($segment->subElementEquals('HI01', 0, [ 'ABK', 'BK' ])) {
 							$elements = [
 								'HI01', 'HI02', 'HI03',
@@ -754,10 +707,10 @@ class Cache {
 							foreach($elements as $element) {
 								if($segment->subElementCount($element) > 1) {
 									array_key_exists('DxType', $data) || $data['DxType'] = [];
-									$data['DxType'][] = $segment->subElement($element, 0);
+									$data['DxType'][] = $segment->subElement($element, 0);	// storeBilling
 
 									array_key_exists('Dx', $data) || $data['Dx'] = [];
-									$data['Dx'][] = $segment->subElement($element, 1);
+									$data['Dx'][] = $segment->subElement($element, 1);	// storeBilling
 
 									$data['DxCount'] = count($data['DxType']);
 								}
@@ -773,18 +726,18 @@ class Cache {
 		if(is_array($descendant)) {
 			foreach($descendant as $section) {
 				switch(get_class($section)) {
-					// case Loop2305::class:
+					// case Loop\Loop2305::class:
 					// 	$this->processLoop2305($section, $data);
 					// 	break;
-					case Loop2310::class:
+					case Loop\Loop2310::class:
 						$this->processLoop2310($section, $data);
 						break;
 
-					case Loop2320::class:
+					case Loop\Loop2320::class:
 						$this->processLoop2320($section, $data);
 						break;
 
-					case Loop2400::class:
+					case Loop\Loop2400::class:
 						$this->processLoop2400($section, $data);
 						break;
 				}
@@ -792,14 +745,14 @@ class Cache {
 		}
 	}
 
-	// protected function processLoop2305(Loop2305 $loop2305, array &$data) {
+	// protected function processLoop2305(Loop\Loop2305 $loop2305, array &$data) {
 	// 	echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 	// 	$header = $loop2305->getHeader();
 	// }
 
-	protected function processLoop2310(Loop2310 $loop2310, array &$data) {
-		echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
+	protected function processLoop2310(Loop\Loop2310 $loop2310, array &$data) {
+		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$header = $loop2310->getHeader();
 
@@ -807,48 +760,42 @@ class Cache {
 			$segment = $this->findNextSegment(
 				$header,
 				[
-					NM1::class,
-					N3::class,
-					N4::class,
-					PRV::class,
+					Segment\NM1::class,
+					Segment\N3::class,
+					Segment\N4::class,
+					Segment\PRV::class,
 				]
 			);
 
 			if($segment) {
 				switch(get_class($segment)) {
-					case NM1::class:
+					case Segment\NM1::class:
 						$data['LastNM1'] = $segment;
 
 						switch($segment->element('NM101')) {
 							case 'DN':
 								// 2310A — REFERRING PROVIDER NAME
-								// storeUser
-								// storeGroup
 								$data['ReferringType'] = $segment->element('NM102');	// ?
-								$data['ReferringLastName'] = $segment->element('NM103');
-								$data['ReferringFirstName'] = $segment->element('NM104');
-								$data['ReferringMiddleName'] = $segment->element('NM105');
+								$data['ReferringLastName'] = $segment->element('NM103');	// storeUser	// storeGroup
+								$data['ReferringFirstName'] = $segment->element('NM104');	// storeUser	// storeGroup
+								$data['ReferringMiddleName'] = $segment->element('NM105');	// storeUser	// storeGroup
 								$data['ReferringSuffix'] = $segment->element('NM107');	// ?
-								$data['ReferringId'] = $segment->element('NM109');
+								$data['ReferringId'] = $segment->element('NM109');	// storeUser	// storeGroup
 								break;
 							case '82':
 								// 2310B — RENDERING PROVIDER NAME
-								// storeUser
-								// storeGroup
 								$data['RenderingType'] = $segment->element('NM102');	// ?
-								$data['RenderingLastName'] = $segment->element('NM103');
-								$data['RenderingFirstName'] = $segment->element('NM104');
-								$data['RenderingMiddleName'] = $segment->element('NM105');
+								$data['RenderingLastName'] = $segment->element('NM103');	// storeUser	// storeGroup
+								$data['RenderingFirstName'] = $segment->element('NM104');	// storeUser	// storeGroup
+								$data['RenderingMiddleName'] = $segment->element('NM105');	// storeUser	// storeGroup
 								$data['RenderingSuffix'] = $segment->element('NM107');	// ?
-								$data['RenderingId'] = $segment->element('NM109');
+								$data['RenderingId'] = $segment->element('NM109');	// storeUser	// storeGroup
 								break;
 							case '77':
 								// 2310C — SERVICE FACILITY LOCATION NAME
 								if($segment->elementEquals('NM102', '2')) {
-									// storeUser
-									// storeFacility
-									$data['ServiceFacilityName'] = $segment->element('NM103');
-									$data['ServiceFacilityId'] = $segment->element('NM109');	// NPI
+									$data['ServiceFacilityName'] = $segment->element('NM103');	// storeUser	// storeFacility
+									$data['ServiceFacilityId'] = $segment->element('NM109');	// storeUser	// storeFacility
 								}
 								break;
 							case 'DQ':
@@ -862,28 +809,25 @@ class Cache {
 								break;
 						}
 						break;
-					case N3::class:
+					case Segment\N3::class:
 						// 2310C — SERVICE FACILITY LOCATION NAME
 						if($data['LastNM1']->elementEquals('NM101', '77')) {
-							// storeFacility
-							$data['ServiceFacilityAddress1'] = $segment->element('N301');
-							$data['ServiceFacilityAddress2'] = $segment->element('N302');
+							$data['ServiceFacilityAddress1'] = $segment->element('N301');	// storeFacility
+							$data['ServiceFacilityAddress2'] = $segment->element('N302');	// storeFacility
 						}
 						break;
-					case N4::class:
+					case Segment\N4::class:
 						// 2310C — SERVICE FACILITY LOCATION NAME
 						if($data['LastNM1']->elementEquals('NM101', '77')) {
-							// storeFacility
-							$data['ServiceFacilityCity'] = $segment->element('N401');
-							$data['ServiceFacilityState'] = $segment->element('N402');
-							$data['ServiceFacilityZip'] = $segment->element('N403');
+							$data['ServiceFacilityCity'] = $segment->element('N401');	// storeFacility
+							$data['ServiceFacilityState'] = $segment->element('N402');	// storeFacility
+							$data['ServiceFacilityZip'] = $segment->element('N403');	// storeFacility
 						}
 						break;
-					case PRV::class:
+					case Segment\PRV::class:
 						// 2310B — RENDERING PROVIDER NAME
 						if($segment->elementEquals('PRV01', 'PE')) {
-							// storeUser
-							$data['RenderingTaxonomy'] = $segment->element('PRV03');
+							$data['RenderingTaxonomy'] = $segment->element('PRV03');	// storeUser
 						}
 						break;
 				}
@@ -891,8 +835,8 @@ class Cache {
 		} while(!is_null($segment));
 	}
 
-	protected function processLoop2320(Loop2320 $loop2320, array &$data) {
-		echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
+	protected function processLoop2320(Loop\Loop2320 $loop2320, array &$data) {
+		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$header = $loop2320->getHeader();
 
@@ -900,35 +844,32 @@ class Cache {
 			$segment = $this->findNextSegment(
 				$header,
 				[
-					SBR::class,
+					Segment\SBR::class,
 				]
 			);
 
 			if($segment) {
 				switch(get_class($segment)) {
-					case SBR::class:
+					case Segment\SBR::class:
 						// 2320 — OTHER SUBSCRIBER INFORMATION
 						switch($segment->element('SBR01')) {
 							case 'P':
-								// storeInsuranceData
 								$data['CurrentInsuranceType'] = 1;
-								$data['PrimarySubscriberRelation'] = ($segment->elementEquals('SBR02', '18') ? 'self' : '');
-								$data['PrimaryPolicy'] = $segment->element('SBR03');
-								$data['PrimaryPlanName'] = $segment->element('SBR04');
+								$data['PrimarySubscriberRelation'] = ($segment->elementEquals('SBR02', '18') ? 'self' : '');	// storeInsuranceData
+								$data['PrimaryPolicy'] = $segment->element('SBR03');	// storeInsuranceData
+								$data['PrimaryPlanName'] = $segment->element('SBR04');	// storeInsuranceData
 								break;
 							case 'S':
-								// storeInsuranceData
 								$data['CurrentInsuranceType'] = 2;
-								$data['SecondarySubscriberRelation'] = ($segment->elementEquals('SBR02', '18') ? 'self' : '');
-								$data['SecondaryPolicy'] = $segment->element('SBR03');
-								$data['SecondaryPlanName'] = $segment->element('SBR04');
+								$data['SecondarySubscriberRelation'] = ($segment->elementEquals('SBR02', '18') ? 'self' : '');	// storeInsuranceData
+								$data['SecondaryPolicy'] = $segment->element('SBR03');	// storeInsuranceData
+								$data['SecondaryPlanName'] = $segment->element('SBR04');	// storeInsuranceData
 								break;
 							case 'T':
-								// storeInsuranceData
 								$data['CurrentInsuranceType'] = 3;
-								$data['TertiarySubscriberRelation'] = ($segment->elementEquals('SBR02', '18') ? 'self' : '');
-								$data['TertiaryPolicy'] = $segment->element('SBR03');
-								$data['TertiaryPlanName'] = $segment->element('SBR04');
+								$data['TertiarySubscriberRelation'] = ($segment->elementEquals('SBR02', '18') ? 'self' : '');	// storeInsuranceData
+								$data['TertiaryPolicy'] = $segment->element('SBR03');	// storeInsuranceData
+								$data['TertiaryPlanName'] = $segment->element('SBR04');	// storeInsuranceData
 								break;
 						}
 						break;
@@ -945,8 +886,8 @@ class Cache {
 		}
 	}
 
-	protected function processLoop2330(Loop2330 $loop2330, array &$data) {
-		echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
+	protected function processLoop2330(Loop\Loop2330 $loop2330, array &$data) {
+		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$header = $loop2330->getHeader();
 
@@ -954,130 +895,121 @@ class Cache {
 			$segment = $this->findNextSegment(
 				$header,
 				[
-					NM1::class,
-					N3::class,
-					N4::class,
-					REF::class,
+					Segment\NM1::class,
+					Segment\N3::class,
+					Segment\N4::class,
+					Segment\REF::class,
 				]
 			);
 
 			if($segment) {
 				switch (get_class($segment)) {
-					case NM1::class:
+					case Segment\NM1::class:
 						$data['LastNM1'] = $segment;
 
 						switch($segment->element('NM101')) {
 							case 'IL':
 								// 2330A — OTHER SUBSCRIBER NAME
-								switch($data['CurrentInsuranceType']) {
-									case 1:
-										// storeInsuranceData
-										$data['PrimarySubscriberLastName'] = $segment->element('NM102');
-										$data['PrimarySubscriberFirstName'] = $segment->element('NM103');
-										$data['PrimarySubscriberMiddleName'] = $segment->element('NM104');
-										$data['PrimarySubscriberSuffix'] = $segment->element('NM106');	// ?
-										$data['PrimarySubscriberId'] = $segment->element('NM108');
+								if(array_key_exists('CurrentInsuranceType', $data)) {
+									switch($data['CurrentInsuranceType']) {
+										case 1:
+											$data['PrimarySubscriberLastName'] = $segment->element('NM102');	// storeInsuranceData
+											$data['PrimarySubscriberFirstName'] = $segment->element('NM103');	// storeInsuranceData
+											$data['PrimarySubscriberMiddleName'] = $segment->element('NM104');	// storeInsuranceData
+											$data['PrimarySubscriberSuffix'] = $segment->element('NM106');	// ?
+											$data['PrimarySubscriberId'] = $segment->element('NM108');	// storeInsuranceData
 
-										if($data['PrimarySubscriberRelation'] == 'self') {
-											// storePatientData
-											$data['PatientLastName'] = $segment->element('NM102');
-											$data['PatientFirstName'] = $segment->element('NM103');
-											$data['PatientMiddleName'] = $segment->element('NM104');
-											$data['PatientSuffix'] = $segment->element('NM106');	// ?
-											$data['PatientId'] = $segment->element('NM108');	// ?
-										}
-										break;
-									case 2:
-										// storeInsuranceData
-										$data['SecondarySubscriberLastName'] = $segment->element('NM102');
-										$data['SecondarySubscriberFirstName'] = $segment->element('NM103');
-										$data['SecondarySubscriberMiddleName'] = $segment->element('NM104');
-										$data['SecondarySubscriberSuffix'] = $segment->element('NM106');	// ?
-										$data['SecondarySubscriberId'] = $segment->element('NM108');
+											if($data['PrimarySubscriberRelation'] == 'self') {
+												$data['PatientLastName'] = $segment->element('NM102');	// storePatientData
+												$data['PatientFirstName'] = $segment->element('NM103');	// storePatientData
+												$data['PatientMiddleName'] = $segment->element('NM104');	// storePatientData
+												$data['PatientSuffix'] = $segment->element('NM106');	// ?
+												$data['PatientId'] = $segment->element('NM108');	// ?
+											}
+											break;
+										case 2:
+											$data['SecondarySubscriberLastName'] = $segment->element('NM102');	// storeInsuranceData
+											$data['SecondarySubscriberFirstName'] = $segment->element('NM103');	// storeInsuranceData
+											$data['SecondarySubscriberMiddleName'] = $segment->element('NM104');	// storeInsuranceData
+											$data['SecondarySubscriberSuffix'] = $segment->element('NM106');	// ?
+											$data['SecondarySubscriberId'] = $segment->element('NM108');	// storeInsuranceData
 
-										if($data['SecondarySubscriberRelation'] == 'self' && $data['PatientLastName'] == '') {
-											// storePatientData
-											$data['PatientLastName'] = $segment->element('NM102');
-											$data['PatientFirstName'] = $segment->element('NM103');
-											$data['PatientMiddleName'] = $segment->element('NM104');
-											$data['PatientSuffix'] = $segment->element('NM106');	// ?
-											$data['PatientId'] = $segment->element('NM108');	// ?
-										}
-										break;
-									case 3:
-										// storeInsuranceData
-										$data['TertiarySubscriberLastName'] = $segment->element('NM102');
-										$data['TertiarySubscriberFirstName'] = $segment->element('NM103');
-										$data['TertiarySubscriberMiddleName'] = $segment->element('NM104');
-										$data['TertiarySubscriberSuffix'] = $segment->element('NM106');	// ?
-										$data['TertiarySubscriberId'] = $segment->element('NM108');
+											if($data['SecondarySubscriberRelation'] == 'self' && (!array_key_exists('PatientLastName', $data) || $data['PatientLastName'] == '')) {
+												$data['PatientLastName'] = $segment->element('NM102');	// storePatientData
+												$data['PatientFirstName'] = $segment->element('NM103');	// storePatientData
+												$data['PatientMiddleName'] = $segment->element('NM104');	// storePatientData
+												$data['PatientSuffix'] = $segment->element('NM106');	// ?
+												$data['PatientId'] = $segment->element('NM108');	// ?
+											}
+											break;
+										case 3:
+											$data['TertiarySubscriberLastName'] = $segment->element('NM102');	// storeInsuranceData
+											$data['TertiarySubscriberFirstName'] = $segment->element('NM103');	// storeInsuranceData
+											$data['TertiarySubscriberMiddleName'] = $segment->element('NM104');	// storeInsuranceData
+											$data['TertiarySubscriberSuffix'] = $segment->element('NM106');	// ?
+											$data['TertiarySubscriberId'] = $segment->element('NM108');	// storeInsuranceData
 
-										if($data['TertiarySubscriberRelation'] == 'self' && $data['PatientLastName'] == '') {
-											// storePatientData
-											$data['PatientLastName'] = $segment->element('NM102');
-											$data['PatientFirstName'] = $segment->element('NM103');
-											$data['PatientMiddleName'] = $segment->element('NM104');
-											$data['PatientSuffix'] = $segment->element('NM106');	// ?
-											$data['PatientId'] = $segment->element('NM108');	// ?
-										}
-										break;
+											if($data['TertiarySubscriberRelation'] == 'self' && (!array_key_exists('PatientLastName', $data) || $data['PatientLastName'] == '')) {
+												$data['PatientLastName'] = $segment->element('NM102');	// storePatientData
+												$data['PatientFirstName'] = $segment->element('NM103');	// storePatientData
+												$data['PatientMiddleName'] = $segment->element('NM104');	// storePatientData
+												$data['PatientSuffix'] = $segment->element('NM106');	// ?
+												$data['PatientId'] = $segment->element('NM108');	// ?
+											}
+											break;
+									}
+								} else {
+									echo 'Missing: CurrentInsuranceType ['.__FILE__.':'.__LINE__.']'.PHP_EOL;
 								}
 								break;
 							case 'PR':
 								// 2330B — OTHER PAYER NAME
-								switch($data['CurrentInsuranceType']) {
-									case 1:
-										// storeInsuranceCompany
-										$data['PrimaryPayerName'] = $segment->element('NM102');
-										$data['PrimaryPayerId'] = $segment->element('NM108');
-										break;
-									case 2:
-										// storeInsuranceCompany
-										$data['SecondaryPayerName'] = $segment->element('NM102');
-										$data['SecondaryPayerId'] = $segment->element('NM108');
-										break;
-									case 3:
-										// storeInsuranceCompany
-										$data['TertiaryPayerName'] = $segment->element('NM102');
-										$data['TertiaryPayerId'] = $segment->element('NM108');
-										break;
+								if(array_key_exists('CurrentInsuranceType', $data)) {
+									switch($data['CurrentInsuranceType']) {
+										case 1:
+											$data['PrimaryPayerName'] = $segment->element('NM102');	// storeInsuranceCompany
+											$data['PrimaryPayerId'] = $segment->element('NM108');	// storeInsuranceCompany
+											break;
+										case 2:
+											$data['SecondaryPayerName'] = $segment->element('NM102');	// storeInsuranceCompany
+											$data['SecondaryPayerId'] = $segment->element('NM108');	// storeInsuranceCompany
+											break;
+										case 3:
+											$data['TertiaryPayerName'] = $segment->element('NM102');	// storeInsuranceCompany
+											$data['TertiaryPayerId'] = $segment->element('NM108');	// storeInsuranceCompany
+											break;
+									}
+								} else {
+									echo 'Missing: CurrentInsuranceType ['.__FILE__.':'.__LINE__.']'.PHP_EOL;
 								}
 								break;
 							case 'DN':
 								// 2330C — OTHER PAYER REFERRING PROVIDER
-								// storeUser
-								// storeGroup
 								$data['ReferringType'] = $segment->element('NM102');	// ?
-								$data['ReferringLastName'] = $segment->element('NM103');
-								$data['ReferringFirstName'] = $segment->element('NM104');
-								$data['ReferringMiddleName'] = $segment->element('NM105');
+								$data['ReferringLastName'] = $segment->element('NM103');	// storeUser	// storeGroup
+								$data['ReferringFirstName'] = $segment->element('NM104');	// storeUser	// storeGroup
+								$data['ReferringMiddleName'] = $segment->element('NM105');	// storeUser
 								$data['ReferringSuffix'] = $segment->element('NM107');	// ?
-								$data['ReferringId'] = $segment->element('NM109');
+								$data['ReferringId'] = $segment->element('NM109');	// storeUser	// storeGroup
 								break;
 							case '82':
 								// 2330D — OTHER PAYER RENDERING PROVIDER
-								// storeUser
-								// storeGroup
 								$data['RenderingType'] = $segment->element('NM102');	// ?
-								$data['RenderingLastName'] = $segment->element('NM103');
-								$data['RenderingFirstName'] = $segment->element('NM104');
-								$data['RenderingMiddleName'] = $segment->element('NM105');
+								$data['RenderingLastName'] = $segment->element('NM103');	// storeUser	// storeGroup
+								$data['RenderingFirstName'] = $segment->element('NM104');	// storeUser	// storeGroup
+								$data['RenderingMiddleName'] = $segment->element('NM105');	// storeUser
 								$data['RenderingSuffix'] = $segment->element('NM107');	// ?
-								$data['RenderingId'] = $segment->element('NM109');
+								$data['RenderingId'] = $segment->element('NM109');	// storeUser	// storeGroup
 								break;
 							case '77':
 								// 2330E — OTHER PAYER SERVICE FACILITY LOCATION
 								if($segment->elementEquals('NM102', '2')) {
-									// storeFacility
-									// storeUser
-									$data['ServiceFacilityName'] = $segment->element('NM103');
-									$data['ServiceFacilityId'] = $segment->element('NM109');	// NPI
+									$data['ServiceFacilityName'] = $segment->element('NM103');	// storeFacility	// storeUser
+									$data['ServiceFacilityId'] = $segment->element('NM109');	// storeFacility
 								}
 								break;
 							case 'DQ':
 								// 2330F — OTHER PAYER SUPERVISING PROVIDER
-								// storeUser
-								// storeGroup
 								$data['SupervisingType'] = $segment->element('NM102');	// ?
 								$data['SupervisingLastName'] = $segment->element('NM103');	// ?
 								$data['SupervisingFirstName'] = $segment->element('NM104');	// ?
@@ -1087,171 +1019,163 @@ class Cache {
 								break;
 							case '85':
 								// 2330G — OTHER PAYER BILLING PROVIDER
-								// storeFacility
-								// storeUser
-								// storeGroup
 								$data['BillingType'] = $segment->element('NM102');	// ?
-								$data['BillingProviderLastName'] = $segment->element('NM103');
-								$data['BillingProviderFirstName'] = $segment->element('NM104');
-								$data['BillingProviderMiddleName'] = $segment->element('NM105');
+								$data['BillingProviderLastName'] = $segment->element('NM103');	// storeFacility	// storeUser	// storeGroup
+								$data['BillingProviderFirstName'] = $segment->element('NM104');	// storeUser	// storeGroup
+								$data['BillingProviderMiddleName'] = $segment->element('NM105');	// storeUser
 								$data['BillingProviderSuffix'] = $segment->element('NM107');	// ?
-								$data['BillingProviderId'] = $segment->element('NM109');
+								$data['BillingProviderId'] = $segment->element('NM109');	// storeFacility	// storeUser	// storeGroup
 								break;
 						}
 						break;
-					case N3::class:
+					case Segment\N3::class:
 						switch($data['LastNM1']->element('NM101')) {
 							case 'IL':
 								// 2330A — OTHER SUBSCRIBER NAME
-								switch($data['CurrentInsuranceType']) {
-									case 2:
-										// storeInsuranceData
-										$data['SecondarySubscriberAddress1'] = $segment->element('N301');
-										$data['SecondarySubscriberAddress2'] = $segment->element('N302');
+								if(array_key_exists('CurrentInsuranceType', $data)) {
+									switch($data['CurrentInsuranceType']) {
+										case 2:
+											$data['SecondarySubscriberAddress1'] = $segment->element('N301');	// storeInsuranceData
+											$data['SecondarySubscriberAddress2'] = $segment->element('N302');	// storeInsuranceData
 
-										if($data['SecondarySubscriberRelation'] == 'self' && $data['PatientAddress1'] == '') {
-											// storePatientData
-											$data['PatientAddress1'] = $segment->element('N301');
-											$data['PatientAddress2'] = $segment->element('N302');
-										}
-										break;
-									case 3:
-										// storeInsuranceData
-										$data['TertiarySubscriberAddress1'] = $segment->element('N301');
-										$data['TertiarySubscriberAddress2'] = $segment->element('N302');
+											if($data['SecondarySubscriberRelation'] == 'self' && (!array_key_exists('PatientAddress1', $data) || $data['PatientAddress1'] == '')) {
+												$data['PatientAddress1'] = $segment->element('N301');	// storePatientData
+												$data['PatientAddress2'] = $segment->element('N302');	// storePatientData
+											}
+											break;
+										case 3:
+											$data['TertiarySubscriberAddress1'] = $segment->element('N301');	// storeInsuranceData
+											$data['TertiarySubscriberAddress2'] = $segment->element('N302');	// storeInsuranceData
 
-										if($data['TertiarySubscriberRelation'] == 'self' && $data['PatientAddress1'] == '') {
-											// storePatientData
-											$data['PatientAddress1'] = $segment->element('N301');
-											$data['PatientAddress2'] = $segment->element('N302');
-										}
-										break;
+											if($data['TertiarySubscriberRelation'] == 'self' && (!array_key_exists('PatientAddress1', $data) || $data['PatientAddress1'] == '')) {
+												$data['PatientAddress1'] = $segment->element('N301');	// storePatientData
+												$data['PatientAddress2'] = $segment->element('N302');	// storePatientData
+											}
+											break;
+									}
+								} else {
+									echo 'Missing: CurrentInsuranceType ['.__FILE__.':'.__LINE__.']'.PHP_EOL;
 								}
 								break;
 							case 'PR':
 								// 2330B — OTHER PAYER NAME
-								switch($data['CurrentInsuranceType']) {
-									case 1:
-										// storeAddresses
-										$data['PrimaryPayerAddress1'] = $segment->element('N301');
-										$data['PrimaryPayerAddress2'] = $segment->element('N302');
-										break;
-									case 2:
-										// storeAddresses
-										$data['SecondaryPayerAddress1'] = $segment->element('N301');
-										$data['SecondaryPayerAddress2'] = $segment->element('N302');
-										break;
-									case 3:
-										// storeAddresses
-										$data['TertiaryPayerAddress1'] = $segment->element('N301');
-										$data['TertiaryPayerAddress2'] = $segment->element('N303');
-										break;
+								if(array_key_exists('CurrentInsuranceType', $data)) {
+									switch($data['CurrentInsuranceType']) {
+										case 1:
+											$data['PrimaryPayerAddress1'] = $segment->element('N301');	// storeAddresses
+											$data['PrimaryPayerAddress2'] = $segment->element('N302');	// storeAddresses
+											break;
+										case 2:
+											$data['SecondaryPayerAddress1'] = $segment->element('N301');	// storeAddresses
+											$data['SecondaryPayerAddress2'] = $segment->element('N302');	// storeAddresses
+											break;
+										case 3:
+											$data['TertiaryPayerAddress1'] = $segment->element('N301');	// storeAddresses
+											$data['TertiaryPayerAddress2'] = $segment->element('N303');	// storeAddresses
+											break;
+									}
+								} else {
+									echo 'Missing: CurrentInsuranceType ['.__FILE__.':'.__LINE__.']'.PHP_EOL;
 								}
 								break;
 							case '77':
 								// 2330E — OTHER PAYER SERVICE FACILITY LOCATION
-								// storeFacility
-								$data['ServiceFacilityAddress1'] = $segment->element('N301');
-								$data['ServiceFacilityAddress2'] = $segment->element('N302');
+								$data['ServiceFacilityAddress1'] = $segment->element('N301');	// storeFacility
+								$data['ServiceFacilityAddress2'] = $segment->element('N302');	// storeFacility
 								break;
 							case '85':
 								// 2330G — OTHER PAYER BILLING PROVIDER
-								// storeFacility
-								$data['BillingProviderAddress1'] = $segment->element('N301');
-								$data['BillingProviderAddress2'] = $segment->element('N302');
+								$data['BillingProviderAddress1'] = $segment->element('N301');	// storeFacility
+								$data['BillingProviderAddress2'] = $segment->element('N302');	// storeFacility
 								break;
 						}
 						break;
-					case N4::class:
+					case Segment\N4::class:
 						switch($data['LastNM1']->element('NM101')) {
 							case 'IL':
 								// 2330A — OTHER SUBSCRIBER NAME
-								switch($data['CurrentInsuranceType']) {
-									case 1:
-										// storeInsuranceData
-										$data['PrimarySubscriberCity'] = $segment->element('N401');
-										$data['PrimarySubscriberState'] = $segment->element('N402');
-										$data['PrimarySubscriberZip'] = $segment->element('N403');
+								if(array_key_exists('CurrentInsuranceType', $data)) {
+									switch($data['CurrentInsuranceType']) {
+										case 1:
+											$data['PrimarySubscriberCity'] = $segment->element('N401');	// storeInsuranceData
+											$data['PrimarySubscriberState'] = $segment->element('N402');	// storeInsuranceData
+											$data['PrimarySubscriberZip'] = $segment->element('N403');	// storeInsuranceData
 
-										if($data['PrimarySubscriberRelation'] == 'self') {
-											// storePatientData
-											$data['PatientCity'] = $segment->element('N401');
-											$data['PatientState'] = $segment->element('N402');
-											$data['PatientZip'] = $segment->element('N403');
-										}
-										break;
-									case 2:
-										// storeInsuranceData
-										$data['SecondarySubscriberCity'] = $segment->element('N401');
-										$data['SecondarySubscriberState'] = $segment->element('N402');
-										$data['SecondarySubscriberZip'] = $segment->element('N403');
+											if($data['PrimarySubscriberRelation'] == 'self') {
+												$data['PatientCity'] = $segment->element('N401');	// storePatientData
+												$data['PatientState'] = $segment->element('N402');	// storePatientData
+												$data['PatientZip'] = $segment->element('N403');	// storePatientData
+											}
+											break;
+										case 2:
+											$data['SecondarySubscriberCity'] = $segment->element('N401');	// storeInsuranceData
+											$data['SecondarySubscriberState'] = $segment->element('N402');	// storeInsuranceData
+											$data['SecondarySubscriberZip'] = $segment->element('N403');	// storeInsuranceData
 
-										if($data['SecondarySubscriberRelation'] == 'self' && $data['PatientCity'] == '') {
-											// storePatientData
-											$data['PatientCity'] = $segment->element('N401');
-											$data['PatientState'] = $segment->element('N402');
-											$data['PatientZip'] = $segment->element('N403');
-										}
-										break;
-									case 3:
-										// storeInsuranceData
-										$data['TertiarySubscriberCity'] = $segment->element('N401');
-										$data['TertiarySubscriberState'] = $segment->element('N402');
-										$data['TertiarySubscriberZip'] = $segment->element('N403');
+											if($data['SecondarySubscriberRelation'] == 'self' && (!array_key_exists('PatientCity', $data) || $data['PatientCity'] == '')) {
+												$data['PatientCity'] = $segment->element('N401');	// storePatientData
+												$data['PatientState'] = $segment->element('N402');	// storePatientData
+												$data['PatientZip'] = $segment->element('N403');	// storePatientData
+											}
+											break;
+										case 3:
+											$data['TertiarySubscriberCity'] = $segment->element('N401');	// storeInsuranceData
+											$data['TertiarySubscriberState'] = $segment->element('N402');	// storeInsuranceData
+											$data['TertiarySubscriberZip'] = $segment->element('N403');	// storeInsuranceData
 
-										if($data['TertiarySubscriberRelation'] == 'self' && $data['PatientCity'] == '') {
-											// storePatientData
-											$data['PatientCity'] = $segment->element('N401');
-											$data['PatientState'] = $segment->element('N402');
-											$data['PatientZip'] = $segment->element('N403');
-										}
-										break;
+											if($data['TertiarySubscriberRelation'] == 'self' && (!array_key_exists('PatientCity', $data) || $data['PatientCity'] == '')) {
+												$data['PatientCity'] = $segment->element('N401');	// storePatientData
+												$data['PatientState'] = $segment->element('N402');	// storePatientData
+												$data['PatientZip'] = $segment->element('N403');	// storePatientData
+											}
+											break;
+									}
+								} else {
+									echo 'Missing: CurrentInsuranceType ['.__FILE__.':'.__LINE__.']'.PHP_EOL;
 								}
 								break;
 							case 'PR':
 								// 2330B — OTHER PAYER NAME
-								switch($data['CurrentInsuranceType']) {
-									case 1:
-										// storeAddress
-										$data['PrimaryPayerCity'] = $segment->element('N401');
-										$data['PrimaryPayerState'] = $segment->element('N402');
-										$data['PrimaryPayerZip'] = $segment->element('N403');
-										break;
-									case 2:
-										// storeAddress
-										$data['SecondaryPayerCity'] = $segment->element('N401');
-										$data['SecondaryPayerState'] = $segment->element('N402');
-										$data['SecondaryPayerZip'] = $segment->element('N403');
-										break;
-									case 3:
-										// storeAddress
-										$data['TertiaryPayerCity'] = $segment->element('N401');
-										$data['TertiaryPayerState'] = $segment->element('N402');
-										$data['TertiaryPayerZip'] = $segment->element('N403');
-										break;
+								if(array_key_exists('CurrentInsuranceType', $data)) {
+									switch($data['CurrentInsuranceType']) {
+										case 1:
+											$data['PrimaryPayerCity'] = $segment->element('N401');	// storeAddress
+											$data['PrimaryPayerState'] = $segment->element('N402');	// storeAddress
+											$data['PrimaryPayerZip'] = $segment->element('N403');	// storeAddress
+											break;
+										case 2:
+											$data['SecondaryPayerCity'] = $segment->element('N401');	// storeAddress
+											$data['SecondaryPayerState'] = $segment->element('N402');	// storeAddress
+											$data['SecondaryPayerZip'] = $segment->element('N403');	// storeAddress
+											break;
+										case 3:
+											$data['TertiaryPayerCity'] = $segment->element('N401');	// storeAddress
+											$data['TertiaryPayerState'] = $segment->element('N402');	// storeAddress
+											$data['TertiaryPayerZip'] = $segment->element('N403');	// storeAddress
+											break;
+									}
+								} else {
+									echo 'Missing: CurrentInsuranceType ['.__FILE__.':'.__LINE__.']'.PHP_EOL;
 								}
 								break;
 							case '77':
 								// 2330E — OTHER PAYER SERVICE FACILITY LOCATION
-								// storeFacility
-								$data['ServiceFacilityCity'] = $segment->element('N401');
-								$data['ServiceFacilityState'] = $segment->element('N402');
-								$data['ServiceFacilityZip'] = $segment->element('N403');
+								$data['ServiceFacilityCity'] = $segment->element('N401');	// storeFacility
+								$data['ServiceFacilityState'] = $segment->element('N402');	// storeFacility
+								$data['ServiceFacilityZip'] = $segment->element('N403');	// storeFacility
 								break;
 							case '85':
 								// 2330G — OTHER PAYER BILLING PROVIDER
-								// storeFacility
-								$data['BillingProviderCity'] = $segment->element('N401');
-								$data['BillingProviderState'] = $segment->element('N402');
-								$data['BillingProviderZip'] = $segment->element('N403');
+								$data['BillingProviderCity'] = $segment->element('N401');	// storeFacility
+								$data['BillingProviderState'] = $segment->element('N402');	// storeFacility
+								$data['BillingProviderZip'] = $segment->element('N403');	// storeFacility
 								break;
 						}
 						break;
-					case REF::class:
+					case Segment\REF::class:
 						// 2330B — OTHER PAYER NAME
 						if($segment->elementEquals('REF01', 'EI')) {
-							// storeFacility
-							$data['BillingProviderEIN'] = $segment->element('REF02');
+							$data['BillingProviderEIN'] = $segment->element('REF02');	// storeFacility
 						}
 						break;
 				}
@@ -1259,8 +1183,8 @@ class Cache {
 		} while(!is_null($segment));
 	}
 
-	protected function processLoop2400(Loop2400 $loop2400, array &$data) {
-		echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
+	protected function processLoop2400(Loop\Loop2400 $loop2400, array &$data) {
+		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$header = $loop2400->getHeader();
 
@@ -1268,39 +1192,37 @@ class Cache {
 			$segment = $this->findNextSegment(
 				$header,
 				[
-					SV1::class,
-					DTP::class,
-					NTE::class,
+					Segment\SV1::class,
+					Segment\DTP::class,
+					Segment\NTE::class,
 				]
 			);
 
 			if($segment) {
 				switch(get_class($segment)) {
-					case SV1::class:
+					case Segment\SV1::class:
 						// 2400 — SERVICE LINE NUMBER
 						if($segment->subElementEquals('SV101', 0, [ 'HC', 'WK' ])) {
-							// storeBilling
-							$data['Tx'][] = $segment->subElement('SV101', 1);
+							$data['Tx'][] = $segment->subElement('SV101', 1);	// storeBilling
 
 							if($segment->subElementExists('SV101', 2)) {
-								$data['TxMod'][] = $segment->subElement('SV101', 2);
+								$data['TxMod'][] = $segment->subElement('SV101', 2);	// storeBilling
 							}
 
-							$data['TxAmount'][] = $segment->element('SV102');
+							$data['TxAmount'][] = $segment->element('SV102');	// storeBilling
 
-							$data['TxUnits'][] = $segment->element('SV104');
+							$data['TxUnits'][] = $segment->element('SV104');	// storeBilling
 
 							$data['TxCount'] = count($data['Tx']);
 						}
 						break;
-					case DTP::class:
+					case Segment\DTP::class:
 						// 2400 — SERVICE LINE NUMBER
 						if($segment->elementEquals('DTP01', '472')) {
-							// storePatientData
-							$data['Dos1'] = $segment->element('DTP02').rand(10, 20).rand(10, 59).rand(10, 59);
+							$data['Dos1'] = $segment->element('DTP02').rand(10, 20).rand(10, 59).rand(10, 59);	// storePatientData
 						}
 						break;
-					case NTE::class:
+					case Segment\NTE::class:
 						// 2400 — SERVICE LINE NUMBER
 						if($segment->elementEquals('NTE01', 'ADD')) {
 							$data['NoteDesc'] = $segment->element('NTE02');	// ?
@@ -1315,19 +1237,19 @@ class Cache {
 		if(is_array($descendant)) {
 			foreach($descendant as $section) {
 				switch(get_class($section)) {
-					// case Loop2410::class:
+					// case Loop\Loop2410::class:
 					// 	$this->processLoop2410($section, $data);
 					// 	break;
 
-					case Loop2420::class:
+					case Loop\Loop2420::class:
 						$this->processLoop2420($section, $data);
 						break;
 
-					// case Loop2430::class:
+					// case Loop\Loop2430::class:
 					// 	$this->processLoop2430($section, $data);
 					// 	break;
 
-					// case Loop2440::class:
+					// case Loop\Loop2440::class:
 					// 	$this->processLoop2440($section, $data);
 					// 	break;
 				}
@@ -1335,52 +1257,48 @@ class Cache {
 		}
 	}
 
-	// protected function processLoop2410(Loop2410 $loop2410, array &$data) {
+	// protected function processLoop2410(Loop\Loop2410 $loop2410, array &$data) {
 	// 	echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
-	// 	$header = $loop2330->getHeader();
+	// 	$header = $loop2410->getHeader();
 	// }
 
-	protected function processLoop2420(Loop2420 $loop2420, array &$data) {
-		echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
+	protected function processLoop2420(Loop\Loop2420 $loop2420, array &$data) {
+		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
-		$header = $loop2330->getHeader();
+		$header = $loop2420->getHeader();
 
 		do {
 			$segment = $this->findNextSegment(
 				$header,
 				[
-					NM1::class,
-					N3::class,
-					N4::class,
-					PRV::class,
+					Segment\NM1::class,
+					Segment\N3::class,
+					Segment\N4::class,
+					Segment\PRV::class,
 				]
 			);
 
 			if($segment) {
 				switch(get_class($segment)) {
-					case NM1::class:
+					case Segment\NM1::class:
 						$data['LastNM1'] = $segment;
 
 						switch($segment->element('NM101')) {
 							case '82':
 								// 2420A — RENDERING PROVIDER NAME
-								// storeUser
-								// storeGroup
 								$data['RenderingType'] = $segment->element('NM101');	// ?
-								$data['RenderingLastName'] = $segment->element('NM103');
-								$data['RenderingFirstName'] = $segment->element('NM104');
-								$data['RenderingMiddleName'] = $segment->element('NM105');
+								$data['RenderingLastName'] = $segment->element('NM103');	// storeUser	// storeGroup
+								$data['RenderingFirstName'] = $segment->element('NM104');	// storeUser	// storeGroup
+								$data['RenderingMiddleName'] = $segment->element('NM105');	// storeUser
 								$data['RenderingSuffix'] = $segment->element('NM106');	// ?
-								$data['RenderingId'] = $segment->element('NM109');
+								$data['RenderingId'] = $segment->element('NM109');	// storeUser	// storeGroup
 								break;
 							case '77':
 								// 2420C — SERVICE FACILITY LOCATION NAME
 								if($segment->elementEquals('NM102', '2')) {
-									// storeFacility
-									// storeUser
-									$data['ServiceFacilityName'] = $segment->element('NM103');
-									$data['ServiceFacilityId'] = $segment->element('NM109');	// NPI
+									$data['ServiceFacilityName'] = $segment->element('NM103');	// storeFacility	// storeUser
+									$data['ServiceFacilityId'] = $segment->element('NM109');	// storeFacility
 								}
 								break;
 							case 'DQ':
@@ -1394,35 +1312,30 @@ class Cache {
 								break;
 							case 'DK':
 								// 2420E — ORDERING PROVIDER NAME
-								// storeUser
-								// storeGroup
 								$data['OrderingType'] = $segment->element('NM101');	// ?
-								$data['OrderingLastName'] = $segment->element('NM103');
-								$data['OrderingFirstName'] = $segment->element('NM104');
-								$data['OrderingMiddlesName'] = $segment->element('NM105');
+								$data['OrderingLastName'] = $segment->element('NM103');	// storeUser	// storeGroup
+								$data['OrderingFirstName'] = $segment->element('NM104');	// storeUser	// storeGroup
+								$data['OrderingMiddlesName'] = $segment->element('NM105');	// storeUser
 								$data['OrderingSuffix'] = $segment->element('NM106');	// ?
-								$data['OrderingId'] = $segment->element('NM109');
+								$data['OrderingId'] = $segment->element('NM109');	// storeUser	// storeGroup
 								break;
 							case 'DN':
 								// 2420F — REFERRING PROVIDER NAME
-								// storeUser
-								// storeGroup
 								$data['ReferringType'] = $segment->element('NM101');	// ?
-								$data['ReferringLastName'] = $segment->element('NM103');
-								$data['ReferringFirstName'] = $segment->element('NM104');
-								$data['ReferringMiddleName'] = $segment->element('NM105');
+								$data['ReferringLastName'] = $segment->element('NM103');	// storeUser	// storeGroup
+								$data['ReferringFirstName'] = $segment->element('NM104');	// storeUser	// storeGroup
+								$data['ReferringMiddleName'] = $segment->element('NM105');	// storeUser
 								$data['ReferringSuffix'] = $segment->element('NM106');	// ?
-								$data['ReferringId'] = $segment->element('NM109');
+								$data['ReferringId'] = $segment->element('NM109');	// storeUser	// storeGroup
 								break;
 						}
 						break;
-					case N3::class:
+					case Segment\N3::class:
 						switch($data['LastNM1']->element('NM101')) {
 							case '77':
 								// 2420C — SERVICE FACILITY LOCATION NAME
-								// storeFacility
-								$data['ServiceFacilityAddress1'] = $segment->element('N301');
-								$data['ServiceFacilityAddress2'] = $segment->element('N302');
+								$data['ServiceFacilityAddress1'] = $segment->element('N301');	// storeFacility
+								$data['ServiceFacilityAddress2'] = $segment->element('N302');	// storeFacility
 								break;
 							case 'DK':
 								// 2420E — ORDERING PROVIDER NAME
@@ -1431,14 +1344,13 @@ class Cache {
 								break;
 						}
 						break;
-					case N4::class:
+					case Segment\N4::class:
 						switch($data['LastNM1']->element('NM101')) {
 							case '77':
 								// 2420C — SERVICE FACILITY LOCATION NAME
-								// storeFacility
-								$data['ServiceFacilityCity'] = $segment->element('N401');
-								$data['ServiceFacilityState'] = $segment->element('N402');
-								$data['ServiceFacilityZip'] = $segment->element('N403');
+								$data['ServiceFacilityCity'] = $segment->element('N401');	// storeFacility
+								$data['ServiceFacilityState'] = $segment->element('N402');	// storeFacility
+								$data['ServiceFacilityZip'] = $segment->element('N403');	// storeFacility
 								break;
 							case 'DK':
 								// 2420E — ORDERING PROVIDER NAME
@@ -1448,13 +1360,12 @@ class Cache {
 								break;
 						}
 						break;
-					case PRV::class:
+					case Segment\PRV::class:
 						// 2420A — RENDERING PROVIDER NAME
 						if($segment->elementEquals('PRV01', 'PE') &&
 							$segment->elementEquals('PRV02', 'PXC')
 						) {
-							// storeUsers
-							$this->data['RenderingTaxonomy'] = $segment->element('PRV03');
+							$this->data['RenderingTaxonomy'] = $segment->element('PRV03');	// storeUsers
 						}
 						break;
 				}
@@ -1462,16 +1373,16 @@ class Cache {
 		} while(!is_null($segment));
 	}
 
-	// protected function processLoop2430(Loop2430 $loop2430, array &$data) {
+	// protected function processLoop2430(Loop\Loop2430 $loop2430, array &$data) {
 	// 	echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
-	// 	$header = $loop2330->getHeader();
+	// 	$header = $loop2430->getHeader();
 	// }
 
-	// protected function processLoop2440(Loop2440 $loop2440, array &$data) {
+	// protected function processLoop2440(Loop\Loop2440 $loop2440, array &$data) {
 	// 	echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
-	// 	$header = $loop2330->getHeader();
+	// 	$header = $loop2440->getHeader();
 	// }
 
 }

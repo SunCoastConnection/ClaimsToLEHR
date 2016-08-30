@@ -17,8 +17,17 @@ return [
 		'database'	=> __DIR__.'/../cache/database.sqlite',
 	],
 
-	'Aliases' => [
+	'Document' => [
+		'autodetect' => true,
+		'delimiters' => [
+			'data'			=> '*',
+			'repetition'	=> '^',
+			'component'		=> ':',
+			'segment'		=> '~',
+		],
+	],
 
+	'Aliases' => [
 		// Envelop Classes
 		'InterchangeControl' => \SunCoastConnection\ClaimsToOEMR\X12N837\Envelop\InterchangeControl::class,
 		'FunctionalGroup' => \SunCoastConnection\ClaimsToOEMR\X12N837\Envelop\FunctionalGroup::class,

@@ -10,31 +10,30 @@ class Loop extends Section {
 	static protected $headerSequence = [];
 	static protected $descendantSequence = [];
 
-	protected $header = [];
-	protected $descendant = [];
+	protected $subSections = [
+		'header' => [],
+		'descendant' => [],
+	];
 
 	public function parse(Raw $raw) {
 // echo $this->getName(true).' Loop Parse'.PHP_EOL;
-		$this->subSectionCount = 0;
-		$this->header = [];
-		$this->descendant = [];
+		$this->subSections = [
+			'header' => [],
+			'descendant' => [],
+		];
 
 		$status = $this->parseSequence(
 			$this::getSequence('headerSequence'),
 			$raw,
-			$this->header
+			$this->subSections['header']
 		);
-
-		$this->subSectionCount = count($this->header);
 
 		if($status) {
 			$this->parseSequence(
 				$this::getSequence('descendantSequence'),
 				$raw,
-				$this->descendant
+				$this->subSections['descendant']
 			);
-
-			$this->subSectionCount += count($this->descendant);
 		}
 
 // echo 'Loop Status: '.($status ? 'True' : 'False').PHP_EOL;
@@ -42,18 +41,11 @@ class Loop extends Section {
 	}
 
 	public function getHeader() {
-		return $this->header;
+		return $this->subSections['header'];
 	}
 
 	public function getDescendant() {
-		return $this->descendant;
-	}
-
-	public function __toString() {
-		return implode('', array_merge(
-			$this->header,
-			$this->descendant
-		));
+		return $this->subSections['descendant'];
 	}
 
 }

@@ -5,7 +5,9 @@ namespace SunCoastConnection\ClaimsToOEMR\Tests\Document;
 use \Countable,
 	\Iterator,
 	\SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw;
+	\SunCoastConnection\ClaimsToOEMR\Document\Options,
+	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
+	\org\bovigo\vfs\vfsStream;
 
 class RawTest extends BaseTestCase {
 
@@ -23,7 +25,11 @@ class RawTest extends BaseTestCase {
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::getNew()
 	 */
 	public function testGetNew() {
-		$raw = Raw::getNew('');
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
+		$raw = Raw::getNew($options);
 
 		$this->assertInstanceOf(
 			Raw::class,
@@ -48,7 +54,123 @@ class RawTest extends BaseTestCase {
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::__construct()
 	 */
 	public function testConstruct() {
-		$this->raw->__construct('A~HL*1**20*1~B~HL*2**20*1~C~');
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
+		$this->raw->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options')
+			->once()
+			->with($options);
+
+		$this->raw->__construct($options);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::options()
+	 */
+	public function testOptions() {
+		$this->assertNull(
+			$this->raw->options(),
+			'Options should return null when empty.'
+		);
+
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
+		$this->assertSame(
+			$options,
+			$this->raw->options($options),
+			'Options should return set option object when setting value.'
+		);
+
+		$this->assertSame(
+			$options,
+			$this->raw->options(),
+			'Options should return set option object after setting value.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parseFromFile()
+	 */
+	public function testParseFromFile() {
+		$contents = 'A~HL*1**20*1~B~HL*2**20*1~C~';
+
+		$root = vfsStream::setup();
+
+		$file = vfsStream::newFile('claim.file')
+			->at($root)
+			->setContent($contents);
+
+		$this->raw->shouldReceive('parse')
+			->once()
+			->with($contents, false);
+
+		$this->raw->parseFromFile($file->url());
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parseFromFile()
+	 */
+	public function testParseFromFileWithNonString() {
+		$this->setExpectedException(
+			'Exception',
+			'First paramiter should be a string: NULL passed'
+		);
+
+		$this->raw->parseFromFile(null);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parseFromFile()
+	 */
+	public function testParseFromFileWithMissingFile() {
+		$fileName = __DIR__.'/missing.txt';
+
+		$this->setExpectedException(
+			'Exception',
+			'Filename provided is not readable: '.$fileName
+		);
+
+		$this->raw->parseFromFile($fileName);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parseFromFile()
+	 */
+	public function testParseFromFileWithSingleMode() {
+		$contents = 'A~HL*1**20*1~B~HL*2**20*1~C~';
+
+		$root = vfsStream::setup();
+
+		$file = vfsStream::newFile('claim.file')
+			->at($root)
+			->setContent($contents);
+
+		$this->raw->shouldReceive('parse')
+			->once()
+			->with($contents, true);
+
+		$this->raw->parseFromFile($file->url(), true);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parse()
+	 */
+	public function testParse() {
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
+		$options->set('Document.delimiters.segment', '~');
+
+		$this->raw->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options')
+			->andReturn($options);
+
+		$this->raw->parse('A~HL*1**20*1~B~HL*2**20*1~C~');
 
 		$this->assertAttributeEquals(
 			[
@@ -58,29 +180,101 @@ class RawTest extends BaseTestCase {
 				'HL*2**20*1',
 				'C'
 			],
-			'chunks',
+			'segments',
 			$this->raw,
 			'Explosion of raw data failed.'
 		);
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::__construct()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parse()
 	 */
-	public function testConstructWithNonString() {
+	public function testParseWithNonString() {
 		$this->setExpectedException(
 			'Exception',
-			'First paramiter should be a string: NULL passed.'
+			'First paramiter should be a string: NULL passed'
 		);
 
-		$this->raw->__construct(null);
+		$this->raw->parse(null);
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::__construct()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parse()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::setInterchangeData()
 	 */
-	public function testConstructWithSingleMode() {
-		$this->raw->__construct('A~HL*1**20*1~B~HL*2**20*1~C~', true);
+	public function testParseWithAutodetect() {
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
+		$options->set('Document.autodetect', true);
+
+		$this->raw->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options')
+			->andReturn($options);
+
+		$this->raw->parse('ISA*00*          *00*          *ZZ*15G8           *ZZ*43142076400000 *150306*1617*^*00501*000638905*1*P*:~');
+
+		$this->assertEquals(
+			[
+				'data'			=> '*',
+				'repetition'	=> '^',
+				'component'		=> ':',
+				'segment'		=> '~',
+			]
+			,
+			$options->get('Document.delimiters'),
+			'Setting Interchange data failed.'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parse()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::setInterchangeData()
+	 */
+	public function testParseWithAutodetectWithBadSegment() {
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
+		$options->set('Document.autodetect', true);
+
+		$this->raw->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options')
+			->andReturn($options);
+
+		$this->setExpectedException(
+			'Exception',
+			'ISA segment not provided as first segment'
+		);
+
+		$this->raw->parse('A~HL*1**20*1~B~HL*2**20*1~C~');
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parse()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::correctSingleMode()
+	 */
+	public function testParseWithSingleMode() {
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
+		$options->set(
+			'Document.delimiters',
+			[
+				'data'			=> '*',
+				'repetition'	=> '^',
+				'component'		=> ':',
+				'segment'		=> '~',
+			]
+		);
+
+		$this->raw->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options')
+			->andReturn($options);
+
+		$this->raw->parse('A~HL*1**20*1~B~HL*2**20*1~C~', true);
 
 		$this->assertAttributeEquals(
 			[
@@ -92,7 +286,7 @@ class RawTest extends BaseTestCase {
 				'ST*837*0004*005010X222A1',
 				'C'
 			],
-			'chunks',
+			'segments',
 			$this->raw,
 			'Explosion of raw data failed.'
 		);
@@ -102,9 +296,19 @@ class RawTest extends BaseTestCase {
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::__tostring()
 	 */
 	public function testToString() {
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
+		$options->set('Document.delimiters.segment', '~');
+
+		$this->raw->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options')
+			->andReturn($options);
+
 		$this->setProtectedProperty(
 			$this->raw,
-			'chunks',
+			'segments',
 			[
 				'A',
 				'B',
@@ -131,7 +335,7 @@ class RawTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->raw,
-			'chunks',
+			'segments',
 			$array
 		);
 
@@ -146,7 +350,7 @@ class RawTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->raw,
-			'chunks',
+			'segments',
 			$array
 		);
 
@@ -180,7 +384,7 @@ class RawTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->raw,
-			'chunks',
+			'segments',
 			$array
 		);
 
@@ -196,7 +400,7 @@ class RawTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->raw,
-			'chunks',
+			'segments',
 			$array
 		);
 
@@ -219,7 +423,7 @@ class RawTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->raw,
-			'chunks',
+			'segments',
 			$array
 		);
 
@@ -234,7 +438,7 @@ class RawTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->raw,
-			'chunks',
+			'segments',
 			$array
 		);
 
@@ -257,7 +461,7 @@ class RawTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->raw,
-			'chunks',
+			'segments',
 			$array
 		);
 
@@ -266,7 +470,7 @@ class RawTest extends BaseTestCase {
 
 		$array = $this->getProtectedProperty(
 			$this->raw,
-			'chunks'
+			'segments'
 		);
 
 		$this->assertEquals(
@@ -292,7 +496,7 @@ class RawTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->raw,
-			'chunks',
+			'segments',
 			$array
 		);
 
@@ -300,7 +504,7 @@ class RawTest extends BaseTestCase {
 
 		$array = $this->getProtectedProperty(
 			$this->raw,
-			'chunks'
+			'segments'
 		);
 
 		$this->assertEquals(
@@ -322,7 +526,7 @@ class RawTest extends BaseTestCase {
 
 		$this->setProtectedProperty(
 			$this->raw,
-			'chunks',
+			'segments',
 			$array
 		);
 
@@ -334,16 +538,26 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::getSegments()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::getSegment()
 	 */
-	public function testGetSegments() {
+	public function testGetSegment() {
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
+		$options->set('Document.delimiters.data', '*');
+
+		$this->raw->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options')
+			->andReturn($options);
+
 		$array = [
 			'ST*837*0001'
 		];
 
 		$this->setProtectedProperty(
 			$this->raw,
-			'chunks',
+			'segments',
 			$array
 		);
 
@@ -353,7 +567,7 @@ class RawTest extends BaseTestCase {
 				'837',
 				'0001'
 			],
-			$this->raw->getSegments(),
+			$this->raw->getSegment(),
 			'Segments not returned correctly.'
 		);
 	}
@@ -362,15 +576,13 @@ class RawTest extends BaseTestCase {
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::getSegmentDesignator()
 	 */
 	public function testGetSegmentDesignator() {
-		$array = [
-			'ST*837*0001'
-		];
-
-		$this->setProtectedProperty(
-			$this->raw,
-			'chunks',
-			$array
-		);
+		$this->raw->shouldAllowMockingProtectedMethods()
+			->shouldReceive('getSegment')
+			->andReturn([
+				'ST',
+				'837',
+				'0001'
+			]);
 
 		$this->assertEquals(
 			'ST',
@@ -383,15 +595,13 @@ class RawTest extends BaseTestCase {
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::getSegmentElements()
 	 */
 	public function testGetSegmentElements() {
-		$array = [
-			'ST*837*0001'
-		];
-
-		$this->setProtectedProperty(
-			$this->raw,
-			'chunks',
-			$array
-		);
+		$this->raw->shouldAllowMockingProtectedMethods()
+			->shouldReceive('getSegment')
+			->andReturn([
+				'ST',
+				'837',
+				'0001'
+			]);
 
 		$this->assertEquals(
 			[

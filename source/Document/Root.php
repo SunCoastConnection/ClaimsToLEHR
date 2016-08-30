@@ -9,33 +9,28 @@ class Root extends Section {
 
 	static protected $descendantSequence = [];
 
-	protected $descendant = [];
+	protected $subSections = [
+		'descendant' => [],
+	];
 
 	public function parse(Raw $raw) {
 // echo $this->getName(true).' Root Parse'.PHP_EOL;
-		$this->subSectionCount = 0;
-		$this->descendant = [];
+		$this->subSections['descendant'] = [];
 
 		$raw->rewind();
 
 		$status = $this->parseSequence(
 			$this::getSequence('descendantSequence'),
 			$raw,
-			$this->descendant
+			$this->subSections['descendant']
 		);
-
-		$this->subSectionCount = count($this->descendant);
 
 // echo 'Root Status: '.($status ? 'True' : 'False').PHP_EOL;
 		return $status;
 	}
 
 	public function getDescendant() {
-		return $this->descendant;
-	}
-
-	public function __toString() {
-		return implode('', $this->descendant);
+		return $this->subSections['descendant'];
 	}
 
 }

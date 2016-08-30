@@ -11,41 +11,38 @@ class Envelop extends Section {
 	static protected $descendantSequence = [];
 	static protected $trailerSequence = [];
 
-	protected $header = [];
-	protected $descendant = [];
-	protected $trailer = [];
+	protected $subSections = [
+		'header' => [],
+		'descendant' => [],
+		'trailer' => [],
+	];
 
 	public function parse(Raw $raw) {
 // echo $this->getName(true).' Envelop Parse'.PHP_EOL;
-		$this->subSectionCount = 0;
-		$this->header = [];
-		$this->descendant = [];
-		$this->trailer = [];
+		$this->subSections = [
+			'header' => [],
+			'descendant' => [],
+			'trailer' => [],
+		];
 
 		$status = $this->parseSequence(
 			$this::getSequence('headerSequence'),
 			$raw,
-			$this->header
+			$this->subSections['header']
 		);
-
-		$this->subSectionCount = count($this->header);
 
 		if($status) {
 			$this->parseSequence(
 				$this::getSequence('descendantSequence'),
 				$raw,
-				$this->descendant
+				$this->subSections['descendant']
 			);
-
-			$this->subSectionCount += count($this->descendant);
 
 			$this->parseSequence(
 				$this::getSequence('trailerSequence'),
 				$raw,
-				$this->trailer
+				$this->subSections['trailer']
 			);
-
-			$this->subSectionCount += count($this->trailer);
 		}
 
 // echo 'Envelop Status: '.($status ? 'True' : 'False').PHP_EOL;
@@ -53,23 +50,15 @@ class Envelop extends Section {
 	}
 
 	public function getHeader() {
-		return $this->header;
+		return $this->subSections['header'];
 	}
 
 	public function getDescendant() {
-		return $this->descendant;
+		return $this->subSections['descendant'];
 	}
 
 	public function getTrailer() {
-		return $this->trailer;
-	}
-
-	public function __toString() {
-		return implode('', array_merge(
-			$this->header,
-			$this->descendant,
-			$this->trailer
-		));
+		return $this->subSections['trailer'];
 	}
 
 }
