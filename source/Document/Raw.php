@@ -5,7 +5,8 @@ namespace SunCoastConnection\ClaimsToOEMR\Document;
 use \Countable,
 	\Exception,
 	\Iterator,
-	\SunCoastConnection\ClaimsToOEMR\Document\Options;
+	\SunCoastConnection\ClaimsToOEMR\Document\Options,
+	\SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
 
 class Raw implements Iterator, Countable {
 
@@ -85,6 +86,10 @@ class Raw implements Iterator, Countable {
 				$string
 			)
 		);
+
+		$this->parseSegments();
+
+		$this->rewind();
 	}
 
 	protected function setInterchangeData($string) {
@@ -145,6 +150,14 @@ class Raw implements Iterator, Countable {
 		);
 	}
 
+	protected function parseSegments() {
+		$options = $this->options();
+
+		array_walk($this->segments, function(&$segment) use ($options) {
+			$segment = Segment::getNew($options, $segment);
+		});
+	}
+
 	public function __toString() {
 		$segment = $this->options()->get('Document.delimiters.segment');
 
@@ -178,26 +191,6 @@ class Raw implements Iterator, Countable {
 
 	public function count() {
 		return count($this->segments);
-	}
-
-	public function getSegment() {
-		return explode(
-			$this->options()->get('Document.delimiters.data'),
-			$this->current()
-		);
-	}
-
-	public function getSegmentDesignator() {
-		$segment = $this->getSegment();
-
-		return $segment[0];
-	}
-
-	public function getSegmentElements() {
-		$elements = $this->getSegment();
-		array_shift($elements);
-
-		return $elements;
 	}
 
 }

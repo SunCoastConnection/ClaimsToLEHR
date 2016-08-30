@@ -1,6 +1,6 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Document;
+namespace SunCoastConnection\ClaimsToOEMR\Document\Section;
 
 use \SunCoastConnection\ClaimsToOEMR\Document\Raw,
 	\SunCoastConnection\ClaimsToOEMR\Document\Section;
@@ -14,7 +14,6 @@ class Root extends Section {
 	];
 
 	public function parse(Raw $raw) {
-// echo $this->getName(true).' Root Parse'.PHP_EOL;
 		$this->subSections['descendant'] = [];
 
 		$raw->rewind();
@@ -25,7 +24,6 @@ class Root extends Section {
 			$this->subSections['descendant']
 		);
 
-// echo 'Root Status: '.($status ? 'True' : 'False').PHP_EOL;
 		return $status;
 	}
 

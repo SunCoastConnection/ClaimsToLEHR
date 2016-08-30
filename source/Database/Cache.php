@@ -4,7 +4,7 @@ namespace SunCoastConnection\ClaimsToOEMR\Database;
 
 use \SunCoastConnection\ClaimsToOEMR\Database,
 	\SunCoastConnection\ClaimsToOEMR\X12N837,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Envelop,
+	\SunCoastConnection\ClaimsToOEMR\X12N837\Envelope,
 	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop,
 	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment;
 
@@ -64,7 +64,7 @@ class Cache {
 		}
 	}
 
-	protected function processInterchangeControl(Envelop\InterchangeControl $interchangeControl) {
+	protected function processInterchangeControl(Envelope\InterchangeControl $interchangeControl) {
 		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$data = [];
@@ -85,7 +85,7 @@ class Cache {
 		}
 	}
 
-	protected function processFunctionalGroup(Envelop\FunctionalGroup $functionalGroup, array &$data) {
+	protected function processFunctionalGroup(Envelope\FunctionalGroup $functionalGroup, array &$data) {
 		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$header = $functionalGroup->getHeader();
@@ -110,7 +110,7 @@ class Cache {
 		}
 	}
 
-	protected function processTransactionSet(Envelop\TransactionSet $transactionSet, array &$data) {
+	protected function processTransactionSet(Envelope\TransactionSet $transactionSet, array &$data) {
 		// echo " - Function:\t\t".__FUNCTION__.PHP_EOL;
 
 		$header = $transactionSet->getHeader();
@@ -667,9 +667,9 @@ class Cache {
 						$data['ClaimId'] = $segment->element('CLM01');	// storeFormEncounter	// storeForms	// storeBilling
 						$data['ClaimAmount'] = $segment->element('CLM02');	// ?
 
-						$data['FacilityCodeValue'] = $segment->subElement('CLM05', 0);	// storeFacility
-						$data['FacilityCodeQualifier'] = $segment->subElement('CLM05', 1);	// ?
-						$data['FrequencyTypeCode'] = $segment->subElement('CLM05', 2);	// ?
+						$data['FacilityCodeValue'] = $segment->element('CLM05')->subElement(0);	// storeFacility
+						$data['FacilityCodeQualifier'] = $segment->element('CLM05')->subElement(1);	// ?
+						$data['FrequencyTypeCode'] = $segment->element('CLM05')->subElement(2);	// ?
 
 						$data['ProviderSignatureOnFile'] = $segment->element('CLM07');	// ?
 						$data['ProviderAcceptAssignmentCode'] = ($segment->elementEquals('CLM08', 'A') ? 'true' : '');	// storeInsuranceData
@@ -696,7 +696,7 @@ class Cache {
 						break;
 					case Segment\HI::class:
 						// 2300 — CLAIM INFORMATION
-						if($segment->subElementEquals('HI01', 0, [ 'ABK', 'BK' ])) {
+						if($segment->elementExists('HI01') && $segment->element('HI01')->subElementEquals(0, [ 'ABK', 'BK' ])) {
 							$elements = [
 								'HI01', 'HI02', 'HI03',
 								'HI04', 'HI05', 'HI06',
@@ -705,12 +705,12 @@ class Cache {
 							];
 
 							foreach($elements as $element) {
-								if($segment->subElementCount($element) > 1) {
+								if($segment->elementExists($element) && $segment->element($element)->subElementCount() > 1) {
 									array_key_exists('DxType', $data) || $data['DxType'] = [];
-									$data['DxType'][] = $segment->subElement($element, 0);	// storeBilling
+									$data['DxType'][] = $segment->element($element)->subElement(0);	// storeBilling
 
 									array_key_exists('Dx', $data) || $data['Dx'] = [];
-									$data['Dx'][] = $segment->subElement($element, 1);	// storeBilling
+									$data['Dx'][] = $segment->element($element)->subElement(1);	// storeBilling
 
 									$data['DxCount'] = count($data['DxType']);
 								}
@@ -1202,11 +1202,11 @@ class Cache {
 				switch(get_class($segment)) {
 					case Segment\SV1::class:
 						// 2400 — SERVICE LINE NUMBER
-						if($segment->subElementEquals('SV101', 0, [ 'HC', 'WK' ])) {
-							$data['Tx'][] = $segment->subElement('SV101', 1);	// storeBilling
+						if($segment->elementExists('SV101') && $segment->element('SV101')->subElementEquals(0, [ 'HC', 'WK' ])) {
+							$data['Tx'][] = $segment->element('SV101')->subElement(1);	// storeBilling
 
-							if($segment->subElementExists('SV101', 2)) {
-								$data['TxMod'][] = $segment->subElement('SV101', 2);	// storeBilling
+							if($segment->element('SV101')->subElementExists(2)) {
+								$data['TxMod'][] = $segment->element('SV101')->subElement(2);	// storeBilling
 							}
 
 							$data['TxAmount'][] = $segment->element('SV102');	// storeBilling
