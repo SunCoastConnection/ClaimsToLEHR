@@ -54,15 +54,6 @@ echo 'Loading configurations...'.PHP_EOL;
 //** GET CONFIGURATION OPTIONS **//
 $options = Options::getNew(require_once(__DIR__.'/config/app.php'));
 
-if($options->get('Database.driver') === 'sqlite' && !file_exists($options->get('Database.database'))) {
-	touch($options->get('Database.database')) || exitError(
-		'Database missing and can not be created: '.$options->get('Database.database').PHP_EOL,
-		1
-	);
-}
-
-$options->set('App.Database', Database::getNew($options));
-
 
 $cmd = array_shift($argv);
 $cmdOption = array_shift($argv);
@@ -81,21 +72,37 @@ switch($cmdOption) {
 		break;
 }
 
+function setupDatabase($options) {
+	if($options->get('Database.driver') === 'sqlite' && !file_exists($options->get('Database.database'))) {
+		touch($options->get('Database.database')) || exitError(
+			'Database missing and can not be created: '.$options->get('Database.database').PHP_EOL,
+			1
+		);
+	}
+
+	$options->set('App.database', Database::getNew($options));
+}
+
 function c2eMigrate($options) {
+	setupDatabase($options);
+
 	include(__DIR__.'/Database/migrate.php');
 }
 
 function c2eParse($options) {
-	$inboxPath		= $options->get('Inbox.Path');
-	$inboxPattern	= $options->get('Inbox.Pattern');
+	$inboxPath		= $options->get('Inbox.path');
+	$inboxPattern	= $options->get('Inbox.pattern');
 
 	$finder = new Finder;
 	$finder->files()
 		->in($inboxPath)
 		->name($inboxPattern);
 
-	//** TESTING **//
-	echo 'Found the following files in directory: '.$inboxPath.PHP_EOL;
+	if($options->get('Inbox.recursive') == false) {
+		$finder->depth('== 0');
+	}
+
+	echo 'Found '.$finder->count().' file(s) in directory: '.realpath($inboxPath).PHP_EOL;
 
 	foreach($finder as $file) {
 		echo " - Filename:\t\t".$file->getRealpath().PHP_EOL;
@@ -109,22 +116,16 @@ function c2eClaimLoad($options, $file) {
 	$raw = Raw::getNew($options);
 	$raw->parse($file->getContents());
 
-	echo " - Segments:\t\t".count($raw).PHP_EOL;
-
 	$document = X12N837::getNew($options);
 	$document->parse($raw);
-
-	// echo " - Document:\t\t".var_export($document, true).PHP_EOL;
-	// echo " - Raw:\t\t\t".$document.PHP_EOL;
-	// exit;
 
 	c2eClaimCache($options, $document);
 }
 
 function c2eClaimCache($options, $document) {
-	$cache = Cache::getNew($options->get('App.Database'));
+	setupDatabase($options);
+
+	$cache = Cache::getNew($options->get('App.database'));
 
 	$cache->processDocument($document);
-
-	// exit;
 }

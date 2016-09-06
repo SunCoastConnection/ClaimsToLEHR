@@ -7,11 +7,20 @@ use \Countable,
 	\SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
 	\SunCoastConnection\ClaimsToOEMR\Document\Options,
 	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
+	\SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment,
 	\org\bovigo\vfs\vfsStream;
 
 class RawTest extends BaseTestCase {
 
 	protected $raw;
+
+	protected $document = [
+		'A*LM*1',
+		'HL*1**20*1',
+		'B*LM*2',
+		'HL*2**20*1',
+		'C*LM*3'
+	];
 
 	public function setUp() {
 		parent::setUp();
@@ -96,7 +105,7 @@ class RawTest extends BaseTestCase {
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parseFromFile()
 	 */
 	public function testParseFromFile() {
-		$contents = 'A~HL*1**20*1~B~HL*2**20*1~C~';
+		$contents = implode('~', $this->document).'~';
 
 		$root = vfsStream::setup();
 
@@ -141,7 +150,7 @@ class RawTest extends BaseTestCase {
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parseFromFile()
 	 */
 	public function testParseFromFileWithSingleMode() {
-		$contents = 'A~HL*1**20*1~B~HL*2**20*1~C~';
+		$contents = implode('~', $this->document).'~';
 
 		$root = vfsStream::setup();
 
@@ -160,26 +169,28 @@ class RawTest extends BaseTestCase {
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parse()
 	 */
 	public function testParse() {
+		$contents = implode('~', $this->document).'~';
+
 		$options = $this->getMockery(
 			Options::class
 		)->makePartial();
-
-		$options->set('Document.delimiters.segment', '~');
 
 		$this->raw->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
 			->andReturn($options);
 
-		$this->raw->parse('A~HL*1**20*1~B~HL*2**20*1~C~');
+		$options->set('Document.autodetect', false);
+
+		$options->set('Document.delimiters.segment', '~');
+
+		$this->raw->shouldReceive('parseSegments');
+
+		$this->raw->shouldReceive('rewind');
+
+		$this->raw->parse($contents);
 
 		$this->assertAttributeEquals(
-			[
-				'A',
-				'HL*1**20*1',
-				'B',
-				'HL*2**20*1',
-				'C'
-			],
+			$this->document,
 			'segments',
 			$this->raw,
 			'Explosion of raw data failed.'
@@ -200,39 +211,98 @@ class RawTest extends BaseTestCase {
 
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parse()
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::setInterchangeData()
 	 */
 	public function testParseWithAutodetect() {
+		$contents = implode('~', $this->document).'~';
+
 		$options = $this->getMockery(
 			Options::class
 		)->makePartial();
-
-		$options->set('Document.autodetect', true);
 
 		$this->raw->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
 			->andReturn($options);
 
-		$this->raw->parse('ISA*00*          *00*          *ZZ*15G8           *ZZ*43142076400000 *150306*1617*^*00501*000638905*1*P*:~');
+		$options->set('Document.autodetect', true);
 
-		$this->assertEquals(
-			[
-				'data'			=> '*',
-				'repetition'	=> '^',
-				'component'		=> ':',
-				'segment'		=> '~',
-			]
-			,
-			$options->get('Document.delimiters'),
-			'Setting Interchange data failed.'
-		);
+		$this->raw->shouldReceive('setInterchangeData')
+			->with($contents);
+
+		$options->set('Document.delimiters.segment', '~');
+
+		$this->raw->shouldReceive('parseSegments');
+		$this->raw->shouldReceive('rewind');
+
+		$this->raw->parse($contents);
 	}
 
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parse()
+	 */
+	public function testParseWithSingleMode() {
+		$contents = implode('~', $this->document).'~';
+
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
+		$this->raw->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options')
+			->andReturn($options);
+
+		$options->set('Document.autodetect', false);
+
+		$this->raw->shouldReceive('correctSingleMode')
+			->with($contents);
+
+		$options->set('Document.delimiters.segment', '~');
+
+		$this->raw->shouldReceive('parseSegments');
+
+		$this->raw->shouldReceive('rewind');
+
+		$this->raw->parse($contents, true);
+	}
+
+	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::setInterchangeData()
 	 */
-	public function testParseWithAutodetectWithBadSegment() {
+	public function testSetInterchangeData() {
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
+		$this->raw->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options')
+			->andReturn($options);
+
+		$this->callProtectedMethod(
+			$this->raw,
+			'setInterchangeData',
+			[
+				'ISA!00!          !00!          !ZZ!15G8           !ZZ!43142076400000 !150306!1617!@!00501!000638905!1!P!#$'
+			]
+		);
+
+		$this->assertEquals(
+			[
+				'data'			=> '!',
+				'repetition'	=> '@',
+				'component'		=> '#',
+				'segment'		=> '$',
+			]
+			,
+			$options->get('Document.delimiters'),
+			'Setting Interchange data failed'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::setInterchangeData()
+	 */
+	public function testSetInterchangeDataWithBadSegment() {
+		$contents = implode('~', $this->document).'~';
+
 		$options = $this->getMockery(
 			Options::class
 		)->makePartial();
@@ -248,17 +318,28 @@ class RawTest extends BaseTestCase {
 			'ISA segment not provided as first segment'
 		);
 
-		$this->raw->parse('A~HL*1**20*1~B~HL*2**20*1~C~');
+		$this->callProtectedMethod(
+			$this->raw,
+			'setInterchangeData',
+			[
+				$contents
+			]
+		);
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parse()
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::correctSingleMode()
 	 */
-	public function testParseWithSingleMode() {
+	public function testCorrectSingleMode() {
+		$contents = implode('~', $this->document).'~';
+
 		$options = $this->getMockery(
 			Options::class
 		)->makePartial();
+
+		$this->raw->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options')
+			->andReturn($options);
 
 		$options->set(
 			'Document.delimiters',
@@ -270,25 +351,75 @@ class RawTest extends BaseTestCase {
 			]
 		);
 
+		$this->assertEquals(
+			implode(
+				'~',
+				[
+					$this->document[0],
+					$this->document[1],
+					$this->document[2],
+					'HL*2',
+					'SE*28*0003',
+					'ST*837*0004*005010X222A1',
+					$this->document[4],
+				]
+			).'~',
+			$this->callProtectedMethod(
+				$this->raw,
+				'correctSingleMode',
+				[
+					$contents
+				]
+			),
+			'Explosion of raw data failed'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parseSegments()
+	 */
+	public function testParseSegments() {
+		$segmentString = 'AB*C*1*D*2';
+		$output = 'Returned Segment Object';
+
+		$options = $this->getMockery(
+			Options::class
+		)->makePartial();
+
 		$this->raw->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
 			->andReturn($options);
 
-		$this->raw->parse('A~HL*1**20*1~B~HL*2**20*1~C~', true);
+		$segment = $this->getMockery(
+			'alias:'.Segment::class
+		)->makePartial();
 
-		$this->assertAttributeEquals(
-			[
-				'A',
-				'HL*1**20*1',
-				'B',
-				'HL*2',
-				'SE*28*0003',
-				'ST*837*0004*005010X222A1',
-				'C'
-			],
-			'segments',
+		$segment->shouldReceive('getNew')
+			->with($options, $segmentString)
+			->andReturn($output);
+
+		$this->setProtectedProperty(
 			$this->raw,
-			'Explosion of raw data failed.'
+			'segments',
+			[
+				$segmentString,
+			]
+		);
+
+		$this->callProtectedMethod(
+			$this->raw,
+			'parseSegments'
+		);
+
+		$this->assertEquals(
+			[
+				$output
+			],
+			$this->getProtectedProperty(
+				$this->raw,
+				'segments'
+			),
+			'Segment was not parsed correctly'
 		);
 	}
 
@@ -447,6 +578,19 @@ class RawTest extends BaseTestCase {
 			$this->raw->current(),
 			'Failed to return incremented array value.'
 		);
+
+		next($array);
+
+		$this->setProtectedProperty(
+			$this->raw,
+			'segments',
+			$array
+		);
+
+		$this->assertFalse(
+			$this->raw->current(),
+			'Failed to return end of array value.'
+		);
 	}
 
 	/**
@@ -534,82 +678,6 @@ class RawTest extends BaseTestCase {
 			3,
 			$this->raw->count(),
 			'Failed to correct array count.'
-		);
-	}
-
-	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::getSegment()
-	 */
-	public function testGetSegment() {
-		$options = $this->getMockery(
-			Options::class
-		)->makePartial();
-
-		$options->set('Document.delimiters.data', '*');
-
-		$this->raw->shouldAllowMockingProtectedMethods()
-			->shouldReceive('options')
-			->andReturn($options);
-
-		$array = [
-			'ST*837*0001'
-		];
-
-		$this->setProtectedProperty(
-			$this->raw,
-			'segments',
-			$array
-		);
-
-		$this->assertEquals(
-			[
-				'ST',
-				'837',
-				'0001'
-			],
-			$this->raw->getSegment(),
-			'Segments not returned correctly.'
-		);
-	}
-
-	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::getSegmentDesignator()
-	 */
-	public function testGetSegmentDesignator() {
-		$this->raw->shouldAllowMockingProtectedMethods()
-			->shouldReceive('getSegment')
-			->andReturn([
-				'ST',
-				'837',
-				'0001'
-			]);
-
-		$this->assertEquals(
-			'ST',
-			$this->raw->getSegmentDesignator(),
-			'Segment designator not returned correctly.'
-		);
-	}
-
-	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::getSegmentElements()
-	 */
-	public function testGetSegmentElements() {
-		$this->raw->shouldAllowMockingProtectedMethods()
-			->shouldReceive('getSegment')
-			->andReturn([
-				'ST',
-				'837',
-				'0001'
-			]);
-
-		$this->assertEquals(
-			[
-				'837',
-				'0001'
-			],
-			$this->raw->getSegmentElements(),
-			'Segment elements not returned correctly.'
 		);
 	}
 

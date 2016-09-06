@@ -8,8 +8,12 @@ class Element {
 
 	protected $subElements = [];
 
-	static public function getNew(Options $options) {
-		return new static($options);
+	static public function getNew(Options $options, $element) {
+		$object = new static($options);
+
+		$object->parse($element);
+
+		return $object;
 	}
 
 	public function __construct(Options $options) {

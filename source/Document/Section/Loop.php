@@ -16,7 +16,6 @@ class Loop extends Section {
 	];
 
 	public function parse(Raw $raw) {
-// echo $this->getName(true).' Loop Parse'.PHP_EOL;
 		$this->subSections = [
 			'header' => [],
 			'descendant' => [],
@@ -36,7 +35,6 @@ class Loop extends Section {
 			);
 		}
 
-// echo 'Loop Status: '.($status ? 'True' : 'False').PHP_EOL;
 		return $status;
 	}
 

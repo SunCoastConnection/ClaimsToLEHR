@@ -26,7 +26,9 @@ class ElementTest extends BaseTestCase {
 			Options::class
 		)->makePartial();
 
-		$element = Element::getNew($options);
+		$options->set('Document.delimiters.component', '*');
+
+		$element = Element::getNew($options, 'A*B');
 
 		$this->assertInstanceOf(
 			Element::class,

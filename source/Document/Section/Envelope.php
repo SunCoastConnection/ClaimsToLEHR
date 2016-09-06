@@ -18,7 +18,6 @@ class Envelope extends Section {
 	];
 
 	public function parse(Raw $raw) {
-// echo $this->getName(true).' Envelope Parse'.PHP_EOL;
 		$this->subSections = [
 			'header' => [],
 			'descendant' => [],
@@ -45,7 +44,6 @@ class Envelope extends Section {
 			);
 		}
 
-// echo 'Envelope Status: '.($status ? 'True' : 'False').PHP_EOL;
 		return $status;
 	}
 

@@ -2,71 +2,120 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Document\Raw;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Options,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
-	\SunCoastConnection\ClaimsToOEMR\Document\Section;
+use \Exception,
+	\SunCoastConnection\ClaimsToOEMR\Document\Options,
+	\SunCoastConnection\ClaimsToOEMR\Document\Raw\Element;
 
-class Segment extends Section {
+class Segment {
 
 	static protected $elementSequence = [];
 
 	static protected $elementNames = [];
 
+	protected $parentName;
+
+	protected $elements = [];
+
+	static public function getNew(Options $options, $segment) {
+		$delimiterPos = strpos(
+			$segment,
+			$options->get('Document.delimiters.data')
+		);
+
+		if($delimiterPos) {
+			$designator = substr($segment, 0, $delimiterPos);
+			$elements = substr($segment, $delimiterPos + 1);
+		} else {
+			$designator = $segment;
+			$elements = '';
+		}
+
+		$class = $options->get('Aliases.'.$designator);
+
+		if($class === null) {
+			// TODO: Replace exception
+			throw new Exception('Segment designator can not be found: '.$designator);
+		}
+
+		$object = new $class($options);
+
+		$object->parse($elements);
+
+		return $object;
+	}
+
+	static public function getElementSequence() {
+		return static::$elementSequence;
+	}
+
 	static public function getElementNames() {
 		return static::$elementNames;
 	}
 
-	protected $subSections = [
-		'elements' => [],
-	];
-
-	public function __construct(Options $options, $parentName = '/') {
-		$this->subSectionDelimiter = $options->get('Document.delimiters.data');
-
-		parent::__construct($options, $parentName);
+	public function __construct(Options $options) {
+		$this->options($options);
 	}
 
-	public function parse(Raw $raw) {
-		$this->subSections['elements'] = [];
+	protected function options(Options $setOptions = null) {
+		static $options = null;
 
-		$status = false;
+		if(is_null($options) && !is_null($setOptions)) {
+			$options = $setOptions;
+		}
 
-		if($raw->getSegmentDesignator() === $this->getName()) {
-			$status = true;
+		return $options;
+	}
 
-			$elements = $raw->getSegmentElements();
+	public function setParentName($parentName = '/') {
+		$this->parentName = $parentName;
+	}
 
-			$component = $this->options()->get('Document.delimiters.component');
+	public function getName($full = false) {
+		$name = explode('\\', static::class);
+		$name = array_pop($name);
 
-			array_walk($elements, function(&$element) use ($component) {
-				if(strpos($element, $component) !== false) {
-					$element = explode($component, $element);
-				}
+		if($full) {
+			$name = ($this->parentName === '/' ?
+				'' :
+				$this->parentName
+			).'/'.$name;
+		}
+
+		return $name;
+	}
+
+	public function parse($elements) {
+		if($elements) {
+			$options = $this->options();
+
+			$elements = explode(
+				$options->get('Document.delimiters.data'),
+				$elements
+			);
+
+			array_walk($elements, function(&$element) use ($options) {
+				$element = Element::getNew($options, $element);
 			});
 
-			$sequence = $this::getSequence('elementSequence');
+			$sequence = $this::getElementSequence();
 
 			foreach($elements as $pos => $element) {
 				if(array_key_exists($pos, $sequence)) {
-					$this->subSections['elements'][$sequence[$pos]['name']] = $element;
+					$this->elements[$sequence[$pos]['name']] = $element;
 				} else {
-					$this->subSections['elements'][count($this->subSections['elements'])] = $element;
+					$this->elements[count($this->elements)] = $element;
 				}
 			}
-
-			$raw->next();
 		}
-
-		return $status;
 	}
 
 	public function elementExists($element) {
-		return array_key_exists($element, $this->subSections['elements']);
+		return array_key_exists($element, $this->elements);
 	}
 
 	public function element($element) {
 		if($this->elementExists($element)) {
-			return $this->subSections['elements'][$element];
+			return $this->elements[$element];
 		}
 	}
 
@@ -80,25 +129,14 @@ class Segment extends Section {
 	}
 
 	public function __toString() {
-		$data = $this->subSections;
+		$data = $this->options()->get('Document.delimiters.data');
 
-		array_walk($this->subSections['elements'], function(&$element) {
-			if(is_array($element)) {
-				$element = implode(
-					$this->options()->get('Document.delimiters.component'),
-					$element
-				);
-			}
-		});
-
-		$return = $this->getName().
-			$this->subSectionDelimiter.
-			parent::__toString().
-			$this->options()->get('Document.delimiters.segment');
-
-		$this->subSections = $data;
-
-		return $return;
+		return $this->getName().
+			$data.
+			implode(
+				$data,
+				$this->elements
+			);
 	}
 
 }

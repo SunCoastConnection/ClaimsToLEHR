@@ -73,7 +73,6 @@ abstract class Section {
 	}
 
 	protected function parseSequence(array $sequence, Raw $raw, array &$objects) {
-// echo $this->getName(true).' Parse Sequence'.PHP_EOL;
 		$sectionDataTemplate = [
 			'name' => '',
 			'required' => true,
@@ -88,7 +87,7 @@ abstract class Section {
 			$sectionData['class'] = $this->resolveAlias($sectionData['name']);
 
 			if(get_parent_class($sectionData['class']) !== Segment::class ||
-				$raw->getSegmentDesignator() === $sectionData['name']
+				($raw->valid() && $raw->current()->getName() === $sectionData['name'])
 			) {
 				$parsed = $this->parseSection($sectionData, $raw, $objects);
 
@@ -98,36 +97,45 @@ abstract class Section {
 			}
 		}
 
-// echo 'Parse Segment Status: '.($status ? 'True' : 'False').PHP_EOL;
 		return $status;
 	}
 
 	protected function parseSection($sectionData, Raw $raw, array &$objects) {
-// echo $this->getName(true).' Parse Section'.PHP_EOL;
 		$options = $this->options();
-		$name = $this->getName(true);
+
+		$parentName = $this->getName(true);
 
 		$status = false;
 
 		do {
-			$section = $sectionData['class']::getNew(
-				$options,
-				$name
-			);
+			$sectionData['repeat']--;
 
-			$parsed = $section->parse($raw);
+			if(get_parent_class($sectionData['class']) !== Segment::class) {
+				$section = $sectionData['class']::getNew(
+					$options,
+					$parentName
+				);
+
+				$parsed = $section->parse($raw);
+			} elseif($raw->valid() && $raw->current()->getName() === $sectionData['name']) {
+				// If current segment is matches current section name
+				$section = $raw->current();
+
+				$section->setParentName($parentName);
+
+				$raw->next();
+
+				$parsed = true;
+			} else {
+				$parsed = false;
+			}
 
 			if($parsed) {
 				$status = true;
-// echo "Name:\t".$section->getName(true).PHP_EOL;
 				$objects[] = $section;
 			}
+		} while($sectionData['repeat'] != 0 && $parsed);
 
-			$sectionData['repeat']--;
-
-		} while($sectionData['repeat'] !== 0 && $parsed);
-
-// echo 'Parse Section Status: '.($status ? 'True' : 'False').PHP_EOL;
 		return $status;
 	}
 

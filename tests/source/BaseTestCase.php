@@ -51,7 +51,7 @@ class BaseTestCase extends PHPUnit_Framework_TestCase {
 		$property->setValue($object, $value);
 	}
 
-	protected function callProtectedMethod($object, $method, array $arguments) {
+	protected function callProtectedMethod($object, $method, array $arguments = []) {
 		$reflection = new ReflectionClass(get_class($object));
 
 		$method = $reflection->getMethod($method);

@@ -3,18 +3,26 @@
 return [
 
 	'Inbox' => [
-		'Path' => __DIR__.'/../INBOX',
-		'Pattern' => '*.txt',
+		'path' => __DIR__.'/../INBOX/ARSP',
+		'pattern' => '*.txt',
+		'recursive' => false,
 	],
 
 	'Database' => [
-		// 'driver'	=> 'mysql',
-		// 'database'	=> 'openemr',
-		// 'username'	=> 'openemr',
-		// 'password'	=> 'secret',
+		'driver'	=> 'mysql',
+		'host'		=> 'localhost',
+		'port'		=> '3306',
+		'database'	=> 'homestead',
+		'username'	=> 'homestead',
+		'password'	=> 'secret',
+		'charset'	=> 'utf8',
+		'collation'	=> 'utf8_unicode_ci',
+		'prefix'	=> '',
+		'strict'	=> false,
+		'engine'	=> null,
 
-		'driver'	=> 'sqlite',
-		'database'	=> __DIR__.'/../cache/database.sqlite',
+		// 'driver'	=> 'sqlite',
+		// 'database'	=> __DIR__.'/../cache/database.sqlite',
 	],
 
 	'Document' => [

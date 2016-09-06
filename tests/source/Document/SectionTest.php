@@ -22,8 +22,8 @@ class SectionTest extends BaseTestCase {
 	}
 
 	public function tearDown() {
-		parent::tearDown();
 
+		parent::tearDown();
 	}
 
 	/**
@@ -253,12 +253,6 @@ class SectionTest extends BaseTestCase {
 			Segment::class
 		));
 
-		$this->assertEquals(
-			Segment::class,
-			get_parent_class($class),
-			'Mock Segment class parent should be Segment.'
-		);
-
 		$this->section->shouldAllowMockingProtectedMethods();
 
 		$this->section->shouldReceive('resolveAlias')
@@ -266,9 +260,9 @@ class SectionTest extends BaseTestCase {
 			->with($sequence[0]['name'])
 			->andReturn($class);
 
-		$raw->shouldReceive('getSegmentDesignator')
-			->times(1)
-			->andReturn('CD');
+		$raw->shouldReceive('valid')
+			->once()
+			->andReturn(false);
 
 		$this->assertFalse(
 			$this->callProtectedMethod(
@@ -288,8 +282,6 @@ class SectionTest extends BaseTestCase {
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::parseSequence()
 	 */
 	public function testParseSequenceWithSegmentSectionSameAsDesignator() {
-		// $this->markTestIncomplete('Not yet implemented');
-
 		$sequence = [
 			['name' => 'AB'],
 		];
@@ -304,12 +296,6 @@ class SectionTest extends BaseTestCase {
 			Segment::class
 		));
 
-		$this->assertEquals(
-			Segment::class,
-			get_parent_class($class),
-			'Mock Segment class parent should be Segment.'
-		);
-
 		$this->section->shouldAllowMockingProtectedMethods();
 
 		$this->section->shouldReceive('resolveAlias')
@@ -317,7 +303,11 @@ class SectionTest extends BaseTestCase {
 			->with($sequence[0]['name'])
 			->andReturn($class);
 
-		$raw->shouldReceive('getSegmentDesignator')
+		$raw->shouldReceive('valid')
+			->once()
+			->andReturn(true);
+
+		$raw->shouldReceive('current->getName')
 			->once()
 			->andReturn('AB');
 
@@ -342,20 +332,88 @@ class SectionTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::parseSection()
 	 */
-	public function testParseSectionWithFailedParse() {
-		// $this->markTestIncomplete('Not yet implemented');
-
+	public function testParseSectionWithSegment() {
 		$options = $this->getMockery(
 			Options::class
 		);
 
-		$class = $this->getMockery(
+		$segment = $this->getMockery(
 			Segment::class
 		);
 
 		$sectionData = [
-			'repeat' => 1,
-			'class' => get_class($class)
+			'name' => 'AB',
+			'repeat' => 2,
+			'class' => get_class($segment)
+		];
+
+		$raw = $this->getMockery(
+			Raw::class
+		);
+
+		$objects = [];
+
+		$this->section->shouldAllowMockingProtectedMethods();
+
+		$this->section->shouldReceive('options')
+			->once()
+			->andReturn($options);
+
+		$raw->shouldReceive('valid')
+			->andReturn(true, false);
+
+		$raw->shouldReceive('current')
+			->andReturn($segment);
+
+		$segment->shouldReceive('getName')
+			->once()
+			->andReturn('AB');
+
+		$segment->shouldReceive('setParentName')
+			->once()
+			->andReturn('AB');
+
+		$raw->shouldReceive('next')
+			->once();
+
+		$this->assertTrue(
+			$this->callProtectedMethod(
+				$this->section,
+				'parseSection',
+				[
+					$sectionData,
+					$raw,
+					&$objects
+				]
+			),
+			'Process did not succeed'
+		);
+
+		$this->assertEquals(
+			[
+				$segment,
+			],
+			$objects,
+			'Segment not returned in objects'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::parseSection()
+	 */
+	public function testParseSectionWithNonSegmentFailedParse() {
+		$options = $this->getMockery(
+			Options::class
+		);
+
+		$section = $this->getMockery(
+			Section::class
+		);
+
+		$sectionData = [
+			'name' => 'AB',
+			'repeat' => 2,
+			'class' => get_class($section)
 		];
 
 		$raw = $this->getMockery(
@@ -375,11 +433,11 @@ class SectionTest extends BaseTestCase {
 			->with(true)
 			->andReturn('/');
 
-		$class->shouldReceive('getNew')
+		$section->shouldReceive('getNew')
 			->once()
-			->andReturn($class);
+			->andReturn($section);
 
-		$class->shouldReceive('parse')
+		$section->shouldReceive('parse')
 			->once()
 			->andReturn(false);
 
@@ -400,20 +458,19 @@ class SectionTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::parseSection()
 	 */
-	public function testParseSectionWithSuccessfulParse() {
-		// $this->markTestIncomplete('Not yet implemented');
-
+	public function testParseSectionWithNonSegmentSuccessfulParse() {
 		$options = $this->getMockery(
 			Options::class
 		);
 
-		$class = $this->getMockery(
-			Segment::class
+		$section = $this->getMockery(
+			Section::class
 		);
 
 		$sectionData = [
-			'repeat' => 1,
-			'class' => get_class($class)
+			'name' => 'AB',
+			'repeat' => 2,
+			'class' => get_class($section)
 		];
 
 		$raw = $this->getMockery(
@@ -433,13 +490,12 @@ class SectionTest extends BaseTestCase {
 			->with(true)
 			->andReturn('/');
 
-		$class->shouldReceive('getNew')
-			->once()
-			->andReturn($class);
+		$section->shouldReceive('getNew')
+			->twice()
+			->andReturn($section);
 
-		$class->shouldReceive('parse')
-			->once()
-			->andReturn(true);
+		$section->shouldReceive('parse')
+			->andReturn(true, false);
 
 		$this->assertTrue(
 			$this->callProtectedMethod(
@@ -448,11 +504,20 @@ class SectionTest extends BaseTestCase {
 				[
 					$sectionData,
 					$raw,
-					&$objects
+					&$objects,
 				]
 			),
-			'Process did not succeed.'
+			'Process did not succeed'
 		);
+
+		$this->assertEquals(
+			[
+				$section,
+			],
+			$objects,
+			'Section not returned in objects'
+		);
+
 	}
 
 }
