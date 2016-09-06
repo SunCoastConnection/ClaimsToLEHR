@@ -2,7 +2,7 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\X12N837\Loop;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Loop;
+use \SunCoastConnection\ClaimsToOEMR\Document\Section\Loop;
 
 class Loop2010 extends Loop {
 

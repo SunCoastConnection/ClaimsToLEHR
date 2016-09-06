@@ -1,11 +1,11 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Document;
+namespace SunCoastConnection\ClaimsToOEMR\Document\Section;
 
 use \SunCoastConnection\ClaimsToOEMR\Document\Raw,
 	\SunCoastConnection\ClaimsToOEMR\Document\Section;
 
-class Envelop extends Section {
+class Envelope extends Section {
 
 	static protected $headerSequence = [];
 	static protected $descendantSequence = [];
@@ -18,7 +18,6 @@ class Envelop extends Section {
 	];
 
 	public function parse(Raw $raw) {
-// echo $this->getName(true).' Envelop Parse'.PHP_EOL;
 		$this->subSections = [
 			'header' => [],
 			'descendant' => [],
@@ -45,7 +44,6 @@ class Envelop extends Section {
 			);
 		}
 
-// echo 'Envelop Status: '.($status ? 'True' : 'False').PHP_EOL;
 		return $status;
 	}
 

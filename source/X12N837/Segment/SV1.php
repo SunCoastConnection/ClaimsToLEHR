@@ -2,7 +2,7 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\X12N837\Segment;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Segment;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
 
 class SV1 extends Segment {
 
