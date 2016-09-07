@@ -2,8 +2,8 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests\Document;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw,
-	\SunCoastConnection\ClaimsToOEMR\Document\Section;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToOEMR\Document\Section;
 
 class SectionMock extends Section {
 

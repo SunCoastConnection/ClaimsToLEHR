@@ -2,9 +2,9 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests\Document\Raw;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Document\Options,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw\Element;
+use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Element;
 
 class ElementTest extends BaseTestCase {
 
@@ -19,16 +19,18 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::getNew()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::getInstance()
 	 */
-	public function testGetNew() {
+	public function testGetInstance() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.component', '*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.component')
+			->andReturn('*');
 
-		$element = Element::getNew($options, 'A*B');
+		$element = Element::getInstance($options, 'A*B');
 
 		$this->assertInstanceOf(
 			Element::class,
@@ -43,7 +45,7 @@ class ElementTest extends BaseTestCase {
 	public function testConstruct() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$this->element->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
@@ -64,7 +66,7 @@ class ElementTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$this->assertSame(
 			$options,
@@ -85,9 +87,11 @@ class ElementTest extends BaseTestCase {
 	public function testParseWithSubElements() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.component', ':');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.component')
+			->andReturn(':');
 
 		$this->element->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
@@ -108,9 +112,11 @@ class ElementTest extends BaseTestCase {
 	public function testParseWithNoSubElements() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.component', ':');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.component')
+			->andReturn(':');
 
 		$this->element->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
@@ -260,9 +266,11 @@ class ElementTest extends BaseTestCase {
 	public function testToStringWithNoSubElements() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.component', ':');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.component')
+			->andReturn(':');
 
 		$this->element->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
@@ -287,9 +295,11 @@ class ElementTest extends BaseTestCase {
 	public function testToStringWithSubElements() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.component', ':');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.component')
+			->andReturn(':');
 
 		$this->element->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')

@@ -2,8 +2,8 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Template;
+use \SunCoastConnection\ClaimsToOEMR\Template;
+use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
 
 class TemplateTest extends BaseTestCase {
 

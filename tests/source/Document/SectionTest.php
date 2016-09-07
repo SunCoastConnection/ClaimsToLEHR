@@ -2,12 +2,12 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests\Document;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Tests\Document\SectionMock,
-	\SunCoastConnection\ClaimsToOEMR\Document\Options,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
-	\SunCoastConnection\ClaimsToOEMR\Document\Section,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
+use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToOEMR\Tests\Document\SectionMock;
+use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToOEMR\Document\Section;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
 
 class SectionTest extends BaseTestCase {
 
@@ -27,14 +27,14 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::getNew()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::getInstance()
 	 */
-	public function testGetNew() {
+	public function testGetInstance() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$section = SectionMock::getNew($options);
+		$section = SectionMock::getInstance($options);
 
 		$this->assertInstanceOf(
 			Section::class,
@@ -71,7 +71,7 @@ class SectionTest extends BaseTestCase {
 	public function testConstruct() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$parentName = '/ROOT';
 
@@ -165,7 +165,7 @@ class SectionTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$this->assertSame(
 			$options,
@@ -208,7 +208,7 @@ class SectionTest extends BaseTestCase {
 
 		$raw = $this->getMockery(
 			Raw::class
-		)->makePartial();
+		);
 
 		$objects = [];
 
@@ -433,7 +433,7 @@ class SectionTest extends BaseTestCase {
 			->with(true)
 			->andReturn('/');
 
-		$section->shouldReceive('getNew')
+		$section->shouldReceive('getInstance')
 			->once()
 			->andReturn($section);
 
@@ -490,7 +490,7 @@ class SectionTest extends BaseTestCase {
 			->with(true)
 			->andReturn('/');
 
-		$section->shouldReceive('getNew')
+		$section->shouldReceive('getInstance')
 			->twice()
 			->andReturn($section);
 

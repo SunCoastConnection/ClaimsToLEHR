@@ -2,10 +2,10 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests\Document\Section;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
-	\SunCoastConnection\ClaimsToOEMR\Document\Section,
-	\SunCoastConnection\ClaimsToOEMR\Document\Section\Loop;
+use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToOEMR\Document\Section;
+use \SunCoastConnection\ClaimsToOEMR\Document\Section\Loop;
 
 class LoopTest extends BaseTestCase {
 
@@ -25,7 +25,7 @@ class LoopTest extends BaseTestCase {
 	public function testParseWithNoHeaderSegment() {
 		$raw = $this->getMockery(
 			Raw::class
-		)->makePartial();
+		);
 
 		$this->loop->shouldAllowMockingProtectedMethods();
 
@@ -55,7 +55,7 @@ class LoopTest extends BaseTestCase {
 	public function testParseWithHeaderSegment() {
 		$raw = $this->getMockery(
 			Raw::class
-		)->makePartial();
+		);
 
 		$this->loop->shouldAllowMockingProtectedMethods();
 
