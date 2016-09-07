@@ -10,7 +10,7 @@ use \Countable,
 
 class Raw implements Iterator, Countable {
 
-	static public function getNew(Options $options) {
+	static public function getInstance(Options $options) {
 		return new static($options);
 	}
 
@@ -154,7 +154,7 @@ class Raw implements Iterator, Countable {
 		$options = $this->options();
 
 		array_walk($this->segments, function(&$segment) use ($options) {
-			$segment = Segment::getNew($options, $segment);
+			$segment = Segment::getInstance($options, $segment);
 		});
 	}
 

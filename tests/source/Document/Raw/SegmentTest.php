@@ -21,7 +21,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getNew()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getInstance()
 	 */
 	public function testGetNew() {
 		$elements = [
@@ -39,7 +39,7 @@ class SegmentTest extends BaseTestCase {
 		$options->set('Document.delimiters.component', ':');
 		$options->set('Aliases.'.$elements[0], Segment::class);
 
-		$segment = $this->segment::getNew($options, implode('*', $elements));
+		$segment = $this->segment::getInstance($options, implode('*', $elements));
 
 		$this->assertInstanceOf(
 			Segment::class,
@@ -58,9 +58,9 @@ class SegmentTest extends BaseTestCase {
 
 		$this->assertEquals(
 			[
-				Element::getNew($options, $elements[1]),
-				Element::getNew($options, $elements[2]),
-				Element::getNew($options, $elements[3]),
+				Element::getInstance($options, $elements[1]),
+				Element::getInstance($options, $elements[2]),
+				Element::getInstance($options, $elements[3]),
 			],
 			$this->getProtectedProperty(
 				$segment,
@@ -71,7 +71,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getNew()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getInstance()
 	 */
 	public function testGetNewWithMissingElements() {
 		$elements = [
@@ -86,7 +86,7 @@ class SegmentTest extends BaseTestCase {
 		$options->set('Document.delimiters.component', ':');
 		$options->set('Aliases.'.$elements[0], Segment::class);
 
-		$segment = $this->segment::getNew($options, implode('*', $elements));
+		$segment = $this->segment::getInstance($options, implode('*', $elements));
 
 		$this->assertInstanceOf(
 			Segment::class,
@@ -115,7 +115,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getNew()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getInstance()
 	 */
 	public function testGetNewWithInvalidDesignator() {
 		$elements = [
@@ -136,7 +136,7 @@ class SegmentTest extends BaseTestCase {
 			'Segment designator can not be found: '.$elements[0]
 		);
 
-		$segment = $this->segment::getNew($options, implode('*', $elements));
+		$segment = $this->segment::getInstance($options, implode('*', $elements));
 	}
 
 	/**
@@ -339,9 +339,9 @@ class SegmentTest extends BaseTestCase {
 
 		$this->assertEquals(
 			[
-				'Element 1' => Element::getNew($options, $elements[0]),
-				'Element 2' => Element::getNew($options, $elements[1]),
-				2 => Element::getNew($options, $elements[2]),
+				'Element 1' => Element::getInstance($options, $elements[0]),
+				'Element 2' => Element::getInstance($options, $elements[1]),
+				2 => Element::getInstance($options, $elements[2]),
 			],
 			$this->getProtectedProperty(
 				$this->segment,
@@ -482,11 +482,11 @@ class SegmentTest extends BaseTestCase {
 			$this->segment,
 			'elements',
 			[
-				'AB01' => Element::getNew($options, 'C'),
-				'AB02' => Element::getNew($options, 'D'),
-				'AB03' => Element::getNew($options, 'E'),
-				'AB04' => Element::getNew($options, ':'),
-				'AB05' => Element::getNew($options, '123'),
+				'AB01' => Element::getInstance($options, 'C'),
+				'AB02' => Element::getInstance($options, 'D'),
+				'AB03' => Element::getInstance($options, 'E'),
+				'AB04' => Element::getInstance($options, ':'),
+				'AB05' => Element::getInstance($options, '123'),
 			]
 		);
 

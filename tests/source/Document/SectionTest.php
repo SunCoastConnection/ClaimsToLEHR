@@ -27,14 +27,14 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::getNew()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::getInstance()
 	 */
 	public function testGetNew() {
 		$options = $this->getMockery(
 			Options::class
 		)->makePartial();
 
-		$section = SectionMock::getNew($options);
+		$section = SectionMock::getInstance($options);
 
 		$this->assertInstanceOf(
 			Section::class,
@@ -433,7 +433,7 @@ class SectionTest extends BaseTestCase {
 			->with(true)
 			->andReturn('/');
 
-		$section->shouldReceive('getNew')
+		$section->shouldReceive('getInstance')
 			->once()
 			->andReturn($section);
 
@@ -490,7 +490,7 @@ class SectionTest extends BaseTestCase {
 			->with(true)
 			->andReturn('/');
 
-		$section->shouldReceive('getNew')
+		$section->shouldReceive('getInstance')
 			->twice()
 			->andReturn($section);
 

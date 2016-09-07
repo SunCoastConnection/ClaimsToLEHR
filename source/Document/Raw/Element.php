@@ -8,7 +8,7 @@ class Element {
 
 	protected $subElements = [];
 
-	static public function getNew(Options $options, $element) {
+	static public function getInstance(Options $options, $element) {
 		$object = new static($options);
 
 		$object->parse($element);

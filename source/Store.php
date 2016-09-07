@@ -6,7 +6,7 @@ use \SunCoastConnection\ClaimsToOEMR\Document\Options;
 
 abstract class Store {
 
-	static public function getNew(Options $options) {
+	static public function getInstance(Options $options) {
 		return new static($options);
 	}
 

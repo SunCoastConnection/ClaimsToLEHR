@@ -18,7 +18,7 @@ abstract class Section {
 
 	abstract public function parse(Raw $raw);
 
-	static public function getNew(Options $options, $parentName = '/') {
+	static public function getInstance(Options $options, $parentName = '/') {
 		return new static($options, $parentName);
 	}
 
@@ -111,7 +111,7 @@ abstract class Section {
 			$sectionData['repeat']--;
 
 			if(get_parent_class($sectionData['class']) !== Segment::class) {
-				$section = $sectionData['class']::getNew(
+				$section = $sectionData['class']::getInstance(
 					$options,
 					$parentName
 				);

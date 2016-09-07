@@ -16,7 +16,7 @@ class Segment {
 
 	protected $elements = [];
 
-	static public function getNew(Options $options, $segment) {
+	static public function getInstance(Options $options, $segment) {
 		$delimiterPos = strpos(
 			$segment,
 			$options->get('Document.delimiters.data')
@@ -94,7 +94,7 @@ class Segment {
 			);
 
 			array_walk($elements, function(&$element) use ($options) {
-				$element = Element::getNew($options, $element);
+				$element = Element::getInstance($options, $element);
 			});
 
 			$sequence = $this::getElementSequence();

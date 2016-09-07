@@ -9,10 +9,10 @@ use \Illuminate\Config\Repository,
 class OptionsTest extends BaseTestCase {
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Options::getNew()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Options::getInstance()
 	 */
 	public function testGetNew() {
-		$options = Options::getNew([]);
+		$options = Options::getInstance([]);
 
 		$this->assertInstanceOf(
 			Options::class,

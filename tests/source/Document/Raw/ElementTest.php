@@ -19,7 +19,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::getNew()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::getInstance()
 	 */
 	public function testGetNew() {
 		$options = $this->getMockery(
@@ -28,7 +28,7 @@ class ElementTest extends BaseTestCase {
 
 		$options->set('Document.delimiters.component', '*');
 
-		$element = Element::getNew($options, 'A*B');
+		$element = Element::getInstance($options, 'A*B');
 
 		$this->assertInstanceOf(
 			Element::class,

@@ -52,7 +52,7 @@ if($autoload == false) {
 echo 'Loading configurations...'.PHP_EOL;
 
 //** GET CONFIGURATION OPTIONS **//
-$options = Options::getNew(require_once(__DIR__.'/config/app.php'));
+$options = Options::getInstance(require_once(__DIR__.'/config/app.php'));
 
 
 $cmd = array_shift($argv);
@@ -83,7 +83,7 @@ function setupStore($options) {
 	$driver = $options->get('Store.driver', 'array');
 
 	if($driver === 'array') {
-		$store = Store\Arr::getNew($options);
+		$store = Store\Arr::getInstance($options);
 	} else {
 		if($driver === 'sqlite' && !file_exists($options->get('Store.database'))) {
 			touch($options->get('Store.database')) || exitError(
@@ -92,7 +92,7 @@ function setupStore($options) {
 			);
 		}
 
-		$store = Store\Database::getNew($options);
+		$store = Store\Database::getInstance($options);
 	}
 
 	$options->set('App.store', $store);
@@ -128,10 +128,10 @@ function c2eParse($options) {
 }
 
 function c2eClaimLoad($options, $file) {
-	$raw = Raw::getNew($options);
+	$raw = Raw::getInstance($options);
 	$raw->parse($file->getContents());
 
-	$document = X12N837::getNew($options);
+	$document = X12N837::getInstance($options);
 	$document->parse($raw);
 
 	c2eClaimCache($options, $document);
@@ -144,7 +144,7 @@ function c2eClaimCache($options, $document) {
 		// $options->get('App.store')->printRecordCount();
 	}
 
-	$cache = Cache::getNew($options->get('App.store'));
+	$cache = Cache::getInstance($options->get('App.store'));
 
 	$cache->processDocument($document);
 

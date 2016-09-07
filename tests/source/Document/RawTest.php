@@ -31,14 +31,14 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::getNew()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::getInstance()
 	 */
 	public function testGetNew() {
 		$options = $this->getMockery(
 			Options::class
 		)->makePartial();
 
-		$raw = Raw::getNew($options);
+		$raw = Raw::getInstance($options);
 
 		$this->assertInstanceOf(
 			Raw::class,
@@ -394,7 +394,7 @@ class RawTest extends BaseTestCase {
 			'alias:'.Segment::class
 		)->makePartial();
 
-		$segment->shouldReceive('getNew')
+		$segment->shouldReceive('getInstance')
 			->with($options, $segmentString)
 			->andReturn($output);
 

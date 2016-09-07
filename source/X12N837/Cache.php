@@ -12,7 +12,7 @@ class Cache {
 
 	protected $store;
 
-	static public function getNew(Store $store) {
+	static public function getInstance(Store $store) {
 		return new static($store);
 	}
 
