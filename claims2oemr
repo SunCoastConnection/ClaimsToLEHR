@@ -117,7 +117,17 @@ function c2eParse($options) {
 		$finder->depth('== 0');
 	}
 
-	echo 'Found '.$finder->count().' file(s) in directory: '.realpath($inboxPath).PHP_EOL;
+	if(!$options->has('App.store')) {
+		setupStore($options);
+
+		echo 'Initial store record counts:'.PHP_EOL.PHP_EOL;
+
+		$options->get('App.store')->printRecordCount();
+
+		echo PHP_EOL;
+	}
+
+	echo 'Found '.$finder->count().' file(s) in directory: '.realpath($inboxPath).PHP_EOL.PHP_EOL;
 
 	foreach($finder as $file) {
 		echo " - Filename:\t\t".$file->getRealpath().PHP_EOL;
@@ -138,15 +148,11 @@ function c2eClaimLoad($options, $file) {
 }
 
 function c2eClaimCache($options, $document) {
-	if(!$options->has('App.store')) {
-		setupStore($options);
-
-		// $options->get('App.store')->printRecordCount();
-	}
-
 	$cache = Cache::getInstance($options->get('App.store'));
 
 	$cache->processDocument($document);
 
 	$options->get('App.store')->printRecordCount();
+
+	echo PHP_EOL;
 }
