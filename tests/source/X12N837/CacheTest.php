@@ -1,9 +1,9 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests;
+namespace SunCoastConnection\ClaimsToOEMR\Tests\X12N837;
 
-use \SunCoastConnection\ClaimsToOEMR\Database\Cache,
-	\SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
+use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
+	\SunCoastConnection\ClaimsToOEMR\X12N837\Cache,
 	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\AMT,
 	\SunCoastConnection\ClaimsToOEMR\X12N837\Segment\BHT;
 

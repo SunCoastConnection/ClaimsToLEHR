@@ -8,18 +8,20 @@ return [
 		'recursive' => false,
 	],
 
-	'Database' => [
-		'driver'	=> 'mysql',
-		'host'		=> 'localhost',
-		'port'		=> '3306',
-		'database'	=> 'homestead',
-		'username'	=> 'homestead',
-		'password'	=> 'secret',
-		'charset'	=> 'utf8',
-		'collation'	=> 'utf8_unicode_ci',
-		'prefix'	=> '',
-		'strict'	=> false,
-		'engine'	=> null,
+	'Store' => [
+		'driver'	=> 'array',
+
+		// 'driver'	=> 'mysql',
+		// 'host'		=> 'localhost',
+		// 'port'		=> '3306',
+		// 'database'	=> 'homestead',
+		// 'username'	=> 'homestead',
+		// 'password'	=> 'secret',
+		// 'charset'	=> 'utf8',
+		// 'collation'	=> 'utf8_unicode_ci',
+		// 'prefix'	=> '',
+		// 'strict'	=> false,
+		// 'engine'	=> null,
 
 		// 'driver'	=> 'sqlite',
 		// 'database'	=> __DIR__.'/../cache/database.sqlite',

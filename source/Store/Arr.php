@@ -1,13 +1,11 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR;
+namespace SunCoastConnection\ClaimsToOEMR\Store;
 
-use \Illuminate\Container\Container,
-	\Illuminate\Database\Capsule\Manager,
-	\Illuminate\Events\Dispatcher,
-	\SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToOEMR\Document\Options,
+	\SunCoastConnection\ClaimsToOEMR\Store;
 
-class Database {
+class Arr extends Store {
 
 	protected $manager;
 
@@ -212,24 +210,6 @@ class Database {
 		'x12_gs03' => '',
 	];
 
-	static public function getNew(Options $options) {
-		return new static($options);
-	}
-
-	public function __construct(Options $options) {
-		$this->manager = new Manager;
-
-		$this->manager->addConnection($options->get('Database'));
-		// $this->manager->setEventDispatcher(new Dispatcher(new Container));
-		$this->manager->setAsGlobal();
-
-		$this->manager->bootEloquent();
-	}
-
-	public function getManager() {
-		return $this->manager;
-	}
-
 	protected $address = [];
 	protected $billing = [];
 	protected $facility = [];
@@ -276,18 +256,7 @@ class Database {
 		return $output;
 	}
 
-	public function printRecordCount($tables = null) {
-		$tables = $this->recordCount($tables);
-
-		$maxTabs = ceil((max(array_map('strlen', array_keys($tables))) + 2) / 8);
-
-		foreach($tables as $table => $recordCount) {
-			$neededTabs = $maxTabs - floor((strlen($table) + 2) / 8);
-			echo $table.': '.str_repeat("\t", $neededTabs).$recordCount.PHP_EOL;
-		}
-	}
-
-	public function findRecord(&$table, $data, $fields) {
+	protected function findRecord(&$table, $data, $fields) {
 		foreach($table as $recordId => $record) {
 			$match = true;
 

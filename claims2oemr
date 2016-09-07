@@ -4,11 +4,11 @@
 namespace SunCoastConnection\ClaimsToOEMR;
 
 use \ErrorException,
-	\SunCoastConnection\ClaimsToOEMR\Database,
-	\SunCoastConnection\ClaimsToOEMR\Database\Cache,
 	\SunCoastConnection\ClaimsToOEMR\Document\Options,
 	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
+	\SunCoastConnection\ClaimsToOEMR\Store,
 	\SunCoastConnection\ClaimsToOEMR\X12N837,
+	\SunCoastConnection\ClaimsToOEMR\X12N837\Cache,
 	\Symfony\Component\Finder\Finder;
 
 
@@ -60,6 +60,13 @@ $cmdOption = array_shift($argv);
 
 switch($cmdOption) {
 	case 'migrate':
+		if($options->get('Store.driver', 'array') === 'array') {
+			exitError(
+				'Store driver `array` does not need to be migrated'.PHP_EOL,
+				1
+			);
+		}
+
 		c2eMigrate($options);
 		break;
 
@@ -72,19 +79,27 @@ switch($cmdOption) {
 		break;
 }
 
-function setupDatabase($options) {
-	if($options->get('Database.driver') === 'sqlite' && !file_exists($options->get('Database.database'))) {
-		touch($options->get('Database.database')) || exitError(
-			'Database missing and can not be created: '.$options->get('Database.database').PHP_EOL,
-			1
-		);
+function setupStore($options) {
+	$driver = $options->get('Store.driver', 'array');
+
+	if($driver === 'array') {
+		$store = Store\Arr::getNew($options);
+	} else {
+		if($driver === 'sqlite' && !file_exists($options->get('Store.database'))) {
+			touch($options->get('Store.database')) || exitError(
+				'SQLite database missing and can not be created: '.$options->get('Store.database').PHP_EOL,
+				1
+			);
+		}
+
+		$store = Store\Database::getNew($options);
 	}
 
-	$options->set('App.database', Database::getNew($options));
+	$options->set('App.store', $store);
 }
 
 function c2eMigrate($options) {
-	setupDatabase($options);
+	setupStore($options);
 
 	include(__DIR__.'/Database/migrate.php');
 }
@@ -123,9 +138,15 @@ function c2eClaimLoad($options, $file) {
 }
 
 function c2eClaimCache($options, $document) {
-	setupDatabase($options);
+	if(!$options->has('App.store')) {
+		setupStore($options);
 
-	$cache = Cache::getNew($options->get('App.database'));
+		// $options->get('App.store')->printRecordCount();
+	}
+
+	$cache = Cache::getNew($options->get('App.store'));
 
 	$cache->processDocument($document);
+
+	$options->get('App.store')->printRecordCount();
 }

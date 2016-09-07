@@ -1,8 +1,8 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Database;
+namespace SunCoastConnection\ClaimsToOEMR\X12N837;
 
-use \SunCoastConnection\ClaimsToOEMR\Database,
+use \SunCoastConnection\ClaimsToOEMR\Store,
 	\SunCoastConnection\ClaimsToOEMR\X12N837,
 	\SunCoastConnection\ClaimsToOEMR\X12N837\Envelope,
 	\SunCoastConnection\ClaimsToOEMR\X12N837\Loop,
@@ -10,18 +10,18 @@ use \SunCoastConnection\ClaimsToOEMR\Database,
 
 class Cache {
 
-	protected $database;
+	protected $store;
 
-	static public function getNew(Database $database) {
-		return new static($database);
+	static public function getNew(Store $store) {
+		return new static($store);
 	}
 
-	public function __construct(Database $database) {
-		$this->database = $database;
+	public function __construct(Store $store) {
+		$this->store = $store;
 	}
 
-	protected function getDatabase() {
-		return $this->database;
+	protected function getStore() {
+		return $this->store;
 	}
 
 	public function processDocument(X12N837 $document) {
@@ -166,7 +166,7 @@ class Cache {
 								// 1000B — RECEIVER NAME
 								// storeX12Partners
 								if($segment->elementEquals('NM102', '2')) {
-									$data['CurrentX12Partner'] = $this->getDatabase()->storeX12Partner([
+									$data['CurrentX12Partner'] = $this->getStore()->storeX12Partner([
 										'name' => $segment->element('NM103'),
 										'id_number' => $segment->element('NM109'),
 										'x12_sender_id' => $data['ISA']->element('ISA06'),
