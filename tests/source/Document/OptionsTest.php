@@ -11,7 +11,7 @@ class OptionsTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Options::getInstance()
 	 */
-	public function testGetNew() {
+	public function testGetInstance() {
 		$options = Options::getInstance([]);
 
 		$this->assertInstanceOf(

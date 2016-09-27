@@ -29,10 +29,10 @@ class SectionTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::getInstance()
 	 */
-	public function testGetNew() {
+	public function testGetInstance() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$section = SectionMock::getInstance($options);
 
@@ -71,7 +71,7 @@ class SectionTest extends BaseTestCase {
 	public function testConstruct() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$parentName = '/ROOT';
 
@@ -165,7 +165,7 @@ class SectionTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$this->assertSame(
 			$options,
@@ -208,7 +208,7 @@ class SectionTest extends BaseTestCase {
 
 		$raw = $this->getMockery(
 			Raw::class
-		)->makePartial();
+		);
 
 		$objects = [];
 

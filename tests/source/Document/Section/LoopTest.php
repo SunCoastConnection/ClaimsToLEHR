@@ -25,7 +25,7 @@ class LoopTest extends BaseTestCase {
 	public function testParseWithNoHeaderSegment() {
 		$raw = $this->getMockery(
 			Raw::class
-		)->makePartial();
+		);
 
 		$this->loop->shouldAllowMockingProtectedMethods();
 
@@ -55,7 +55,7 @@ class LoopTest extends BaseTestCase {
 	public function testParseWithHeaderSegment() {
 		$raw = $this->getMockery(
 			Raw::class
-		)->makePartial();
+		);
 
 		$this->loop->shouldAllowMockingProtectedMethods();
 

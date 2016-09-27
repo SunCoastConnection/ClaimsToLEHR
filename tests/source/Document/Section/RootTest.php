@@ -28,7 +28,7 @@ class RootTest extends BaseTestCase {
 
 		$raw = $this->getMockery(
 			Raw::class
-		)->makePartial();
+		);
 
 		$raw->shouldReceive('rewind')
 			->once();

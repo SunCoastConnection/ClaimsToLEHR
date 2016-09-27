@@ -25,7 +25,7 @@ class EnvelopeTest extends BaseTestCase {
 	public function testParseWithNoHeaderSegment() {
 		$raw = $this->getMockery(
 			Raw::class
-		)->makePartial();
+		);
 
 		$this->envelope->shouldAllowMockingProtectedMethods();
 
@@ -55,7 +55,7 @@ class EnvelopeTest extends BaseTestCase {
 	public function testParseWithHeaderSegment() {
 		$raw = $this->getMockery(
 			Raw::class
-		)->makePartial();
+		);
 
 		$this->envelope->shouldAllowMockingProtectedMethods();
 

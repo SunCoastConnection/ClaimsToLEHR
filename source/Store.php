@@ -6,12 +6,31 @@ use \SunCoastConnection\ClaimsToOEMR\Document\Options;
 
 abstract class Store {
 
+	static protected $tableNames = [
+		'address',
+		'billing',
+		'facility',
+		'formEncounter',
+		'form',
+		'group',
+		'insuranceCompany',
+		'insuranceData',
+		'patientData',
+		'phoneNumber',
+		'user',
+		'x12Partners'
+	];
+
 	static public function getInstance(Options $options) {
 		return new static($options);
 	}
 
 	public function __construct(Options $options) {
 		$this->options($options);
+
+		if(method_exists($this, 'onConstruct')) {
+			$this->onConstruct();
+		}
 	}
 
 	protected function options(Options $setOptions = null) {
@@ -24,8 +43,8 @@ abstract class Store {
 		return $options;
 	}
 
-	public function printRecordCount($tables = null) {
-		$tables = $this->recordCount($tables);
+	public function printTableCounts($tables = null) {
+		$tables = $this->tableCounts($tables);
 
 		$maxTabs = ceil((max(array_map('strlen', array_keys($tables))) + 2) / 8);
 
@@ -35,7 +54,27 @@ abstract class Store {
 		}
 	}
 
-	abstract public function recordCount($tables = null);
+	public function tableCounts($tables = null) {
+		if(is_string($tables)) {
+			$tables = [ $tables ];
+		} elseif(!is_array($tables)) {
+			$tables = self::$tableNames;
+		}
+
+		$output = [];
+
+		foreach($tables as $table) {
+			$count = $this->recordCount($table);
+
+			if($count !== null) {
+				$output[$table] = $count;
+			}
+		}
+
+		return $output;
+	}
+
+	abstract public function recordCount($tables);
 
 	abstract public function storeAddress(array $data);
 

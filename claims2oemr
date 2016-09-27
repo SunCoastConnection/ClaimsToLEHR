@@ -80,14 +80,16 @@ switch($cmdOption) {
 }
 
 function setupStore($options) {
-	$driver = $options->get('Store.driver', 'array');
+	$defaultDriver = $options->get('Store.default', 'array');
 
-	if($driver === 'array') {
+	$connection = $options->get('Store.connections.'.$defaultDriver, 'array');
+
+	if($connection['driver'] === 'array') {
 		$store = Store\Arr::getInstance($options);
 	} else {
-		if($driver === 'sqlite' && !file_exists($options->get('Store.database'))) {
-			touch($options->get('Store.database')) || exitError(
-				'SQLite database missing and can not be created: '.$options->get('Store.database').PHP_EOL,
+		if($connection['driver'] === 'sqlite' && !file_exists($connection['database'])) {
+			touch($connection['database']) || exitError(
+				'SQLite database missing and can not be created: '.$connection['database'].PHP_EOL,
 				1
 			);
 		}
@@ -111,21 +113,20 @@ function c2eParse($options) {
 	$finder = new Finder;
 	$finder->files()
 		->in($inboxPath)
-		->name($inboxPattern);
+		->name($inboxPattern)
+		->sortByName();
 
 	if($options->get('Inbox.recursive') == false) {
 		$finder->depth('== 0');
 	}
 
-	if(!$options->has('App.store')) {
-		setupStore($options);
+	setupStore($options);
 
-		echo 'Initial store record counts:'.PHP_EOL.PHP_EOL;
+	echo 'Initial store record counts:'.PHP_EOL.PHP_EOL;
 
-		$options->get('App.store')->printRecordCount();
+	$options->get('App.store')->printTableCounts();
 
-		echo PHP_EOL;
-	}
+	echo PHP_EOL;
 
 	echo 'Found '.$finder->count().' file(s) in directory: '.realpath($inboxPath).PHP_EOL.PHP_EOL;
 
@@ -152,7 +153,7 @@ function c2eClaimCache($options, $document) {
 
 	$cache->processDocument($document);
 
-	$options->get('App.store')->printRecordCount();
+	$options->get('App.store')->printTableCounts();
 
 	echo PHP_EOL;
 }

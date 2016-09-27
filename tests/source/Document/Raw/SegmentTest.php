@@ -23,7 +23,7 @@ class SegmentTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getInstance()
 	 */
-	public function testGetNew() {
+	public function testGetInstance() {
 		$elements = [
 			'A',
 			'B:1',
@@ -33,11 +33,17 @@ class SegmentTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.data', '*');
-		$options->set('Document.delimiters.component', ':');
-		$options->set('Aliases.'.$elements[0], Segment::class);
+		$options->shouldReceive('get')
+			->with('Document.delimiters.data')
+			->andReturn('*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.component')
+			->andReturn(':');
+		$options->shouldReceive('get')
+			->with('Aliases.'.$elements[0])
+			->andReturn(Segment::class);
 
 		$segment = $this->segment::getInstance($options, implode('*', $elements));
 
@@ -73,18 +79,24 @@ class SegmentTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getInstance()
 	 */
-	public function testGetNewWithMissingElements() {
+	public function testGetInstanceWithMissingElements() {
 		$elements = [
 			'E',
 		];
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.data', '*');
-		$options->set('Document.delimiters.component', ':');
-		$options->set('Aliases.'.$elements[0], Segment::class);
+		$options->shouldReceive('get')
+			->with('Document.delimiters.data')
+			->andReturn('*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.component')
+			->andReturn(':');
+		$options->shouldReceive('get')
+			->with('Aliases.'.$elements[0])
+			->andReturn(Segment::class);
 
 		$segment = $this->segment::getInstance($options, implode('*', $elements));
 
@@ -117,7 +129,7 @@ class SegmentTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getInstance()
 	 */
-	public function testGetNewWithInvalidDesignator() {
+	public function testGetInstanceWithInvalidDesignator() {
 		$elements = [
 			'A',
 			'B:1',
@@ -127,9 +139,15 @@ class SegmentTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.data', '*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.data')
+			->andReturn('*');
+
+		$options->shouldReceive('get')
+			->with('Aliases.'.$elements[0])
+			->andReturnNull();
 
 		$this->setExpectedException(
 			'Exception',
@@ -193,9 +211,11 @@ class SegmentTest extends BaseTestCase {
 	public function testConstruct() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.data', '*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.data')
+			->andReturn('*');
 
 		$this->segment->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
@@ -219,7 +239,7 @@ class SegmentTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$this->assertSame(
 			$options,
@@ -316,10 +336,14 @@ class SegmentTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.data', '*');
-		$options->set('Document.delimiters.component', ':');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.data')
+			->andReturn('*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.component')
+			->andReturn(':');
 
 		$this->segment->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
@@ -469,10 +493,14 @@ class SegmentTest extends BaseTestCase {
 	public function testToString() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.component', ':');
-		$options->set('Document.delimiters.data', '*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.data')
+			->andReturn('*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.component')
+			->andReturn(':');
 
 		$this->segment->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')

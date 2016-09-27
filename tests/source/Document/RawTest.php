@@ -33,10 +33,27 @@ class RawTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::getInstance()
 	 */
-	public function testGetNew() {
+	public function testGetInstance() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
+
+		$options->shouldReceive('get')
+			->once()
+			->with('Document.delimiters')
+			->andReturnNull();
+
+		$options->shouldReceive('set')
+			->once()
+			->with(
+				'Document.delimiters',
+				[
+					'data'			=> '*',
+					'repetition'	=> '^',
+					'component'		=> ':',
+					'segment'		=> '~',
+				]
+			);
 
 		$raw = Raw::getInstance($options);
 
@@ -65,7 +82,24 @@ class RawTest extends BaseTestCase {
 	public function testConstruct() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
+
+		$options->shouldReceive('get')
+			->once()
+			->with('Document.delimiters')
+			->andReturnNull();
+
+		$options->shouldReceive('set')
+			->once()
+			->with(
+				'Document.delimiters',
+				[
+					'data'			=> '*',
+					'repetition'	=> '^',
+					'component'		=> ':',
+					'segment'		=> '~',
+				]
+			);
 
 		$this->raw->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
@@ -86,7 +120,7 @@ class RawTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$this->assertSame(
 			$options,
@@ -173,15 +207,19 @@ class RawTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$this->raw->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
 			->andReturn($options);
 
-		$options->set('Document.autodetect', false);
+		$options->shouldReceive('get')
+			->with('Document.autodetect')
+			->andReturn(false);
 
-		$options->set('Document.delimiters.segment', '~');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.segment')
+			->andReturn('~');
 
 		$this->raw->shouldReceive('parseSegments');
 
@@ -217,18 +255,22 @@ class RawTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$this->raw->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
 			->andReturn($options);
 
-		$options->set('Document.autodetect', true);
+		$options->shouldReceive('get')
+			->with('Document.autodetect')
+			->andReturn(true);
 
 		$this->raw->shouldReceive('setInterchangeData')
 			->with($contents);
 
-		$options->set('Document.delimiters.segment', '~');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.segment')
+			->andReturn('~');
 
 		$this->raw->shouldReceive('parseSegments');
 		$this->raw->shouldReceive('rewind');
@@ -244,18 +286,22 @@ class RawTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$this->raw->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
 			->andReturn($options);
 
-		$options->set('Document.autodetect', false);
+		$options->shouldReceive('get')
+			->with('Document.autodetect')
+			->andReturn(false);
 
 		$this->raw->shouldReceive('correctSingleMode')
 			->with($contents);
 
-		$options->set('Document.delimiters.segment', '~');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.segment')
+			->andReturn('~');
 
 		$this->raw->shouldReceive('parseSegments');
 
@@ -270,30 +316,52 @@ class RawTest extends BaseTestCase {
 	public function testSetInterchangeData() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$this->raw->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
 			->andReturn($options);
 
+		$delimiters = [
+			'data'			=> '!',
+			'repetition'	=> '@',
+			'component'		=> '#',
+			'segment'		=> '$',
+		];
+
+		$options->shouldReceive('set')
+			->once()
+			->with('Document.delimiters', $delimiters);
+
+		$interchangeData = [
+			'ISA',
+			'00',
+			'          ',
+			'00',
+			'          ',
+			'ZZ',
+			'15G8           ',
+			'ZZ',
+			'43142076400000 ',
+			'150306',
+			'1617',
+			$delimiters['repetition'],
+			'00501',
+			'000638905',
+			'1',
+			'P',
+			$delimiters['component'].
+			$delimiters['segment'].
+			'abcdefghijklmnopqrstuvwxyz',
+			'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+		];
+
+		$interchangeData = implode($delimiters['data'], $interchangeData);
+
 		$this->callProtectedMethod(
 			$this->raw,
 			'setInterchangeData',
-			[
-				'ISA!00!          !00!          !ZZ!15G8           !ZZ!43142076400000 !150306!1617!@!00501!000638905!1!P!#$'
-			]
-		);
-
-		$this->assertEquals(
-			[
-				'data'			=> '!',
-				'repetition'	=> '@',
-				'component'		=> '#',
-				'segment'		=> '$',
-			]
-			,
-			$options->get('Document.delimiters'),
-			'Setting Interchange data failed'
+			[ $interchangeData ]
 		);
 	}
 
@@ -305,9 +373,11 @@ class RawTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.autodetect', true);
+		$options->shouldReceive('get')
+			->with('Document.autodetect')
+			->andReturn(true);
 
 		$this->raw->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
@@ -335,21 +405,22 @@ class RawTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$this->raw->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
 			->andReturn($options);
 
-		$options->set(
-			'Document.delimiters',
-			[
-				'data'			=> '*',
-				'repetition'	=> '^',
-				'component'		=> ':',
-				'segment'		=> '~',
-			]
-		);
+		$options->shouldReceive('get')
+			->with('Document.delimiters')
+			->andReturn(
+				[
+					'data'			=> '*',
+					'repetition'	=> '^',
+					'component'		=> ':',
+					'segment'		=> '~',
+				]
+			);
 
 		$this->assertEquals(
 			implode(
@@ -384,7 +455,7 @@ class RawTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$this->raw->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
@@ -392,7 +463,7 @@ class RawTest extends BaseTestCase {
 
 		$segment = $this->getMockery(
 			'alias:'.Segment::class
-		)->makePartial();
+		);
 
 		$segment->shouldReceive('getInstance')
 			->with($options, $segmentString)
@@ -429,9 +500,11 @@ class RawTest extends BaseTestCase {
 	public function testToString() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.segment', '~');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.segment')
+			->andReturn('~');
 
 		$this->raw->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
