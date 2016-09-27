@@ -103,7 +103,7 @@ function setupStore($options) {
 function c2eMigrate($options) {
 	setupStore($options);
 
-	include(__DIR__.'/Database/migrate.php');
+	include(__DIR__.'/database/migrate.php');
 }
 
 function c2eParse($options) {
