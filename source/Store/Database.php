@@ -60,9 +60,7 @@ class Database extends Store {
 
 		$record = new $modelClass();
 
-		$this->updateRecord($record, $data);
-
-		return $record;
+		return $this->updateRecord($record, $data);
 	}
 
 	protected function updateRecord($record, $data) {
@@ -71,6 +69,8 @@ class Database extends Store {
 		}
 
 		$record->save();
+
+		return $record->id;
 	}
 
 	protected function insertUpdateRecord($table, $data, $matchFields) {
@@ -78,13 +78,13 @@ class Database extends Store {
 
 		$record = $this->findRecord($modelClass, $data, $matchFields);
 
-		if(!$record) {
-			$record = $this->insertRecord($table, $data);
+		if(is_null($record)) {
+			$id = $this->insertRecord($table, $data);
 		} else {
-			$this->updateRecord($record, $data);
+			$id = $this->updateRecord($record, $data);
 		}
 
-		return $record;
+		return $id;
 	}
 
 	public function storeAddress(array $data) {

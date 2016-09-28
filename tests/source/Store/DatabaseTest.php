@@ -235,10 +235,11 @@ class DatabaseTest extends BaseTestCase {
 
 		$this->database->shouldReceive('updateRecord')
 			->once()
-			->with(\Mockery::type(get_class($model)), $data);
+			->with(\Mockery::type(get_class($model)), $data)
+			->andReturn(123);
 
-		$this->assertInstanceOf(
-			get_class($model),
+		$this->assertEquals(
+			123,
 			$this->callProtectedMethod(
 				$this->database,
 				'insertRecord',
@@ -247,7 +248,7 @@ class DatabaseTest extends BaseTestCase {
 					$data,
 				]
 			),
-			'Insert record not returned correctly'
+			'Insert record Id not returned correctly'
 		);
 	}
 
@@ -260,6 +261,7 @@ class DatabaseTest extends BaseTestCase {
 		);
 
 		$data = [
+			'id' => '123',
 			'field1' => 'f1',
 			'field2' => 'f2',
 		];
@@ -267,13 +269,17 @@ class DatabaseTest extends BaseTestCase {
 		$model->shouldReceive('save')
 			->once();
 
-		$this->callProtectedMethod(
-			$this->database,
-			'updateRecord',
-			[
-				$model,
-				$data
-			]
+		$this->assertEquals(
+			$data['id'],
+			$this->callProtectedMethod(
+				$this->database,
+				'updateRecord',
+				[
+					$model,
+					$data
+				]
+			),
+			'Record Id not returned correctly'
 		);
 
 		$this->assertEquals(
@@ -380,10 +386,11 @@ class DatabaseTest extends BaseTestCase {
 
 		$this->database->shouldReceive('updateRecord')
 			->once()
-			->with($model, $data);
+			->with($model, $data)
+			->andReturn(123);
 
-		$this->assertSame(
-			$model,
+		$this->assertEquals(
+			123,
 			$this->callProtectedMethod(
 				$this->database,
 				'insertUpdateRecord',
@@ -394,7 +401,7 @@ class DatabaseTest extends BaseTestCase {
 
 				]
 			),
-			'Record not returned correctly'
+			'Record Id not returned correctly'
 		);
 	}
 
