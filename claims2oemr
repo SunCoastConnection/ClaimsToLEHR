@@ -14,17 +14,6 @@ use \ErrorException,
 
 set_error_handler(__NAMESPACE__.'\exceptions_error_handler');
 
-function exceptions_error_handler($severity, $message, $filename, $lineno) {
-	if(error_reporting() !== 0 && (error_reporting() & $severity)) {
-		throw new ErrorException($message, 0, $severity, $filename, $lineno);
-	}
-}
-
-function exitError($message, $errorCode = 0) {
-	echo $message;
-	exit($errorCode);
-}
-
 echo 'Setting up autoloading...'.PHP_EOL;
 
 //** LOAD AUTOLOADER **//
@@ -60,7 +49,8 @@ $cmdOption = array_shift($argv);
 
 switch($cmdOption) {
 	case 'migrate':
-		if($options->get('Store.driver', 'array') === 'array') {
+		$connection = getStoreConnection($options);
+		if($connection['driver'] === 'array') {
 			exitError(
 				'Store driver `array` does not need to be migrated'.PHP_EOL,
 				1
@@ -79,10 +69,27 @@ switch($cmdOption) {
 		break;
 }
 
-function setupStore($options) {
-	$defaultDriver = $options->get('Store.default', 'array');
+function exceptions_error_handler($severity, $message, $filename, $lineno) {
+	if(error_reporting() !== 0 && (error_reporting() & $severity)) {
+		throw new ErrorException($message, 0, $severity, $filename, $lineno);
+	}
+}
 
-	$connection = $options->get('Store.connections.'.$defaultDriver, 'array');
+function exitError($message, $errorCode = 0) {
+	echo $message;
+	exit($errorCode);
+}
+
+function getStoreConnection($options, $connection = null) {
+	if(is_null($connection)) {
+		$connection = $options->get('Store.default', 'array');
+	}
+
+	return $options->get('Store.connections.'.$connection, 'array');
+}
+
+function setupStore($options) {
+	$connection = getStoreConnection($options);
 
 	if($connection['driver'] === 'array') {
 		$store = Store\Arr::getInstance($options);
