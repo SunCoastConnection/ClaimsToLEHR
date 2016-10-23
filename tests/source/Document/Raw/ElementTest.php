@@ -2,9 +2,9 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests\Document\Raw;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Document\Options,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw\Element;
+use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Element;
 
 class ElementTest extends BaseTestCase {
 

@@ -2,10 +2,10 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests\Document\Section;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
-	\SunCoastConnection\ClaimsToOEMR\Document\Section,
-	\SunCoastConnection\ClaimsToOEMR\Document\Section\Root;
+use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToOEMR\Document\Section;
+use \SunCoastConnection\ClaimsToOEMR\Document\Section\Root;
 
 class RootTest extends BaseTestCase {
 

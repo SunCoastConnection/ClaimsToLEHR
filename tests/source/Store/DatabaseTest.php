@@ -2,11 +2,15 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests\Store;
 
-use \Illuminate\Database\Capsule\Manager,
-	\SunCoastConnection\ClaimsToOEMR\Document\Options,
-	\SunCoastConnection\ClaimsToOEMR\Models,
-	\SunCoastConnection\ClaimsToOEMR\Store\Database,
-	\SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \DateTime;
+use \Illuminate\Container\Container;
+use \Illuminate\Database\Capsule\Manager;
+use \Illuminate\Database\Events\QueryExecuted;
+use \Illuminate\Events\Dispatcher;
+use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToOEMR\Models;
+use \SunCoastConnection\ClaimsToOEMR\Store\Database;
+use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
 
 class DatabaseTest extends BaseTestCase {
 
@@ -23,48 +27,31 @@ class DatabaseTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::onConstruct()
 	 */
-	public function testOnConstruct() {
-		$options = $this->getMockery(
-			Options::class
-		);
+	public function testOnConstructWithNoQueryLog() {
+		$this->database->shouldAllowMockingProtectedMethods();
+
+		$this->database->shouldReceive('options->get')
+			->once()
+			->with('Store.default', 'memory')
+			->andReturn('memory');
+
+		$connection = [
+			'driver'	=> 'sqlite',
+			'database'	=> ':memory:',
+		];
+
+		$this->database->shouldReceive('options->get')
+			->once()
+			->with('Store.connections.memory')
+			->andReturn($connection);
 
 		$manager = $this->getMockery(
 			'overload:'.Manager::class
 		);
 
-		$managerOptions = [
-			'driver'	=> 'mysql',
-			'host'		=> 'localhost',
-			'port'		=> '3306',
-			'database'	=> 'homestead',
-			'username'	=> 'homestead',
-			'password'	=> 'secret',
-			'charset'	=> 'utf8',
-			'collation'	=> 'utf8_unicode_ci',
-			'prefix'	=> '',
-			'strict'	=> false,
-			'engine'	=> null,
-		];
-
-		$this->database->shouldAllowMockingProtectedMethods();
-
-		$this->database->shouldReceive('options')
-			->once()
-			->andReturn($options);
-
-		$options->shouldReceive('get')
-			->once()
-			->with('Store.default')
-			->andReturn('mysql');
-
-		$options->shouldReceive('get')
-			->once()
-			->with('Store.connections.mysql')
-			->andReturn($managerOptions);
-
 		$manager->shouldReceive('addConnection')
 			->once()
-			->with($managerOptions);
+			->with($connection);
 
 		$manager->shouldReceive('setAsGlobal')
 			->once();
@@ -72,40 +59,155 @@ class DatabaseTest extends BaseTestCase {
 		$manager->shouldReceive('bootEloquent')
 			->once();
 
-		$this->database->onConstruct($options);
+		$this->database->shouldReceive('options->get')
+			->once()
+			->with('Store.queryLog', false)
+			->andReturn(false);
 
-		$this->assertInstanceOf(
-			Manager::class,
-			$this->getProtectedProperty(
-				$this->database,
-				'manager'
-			),
-			'Manager not created correctly'
-		);
+		$this->database->onConstruct();
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::getManager()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::onConstruct()
 	 */
-	public function testGetManager() {
+	public function testOnConstructWithQueryLog() {
+		$this->database->shouldAllowMockingProtectedMethods();
+
+		$this->database->shouldReceive('options->get')
+			->once()
+			->with('Store.default', 'memory')
+			->andReturn('memory');
+
+		$connection = [
+			'driver'	=> 'sqlite',
+			'database'	=> ':memory:',
+		];
+
+		$this->database->shouldReceive('options->get')
+			->once()
+			->with('Store.connections.memory')
+			->andReturn($connection);
+
 		$manager = $this->getMockery(
-			Manager::class
+			'overload:'.Manager::class
 		);
 
-		$this->setProtectedProperty(
-			$this->database,
-			'manager',
-			$manager
+		$manager->shouldReceive('addConnection')
+			->once()
+			->with($connection);
+
+		$manager->shouldReceive('setAsGlobal')
+			->once();
+
+		$manager->shouldReceive('bootEloquent')
+			->once();
+
+		$this->database->shouldReceive('options->get')
+			->once()
+			->with('Store.queryLog', false)
+			->andReturn(true);
+
+		$container = $this->getMockery(
+			'overload:'.Container::class
 		);
 
-		$this->assertSame(
-			$manager,
-			$this->callProtectedMethod(
-				$this->database,
-				'getManager'
-			),
-			'Manager not returned correctly'
+		$dispatcher = $this->getMockery(
+			'overload:'.Dispatcher::class)
+		;
+
+		$manager->shouldReceive('setEventDispatcher')
+			->once();
+
+		$manager->shouldReceive('connection->enableQueryLog')
+			->once();
+
+		$manager->shouldReceive('connection->listen')
+			->once()
+			->with(\Mockery::type('callable'));
+
+		$this->database->onConstruct();
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::logQuery()
+	 */
+	public function testLogQueryWithEcho() {
+		$queryExecuted = $this->getMockery(
+			QueryExecuted::class
 		);
+
+		$dateTimeString = '2000-12-31 23:59:59';
+		$dateTime = new DateTime($dateTimeString);
+
+		$queryExecuted->bindings = [
+			$dateTime,
+			'ABC'
+		];
+
+		$queryExecuted->sql = 'select * from "table" where "date" = ? and "field1" = ?';
+
+		$queryExecuted->time = 1.04;
+
+		$this->database->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options->get')
+			->with('Store.queryLog', false)
+			->andReturn(true);
+
+		$this->expectOutputString(
+			'[1.04]: select * from "table" where "date" = "'.
+				$dateTimeString.
+				'" and "field1" = "ABC"'.PHP_EOL
+		);
+
+		$this->database->logQuery($queryExecuted);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::logQuery()
+	 *
+	 * TODO: Modify to use \org\bovigo\vfs\vfsStream;
+	 */
+	public function testLogQueryWithFile() {
+		$queryExecuted = $this->getMockery(
+			QueryExecuted::class
+		);
+
+		$dateTimeString = '2000-12-31 23:59:59';
+		$dateTime = new DateTime($dateTimeString);
+
+		$queryExecuted->bindings = [
+			$dateTime,
+			'ABC'
+		];
+
+		$queryExecuted->sql = 'select * from "table" where "date" = ? and "field1" = ?';
+
+		$queryExecuted->time = 1.04;
+
+		$fileName = tempnam(sys_get_temp_dir(), 'TEST');
+
+		$this->database->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options->get')
+			->with('Store.queryLog', false)
+			->andReturn($fileName);
+
+		$fileContents = 'This file should be appended to'.PHP_EOL;
+
+		file_put_contents($fileName, $fileContents);
+
+		$this->database->logQuery($queryExecuted);
+
+
+		$this->assertEquals(
+			$fileContents.
+				'[1.04]: select * from "table" where "date" = "'.
+				$dateTimeString.
+				'" and "field1" = "ABC"'.PHP_EOL,
+			file_get_contents($fileName),
+			'Log file was not written to correctly'
+		);
+
+		unlink($fileName);
 	}
 
 	/**
@@ -238,8 +340,8 @@ class DatabaseTest extends BaseTestCase {
 			->with(\Mockery::type(get_class($model)), $data)
 			->andReturn(123);
 
-		$this->assertEquals(
-			123,
+		$this->assertInstanceOf(
+			get_class($model),
 			$this->callProtectedMethod(
 				$this->database,
 				'insertRecord',
@@ -248,7 +350,7 @@ class DatabaseTest extends BaseTestCase {
 					$data,
 				]
 			),
-			'Insert record Id not returned correctly'
+			'Insert record not returned correctly'
 		);
 	}
 
@@ -257,7 +359,7 @@ class DatabaseTest extends BaseTestCase {
 	 */
 	public function testUpdateRecord() {
 		$model = $this->getMockery(
-			'overload:'.Models\X12Partners::class
+			'overload:'.Models\Addresses::class
 		);
 
 		$data = [
@@ -269,17 +371,12 @@ class DatabaseTest extends BaseTestCase {
 		$model->shouldReceive('save')
 			->once();
 
+		$this->database->updateRecord($model, $data);
+
 		$this->assertEquals(
 			$data['id'],
-			$this->callProtectedMethod(
-				$this->database,
-				'updateRecord',
-				[
-					$model,
-					$data
-				]
-			),
-			'Record Id not returned correctly'
+			$model->id,
+			'Field value not set'
 		);
 
 		$this->assertEquals(
@@ -298,7 +395,7 @@ class DatabaseTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::insertUpdateRecord()
 	 */
-	public function testInsertUpdateRecordWithMissingRRecord() {
+	public function testInsertUpdateRecordWithMissingRecord() {
 		$data = [
 			'field1' => 'f1',
 			'field2' => 'f2',
@@ -390,7 +487,7 @@ class DatabaseTest extends BaseTestCase {
 			->andReturn(123);
 
 		$this->assertEquals(
-			123,
+			$model,
 			$this->callProtectedMethod(
 				$this->database,
 				'insertUpdateRecord',
@@ -401,7 +498,7 @@ class DatabaseTest extends BaseTestCase {
 
 				]
 			),
-			'Record Id not returned correctly'
+			'Record not returned correctly'
 		);
 	}
 
@@ -424,9 +521,8 @@ class DatabaseTest extends BaseTestCase {
 			Models\Addresses::class
 		);
 
-		$this->database->shouldAllowMockingProtectedMethods();
-
-		$this->database->shouldReceive('insertUpdateRecord')
+		$this->database->shouldAllowMockingProtectedMethods()
+			->shouldReceive('insertUpdateRecord')
 			->once()
 			->with('address', $data, [
 				'line1',
@@ -439,8 +535,13 @@ class DatabaseTest extends BaseTestCase {
 			])
 			->andReturn($model);
 
-		$this->assertSame(
-			$model,
+		$model->shouldReceive('getAttribute')
+			->once()
+			->with('id')
+			->andReturn(123);
+
+		$this->assertEquals(
+			123,
 			$this->database->storeAddress($data),
 			'Record not returned'
 		);
@@ -478,18 +579,29 @@ class DatabaseTest extends BaseTestCase {
 			Models\Billing::class
 		);
 
-		$this->database->shouldAllowMockingProtectedMethods();
-
-		$this->database->shouldReceive('insertRecord')
+		$this->database->shouldAllowMockingProtectedMethods()
+			->shouldReceive('insertUpdateRecord')
 			->once()
 			->with(
 				'billing',
-				$data
+				$data,
+				[
+					'provider_id',
+					'payer_id',
+					'pid',
+					'encounter',
+					'code'
+				]
 			)
 			->andReturn($model);
 
-		$this->assertSame(
-			$model,
+		$model->shouldReceive('getAttribute')
+			->once()
+			->with('id')
+			->andReturn(123);
+
+		$this->assertEquals(
+			123,
 			$this->database->storeBilling($data),
 			'Record not returned'
 		);
@@ -522,9 +634,8 @@ class DatabaseTest extends BaseTestCase {
 			Models\Facilities::class
 		);
 
-		$this->database->shouldAllowMockingProtectedMethods();
-
-		$this->database->shouldReceive('insertUpdateRecord')
+		$this->database->shouldAllowMockingProtectedMethods()
+			->shouldReceive('insertUpdateRecord')
 			->once()
 			->with('facility', $data, [
 				'name',
@@ -538,8 +649,13 @@ class DatabaseTest extends BaseTestCase {
 			])
 			->andReturn($model);
 
-		$this->assertSame(
-			$model,
+		$model->shouldReceive('getAttribute')
+			->once()
+			->with('id')
+			->andReturn(123);
+
+		$this->assertEquals(
+			123,
 			$this->database->storeFacility($data),
 			'Record not returned'
 		);
@@ -551,14 +667,14 @@ class DatabaseTest extends BaseTestCase {
 	public function testStoreFormEncounter() {
 		$data = [
 			'date' => 'date',
-			'reason' => 'reason',
-			'facility' => 'facility',
+			'reason' => '',
+			'facility' => '',
 			'facility_id' => 'facility_id',
 			'pid' => 'pid',
 			'encounter' => 'encounter',
 			'onset_date' => 'onset_date',
 			'sensitivity' => 'sensitivity',
-			'billing_note' => 'billing_note',
+			'billing_note' => '',
 			'pc_catid' => 'pc_catid',
 			'last_level_billed' => 'last_level_billed',
 			'last_level_closed' => 'last_level_closed',
@@ -575,18 +691,29 @@ class DatabaseTest extends BaseTestCase {
 			Models\FormEncounters::class
 		);
 
-		$this->database->shouldAllowMockingProtectedMethods();
-
-		$this->database->shouldReceive('insertRecord')
+		$this->database->shouldAllowMockingProtectedMethods()
+			->shouldReceive('insertUpdateRecord')
 			->once()
 			->with(
 				'formEncounter',
-				$data
+				$data,
+				[
+					'facility_id',
+					'provider_id',
+					'pid',
+					'encounter',
+					'facility'
+				]
 			)
 			->andReturn($model);
 
-		$this->assertSame(
-			$model,
+		$model->shouldReceive('getAttribute')
+			->once()
+			->with('id')
+			->andReturn(123);
+
+		$this->assertEquals(
+			123,
 			$this->database->storeFormEncounter($data),
 			'Record not returned'
 		);
@@ -599,32 +726,42 @@ class DatabaseTest extends BaseTestCase {
 		$data = [
 			'date' => 'date',
 			'encounter' => 'encounter',
-			'form_name' => 'form_name',
+			'form_name' => '',
 			'form_id' => 'form_id',
 			'pid' => 'pid',
 			'user' => 'user',
 			'groupname' => 'groupname',
 			'authorized' => 'authorized',
 			'deleted' => 'deleted',
-			'formdir' => 'formdir'
+			'formdir' => ''
 		];
 
 		$model = $this->getMockery(
 			Models\Forms::class
 		);
 
-		$this->database->shouldAllowMockingProtectedMethods();
-
-		$this->database->shouldReceive('insertRecord')
+		$this->database->shouldAllowMockingProtectedMethods()
+			->shouldReceive('insertUpdateRecord')
 			->once()
 			->with(
 				'form',
-				$data
+				$data,
+				[
+					'form_id',
+					'user',
+					'pid',
+					'encounter'
+				]
 			)
 			->andReturn($model);
 
-		$this->assertSame(
-			$model,
+		$model->shouldReceive('getAttribute')
+			->once()
+			->with('id')
+			->andReturn(123);
+
+		$this->assertEquals(
+			123,
 			$this->database->storeForm($data),
 			'Record not returned'
 		);
@@ -635,7 +772,7 @@ class DatabaseTest extends BaseTestCase {
 	 */
 	public function testStoreGroup() {
 		$data = [
-			'name' => 'name',
+			'name' => '',
 			'user' => 'user'
 		];
 
@@ -643,17 +780,21 @@ class DatabaseTest extends BaseTestCase {
 			Models\Groups::class
 		);
 
-		$this->database->shouldAllowMockingProtectedMethods();
-
-		$this->database->shouldReceive('insertUpdateRecord')
+		$this->database->shouldAllowMockingProtectedMethods()
+			->shouldReceive('insertUpdateRecord')
 			->once()
 			->with('group', $data, [
-				'user'
+				'user',
 			])
 			->andReturn($model);
 
-		$this->assertSame(
-			$model,
+		$model->shouldReceive('getAttribute')
+			->once()
+			->with('id')
+			->andReturn(123);
+
+		$this->assertEquals(
+			123,
 			$this->database->storeGroup($data),
 			'Record not returned'
 		);
@@ -675,9 +816,8 @@ class DatabaseTest extends BaseTestCase {
 			Models\InsuranceCompanies::class
 		);
 
-		$this->database->shouldAllowMockingProtectedMethods();
-
-		$this->database->shouldReceive('insertUpdateRecord')
+		$this->database->shouldAllowMockingProtectedMethods()
+			->shouldReceive('insertUpdateRecord')
 			->once()
 			->with('insuranceCompany', $data, [
 				'name',
@@ -685,8 +825,13 @@ class DatabaseTest extends BaseTestCase {
 			])
 			->andReturn($model);
 
-		$this->assertSame(
-			$model,
+		$model->shouldReceive('getAttribute')
+			->once()
+			->with('id')
+			->andReturn(123);
+
+		$this->assertEquals(
+			123,
 			$this->database->storeInsuranceCompany($data),
 			'Record not returned'
 		);
@@ -722,9 +867,8 @@ class DatabaseTest extends BaseTestCase {
 			Models\InsuranceData::class
 		);
 
-		$this->database->shouldAllowMockingProtectedMethods();
-
-		$this->database->shouldReceive('insertUpdateRecord')
+		$this->database->shouldAllowMockingProtectedMethods()
+			->shouldReceive('insertUpdateRecord')
 			->once()
 			->with('insuranceData', $data, [
 				'pid',
@@ -735,8 +879,13 @@ class DatabaseTest extends BaseTestCase {
 			])
 			->andReturn($model);
 
-		$this->assertSame(
-			$model,
+		$model->shouldReceive('getAttribute')
+			->once()
+			->with('id')
+			->andReturn(123);
+
+		$this->assertEquals(
+			123,
 			$this->database->storeInsuranceData($data),
 			'Record not returned'
 		);
@@ -750,7 +899,7 @@ class DatabaseTest extends BaseTestCase {
 			'language' => 'language',
 			'fname' => 'fname',
 			'lname' => 'lname',
-			'mname' => 'mname',
+			'mname' => '',
 			'DOB' => 'DOB',
 			'street' => 'street',
 			'postal_code' => 'postal_code',
@@ -767,9 +916,34 @@ class DatabaseTest extends BaseTestCase {
 			Models\PatientData::class
 		);
 
-		$this->database->shouldAllowMockingProtectedMethods();
+		$model->shouldReceive('getAttribute')
+			->times(3)
+			->with('id')
+			->andReturn(123);
 
-		$this->database->shouldReceive('insertUpdateRecord')
+		$model->shouldReceive('getAttribute')
+			->once()
+			->with('pubpid')
+			->andReturn(123);
+
+		$model->shouldReceive('getAttribute')
+			->once()
+			->with('pid')
+			->andReturn('');
+
+		$model->shouldReceive('setAttribute')
+			->once()
+			->with('pubpid', 123);
+
+		$model->shouldReceive('setAttribute')
+			->once()
+			->with('pid', 123);
+
+		$model->shouldReceive('save')
+			->once();
+
+		$this->database->shouldAllowMockingProtectedMethods()
+			->shouldReceive('insertUpdateRecord')
 			->once()
 			->with('patientData', $data, [
 				'fname',
@@ -780,8 +954,8 @@ class DatabaseTest extends BaseTestCase {
 			])
 			->andReturn($model);
 
-		$this->assertSame(
-			$model,
+		$this->assertEquals(
+			123,
 			$this->database->storePatientData($data),
 			'Record not returned'
 		);
@@ -804,18 +978,26 @@ class DatabaseTest extends BaseTestCase {
 			Models\PhoneNumbers::class
 		);
 
-		$this->database->shouldAllowMockingProtectedMethods();
-
-		$this->database->shouldReceive('insertRecord')
+		$this->database->shouldAllowMockingProtectedMethods()
+			->shouldReceive('insertUpdateRecord')
 			->once()
-			->with(
-				'phoneNumber',
-				$data
-			)
+			->with('phoneNumber', $data, [
+				'country_code',
+				'area_code',
+				'prefix',
+				'number',
+				'type',
+				'foreign_id'
+			])
 			->andReturn($model);
 
-		$this->assertSame(
-			$model,
+		$model->shouldReceive('getAttribute')
+			->once()
+			->with('id')
+			->andReturn(123);
+
+		$this->assertEquals(
+			123,
 			$this->database->storePhoneNumber($data),
 			'Record not returned'
 		);
@@ -827,7 +1009,7 @@ class DatabaseTest extends BaseTestCase {
 	public function testStoreUser() {
 		$data = [
 			'username' => 'username',
-			'password' => 'password',
+			'password' => '',
 			'authorized' => 'authorized',
 			'fname' => 'fname',
 			'mname' => 'mname',
@@ -850,9 +1032,8 @@ class DatabaseTest extends BaseTestCase {
 			Models\Users::class
 		);
 
-		$this->database->shouldAllowMockingProtectedMethods();
-
-		$this->database->shouldReceive('insertUpdateRecord')
+		$this->database->shouldAllowMockingProtectedMethods()
+			->shouldReceive('insertUpdateRecord')
 			->once()
 			->with('user', $data, [
 				'username',
@@ -860,8 +1041,13 @@ class DatabaseTest extends BaseTestCase {
 			])
 			->andReturn($model);
 
-		$this->assertSame(
-			$model,
+		$model->shouldReceive('getAttribute')
+			->once()
+			->with('id')
+			->andReturn(123);
+
+		$this->assertEquals(
+			123,
 			$this->database->storeUser($data),
 			'Record not returned'
 		);
@@ -893,17 +1079,21 @@ class DatabaseTest extends BaseTestCase {
 			Models\X12Partners::class
 		);
 
-		$this->database->shouldAllowMockingProtectedMethods();
-
-		$this->database->shouldReceive('insertUpdateRecord')
+		$this->database->shouldAllowMockingProtectedMethods()
+			->shouldReceive('insertUpdateRecord')
 			->once()
 			->with('x12Partners', $data, [
 				'x12_gs03'
 			])
 			->andReturn($model);
 
-		$this->assertSame(
-			$model,
+		$model->shouldReceive('getAttribute')
+			->once()
+			->with('id')
+			->andReturn(123);
+
+		$this->assertEquals(
+			123,
 			$this->database->storeX12Partner($data),
 			'Record not returned'
 		);

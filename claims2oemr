@@ -3,13 +3,13 @@
 
 namespace SunCoastConnection\ClaimsToOEMR;
 
-use \ErrorException,
-	\SunCoastConnection\ClaimsToOEMR\Document\Options,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
-	\SunCoastConnection\ClaimsToOEMR\Store,
-	\SunCoastConnection\ClaimsToOEMR\X12N837,
-	\SunCoastConnection\ClaimsToOEMR\X12N837\Cache,
-	\Symfony\Component\Finder\Finder;
+use \ErrorException;
+use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToOEMR\Store\Database;
+use \SunCoastConnection\ClaimsToOEMR\X12N837;
+use \SunCoastConnection\ClaimsToOEMR\X12N837\Cache;
+use \Symfony\Component\Finder\Finder;
 
 
 set_error_handler(__NAMESPACE__.'\exceptions_error_handler');
@@ -49,18 +49,17 @@ $cmdOption = array_shift($argv);
 
 switch($cmdOption) {
 	case 'migrate':
-		$connection = getStoreConnection($options);
-		if($connection['driver'] === 'array') {
-			exitError(
-				'Store driver `array` does not need to be migrated'.PHP_EOL,
-				1
-			);
-		}
-
+		setupStore($options);
 		c2eMigrate($options);
 		break;
 
+	case 'store-count':
+		setupStore($options);
+		c2eStoreCount($options);
+		break;
+
 	case 'parse':
+		setupStore($options);
 		c2eParse($options);
 		break;
 
@@ -82,35 +81,35 @@ function exitError($message, $errorCode = 0) {
 
 function getStoreConnection($options, $connection = null) {
 	if(is_null($connection)) {
-		$connection = $options->get('Store.default', 'array');
+		$connection = $options->get('Store.default', 'memory');
 	}
 
-	return $options->get('Store.connections.'.$connection, 'array');
+	return $options->get('Store.connections.'.$connection);
 }
 
 function setupStore($options) {
 	$connection = getStoreConnection($options);
 
-	if($connection['driver'] === 'array') {
-		$store = Store\Arr::getInstance($options);
-	} else {
-		if($connection['driver'] === 'sqlite' && !file_exists($connection['database'])) {
-			touch($connection['database']) || exitError(
-				'SQLite database missing and can not be created: '.$connection['database'].PHP_EOL,
-				1
-			);
-		}
-
-		$store = Store\Database::getInstance($options);
+	if($connection['driver'] === 'sqlite' && !file_exists($connection['database'])) {
+		touch($connection['database']) || exitError(
+			'SQLite database missing and can not be created: '.$connection['database'].PHP_EOL,
+			1
+		);
 	}
 
-	$options->set('App.store', $store);
+	$options->set('App.store', Database::getInstance($options));
 }
 
 function c2eMigrate($options) {
-	setupStore($options);
-
 	include(__DIR__.'/database/migrate.php');
+}
+
+function c2eStoreCount($options) {
+	echo 'Store record counts:'.PHP_EOL.PHP_EOL;
+
+	$options->get('App.store')->printTableCounts();
+
+	echo PHP_EOL;
 }
 
 function c2eParse($options) {
@@ -127,13 +126,7 @@ function c2eParse($options) {
 		$finder->depth('== 0');
 	}
 
-	setupStore($options);
-
-	echo 'Initial store record counts:'.PHP_EOL.PHP_EOL;
-
-	$options->get('App.store')->printTableCounts();
-
-	echo PHP_EOL;
+	c2eStoreCount($options);
 
 	echo 'Found '.$finder->count().' file(s) in directory: '.realpath($inboxPath).PHP_EOL.PHP_EOL;
 
@@ -160,7 +153,5 @@ function c2eClaimCache($options, $document) {
 
 	$cache->processDocument($document);
 
-	$options->get('App.store')->printTableCounts();
-
-	echo PHP_EOL;
+	c2eStoreCount($options);
 }

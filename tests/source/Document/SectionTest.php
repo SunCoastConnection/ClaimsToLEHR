@@ -2,12 +2,12 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests\Document;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Tests\Document\SectionMock,
-	\SunCoastConnection\ClaimsToOEMR\Document\Options,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
-	\SunCoastConnection\ClaimsToOEMR\Document\Section,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
+use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToOEMR\Tests\Document\SectionMock;
+use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToOEMR\Document\Section;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
 
 class SectionTest extends BaseTestCase {
 

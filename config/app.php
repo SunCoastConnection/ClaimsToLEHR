@@ -3,16 +3,17 @@
 return [
 
 	'Inbox' => [
-		'path' => __DIR__.'/../INBOX/ARSP',
+		'path' => __DIR__.'/../INBOX',
 		'pattern' => '*.txt',
-		'recursive' => false,
+		'recursive' => true,
 	],
 
 	'Store' => [
 		'default' => 'sqlite',
 		'connections' => [
-			'array' => [
-				'driver'	=> 'array',
+			'memory' => [
+				'driver'	=> 'sqlite',
+				'database'	=> ':memory:',
 			],
 			'sqlite' => [
 				'driver'	=> 'sqlite',
@@ -32,6 +33,7 @@ return [
 				'engine'	=> null,
 			],
 		],
+		'queryLog' => __DIR__.'/../cache/database.log',
 	],
 
 	'Document' => [

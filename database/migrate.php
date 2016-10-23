@@ -21,7 +21,7 @@ DatabaseManager::schema()->create('addresses', function($table) {
 	//   KEY `foreign_id` (`foreign_id`)
 	// ) ENGINE=MyISAM;
 
-	$table->integer('id')->length(11)->default(0);
+	$table->increments('id');
 	$table->string('line1', 255)->nullable();
 	$table->string('line2', 255)->nullable();
 	$table->string('city', 255)->nullable();
@@ -246,7 +246,7 @@ DatabaseManager::schema()->create('insurance_companies', function($table) {
 	//   PRIMARY KEY  (`id`)
 	// ) ENGINE=MyISAM;
 
-	$table->integer('id')->length(11)->default(0);
+	$table->increments('id');
 	$table->string('name', 255)->nullable();
 	$table->string('attn', 255)->nullable();
 	$table->string('cms_id', 15)->nullable();
@@ -435,7 +435,7 @@ DatabaseManager::schema()->create('phone_numbers', function($table) {
 	//   KEY `foreign_id` (`foreign_id`)
 	// ) ENGINE=MyISAM;
 
-	$table->integer('id')->length(11)->default(0);
+	$table->increments('id');
 	$table->string('country_code', 5)->nullable();
 	$table->char('area_code', 3)->nullable();
 	$table->char('prefix', 3)->nullable();
@@ -548,7 +548,7 @@ DatabaseManager::schema()->create('x12_partners', function($table) {
 	//   PRIMARY KEY  (`id`)
 	// ) ENGINE=MyISAM;
 
-	$table->integer('id')->length(11)->default(0);
+	$table->increments('id');
 	$table->string('name', 255)->nullable();
 	$table->string('id_number', 255)->nullable();
 	$table->string('x12_sender_id', 255)->nullable();

@@ -10,8 +10,9 @@
     ],
     "require": {
         "symfony/finder": "3.0.*",
-        "Illuminate/Config": "5.2.*",
-        "Illuminate/Database": "5.2.*"
+        "illuminate/config": "5.2.*",
+        "illuminate/database": "5.2.*",
+        "illuminate/events": "5.2.*"
    	},
     "autoload": {
         "psr-4": {

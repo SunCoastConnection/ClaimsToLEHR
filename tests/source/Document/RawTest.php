@@ -2,13 +2,13 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests\Document;
 
-use \Countable,
-	\Iterator,
-	\SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Document\Options,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment,
-	\org\bovigo\vfs\vfsStream;
+use \Countable;
+use \Iterator;
+use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
+use \org\bovigo\vfs\vfsStream;
 
 class RawTest extends BaseTestCase {
 
@@ -209,8 +209,12 @@ class RawTest extends BaseTestCase {
 			Options::class
 		);
 
-		$this->raw->shouldAllowMockingProtectedMethods()
-			->shouldReceive('options')
+		$this->raw->shouldAllowMockingProtectedMethods();
+
+		$this->raw->shouldReceive('convertSimple837')
+			->andReturn($contents);
+
+		$this->raw->shouldReceive('options')
 			->andReturn($options);
 
 		$options->shouldReceive('get')
@@ -257,8 +261,12 @@ class RawTest extends BaseTestCase {
 			Options::class
 		);
 
-		$this->raw->shouldAllowMockingProtectedMethods()
-			->shouldReceive('options')
+		$this->raw->shouldAllowMockingProtectedMethods();
+
+		$this->raw->shouldReceive('convertSimple837')
+			->andReturn($contents);
+
+		$this->raw->shouldReceive('options')
 			->andReturn($options);
 
 		$options->shouldReceive('get')
@@ -288,8 +296,12 @@ class RawTest extends BaseTestCase {
 			Options::class
 		);
 
-		$this->raw->shouldAllowMockingProtectedMethods()
-			->shouldReceive('options')
+		$this->raw->shouldAllowMockingProtectedMethods();
+
+		$this->raw->shouldReceive('convertSimple837')
+			->andReturn($contents);
+
+		$this->raw->shouldReceive('options')
 			->andReturn($options);
 
 		$options->shouldReceive('get')
@@ -308,6 +320,27 @@ class RawTest extends BaseTestCase {
 		$this->raw->shouldReceive('rewind');
 
 		$this->raw->parse($contents, true);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::convertSimple837()
+	 */
+	public function testConvertSimple837() {
+		$contents = 'CONTROL 4 5 6 7 8 9 '.
+			implode(
+				"\r\n".'0 1 2 3 4 5 6 7 8 9 ',
+				$this->document
+			);
+
+		$this->assertEquals(
+			implode('~', $this->document).'~',
+			$this->callProtectedMethod(
+				$this->raw,
+				'convertSimple837',
+				[ $contents ]
+			),
+			'Simple 837 not converted correctly'
+		);
 	}
 
 	/**

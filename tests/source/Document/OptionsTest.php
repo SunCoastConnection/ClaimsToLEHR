@@ -2,9 +2,9 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests\Document;
 
-use \Illuminate\Config\Repository,
-	\SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \Illuminate\Config\Repository;
+use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToOEMR\Document\Options;
 
 class OptionsTest extends BaseTestCase {
 

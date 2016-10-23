@@ -2,9 +2,9 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests;
 
-use \PHPUnit_Framework_TestCase,
-	\Mockery,
-	\ReflectionClass;
+use \PHPUnit_Framework_TestCase;
+use \Mockery;
+use \ReflectionClass;
 
 class BaseTestCase extends PHPUnit_Framework_TestCase {
 

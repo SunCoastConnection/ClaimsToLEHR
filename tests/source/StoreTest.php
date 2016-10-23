@@ -2,10 +2,10 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Options,
-	\SunCoastConnection\ClaimsToOEMR\Store,
-	\SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Tests\StoreMock;
+use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToOEMR\Store;
+use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToOEMR\Tests\StoreMock;
 
 class StoreTest extends BaseTestCase {
 
