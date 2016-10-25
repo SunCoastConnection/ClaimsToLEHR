@@ -96,37 +96,60 @@ class Raw implements Iterator, Countable {
 	/**
 	 * Parse the segments from an raw X12
 	 *
-	 * @param  string   $string      Raw X12 document
-	 * @param  boolean  $singleMode  Parse file with single Transaction Set
+	 * @param  string   $document    Raw X12 document
 	 */
-	public function parse($string, $singleMode = false) {
-		if(!is_string($string)) {
+	public function parse($document) {
+		if(!is_string($document)) {
 			// TODO: Replace exception
-			throw new Exception('First paramiter should be a string: '.gettype($string).' passed');
+			throw new Exception('First paramiter should be a string: '.gettype($document).' passed');
 		}
 
-		$strig = $this->convertSimple837($string);
+		$this->setInterchangeData($document);
 
-		$string = str_replace([ "\r", "\n" ], '', $string);
+		$document = $this->convertSimple837($document);
 
-		if($this->options()->get('Document.autodetect')) {
-			$this->setInterchangeData($string);
-		}
-
-		if($singleMode) {
-			$string = $this->correctSingleMode($string);
-		}
+		$document = str_replace([ "\r", "\n" ] , '', $document);
 
 		$this->segments = array_filter(
 			explode(
 				$this->options()->get('Document.delimiters.segment'),
-				$string
+				$document
 			)
 		);
 
 		$this->parseSegments();
 
 		$this->rewind();
+	}
+
+	/**
+	 * Detect X12 document delimiters
+	 *
+	 * @param string  $document  Raw X12 document
+	 */
+	protected function setInterchangeData($document) {
+		$isaPos = strpos($document, 'ISA');
+
+		if($isaPos === false) {
+			// TODO: Replace exception
+			throw new Exception('Invalid EDI document, missing ISA segment');
+		}
+
+		$isaSegment = substr($document, $isaPos, 106);
+
+		$this->options()->set(
+			'Document.delimiters',
+			[
+				'data' => $isaSegment[3],
+				'repetition' => $isaSegment[82],
+				'component' => $isaSegment[104],
+				'segment' => (
+					in_array($isaSegment[105], [ "\r", "\n" ])
+						? $this->options()->get('Document.delimiters.segment')
+						: $isaSegment[105]
+				)
+			]
+		);
 	}
 
 	/**
@@ -138,95 +161,26 @@ class Raw implements Iterator, Countable {
 	 */
 	protected function convertSimple837($string) {
 		if(substr($string, 0, 7) == 'CONTROL') {
-			$string = array_filter(
-				explode(
-					"\n",
-					str_replace(
-						"\r",
-						"\n",
-						$string
-					)
-				)
-			);
+			$string = explode("\n", $string);
 
-			foreach($string as $line => $segment) {
-				$string[$line] = substr($segment, 20);
+			foreach($string as &$segment) {
+				$segment = substr($segment, 20);
 			}
 
-			$string = implode('~', $string).'~';
+			$segmentDelimiter = $this->options()
+				->get('Document.delimiters.segment');
+
+			$string = implode(
+				$segmentDelimiter,
+				$string
+			);
+
+			if(substr($string, -1) != $segmentDelimiter) {
+				$string .= $segmentDelimiter;
+			}
 		}
 
 		return $string;
-	}
-
-	/**
-	 * Detect X12 document delimiters
-	 *
-	 * @param string  $string  Raw X12 document
-	 */
-	protected function setInterchangeData($string) {
-		if(substr($string, 0, 3) !== 'ISA') {
-			// TODO: Replace exception
-			throw new Exception('ISA segment not provided as first segment');
-		} else {
-			$this->options()->set(
-				'Document.delimiters',
-				[
-					'data' => $string[3],
-					'repetition' => $string[82],
-					'component' => $string[104],
-					'segment' => $string[105],
-				]
-			);
-
-		}
-	}
-
-	/**
-	 * Convert X12 document with single Transaction Set to multiple
-	 *
-	 * @param  string  $string  Raw X12 document
-	 *
-	 * @return string           Raw X12 document
-	 */
-	protected function correctSingleMode($string) {
-		$delimiters = $this->options()->get('Document.delimiters');
-
-		$match1 = implode(
-			$delimiters['data'],
-			[ 'HL', '1', '', '20', '1' ]
-		);
-
-		$replace1 = '{{@@@@@@@@}}';
-
-		$match2 = implode(
-			$delimiters['data'],
-			[ '', '', '20', '1' ]
-		).$delimiters['segment'];
-
-		$replace2 = $delimiters['segment'].
-			implode(
-				$delimiters['data'],
-				[ 'SE', '28', '0003' ]
-			).$delimiters['segment'].
-			implode(
-				$delimiters['data'],
-				[ 'ST', '837', '0004', '005010X222A1' ]
-			).$delimiters['segment'];
-
-		return str_replace(
-			$replace1,
-			$match1,
-			str_replace(
-				$match2,
-				$replace2,
-				str_replace(
-					$match1,
-					$replace1,
-					$string
-				)
-			)
-		);
 	}
 
 	/**

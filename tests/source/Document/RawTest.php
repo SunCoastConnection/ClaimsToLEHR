@@ -211,15 +211,13 @@ class RawTest extends BaseTestCase {
 
 		$this->raw->shouldAllowMockingProtectedMethods();
 
+		$this->raw->shouldReceive('setInterchangeData');
+
 		$this->raw->shouldReceive('convertSimple837')
 			->andReturn($contents);
 
 		$this->raw->shouldReceive('options')
 			->andReturn($options);
-
-		$options->shouldReceive('get')
-			->with('Document.autodetect')
-			->andReturn(false);
 
 		$options->shouldReceive('get')
 			->with('Document.delimiters.segment')
@@ -287,63 +285,6 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parse()
-	 */
-	public function testParseWithSingleMode() {
-		$contents = implode('~', $this->document).'~';
-
-		$options = $this->getMockery(
-			Options::class
-		);
-
-		$this->raw->shouldAllowMockingProtectedMethods();
-
-		$this->raw->shouldReceive('convertSimple837')
-			->andReturn($contents);
-
-		$this->raw->shouldReceive('options')
-			->andReturn($options);
-
-		$options->shouldReceive('get')
-			->with('Document.autodetect')
-			->andReturn(false);
-
-		$this->raw->shouldReceive('correctSingleMode')
-			->with($contents);
-
-		$options->shouldReceive('get')
-			->with('Document.delimiters.segment')
-			->andReturn('~');
-
-		$this->raw->shouldReceive('parseSegments');
-
-		$this->raw->shouldReceive('rewind');
-
-		$this->raw->parse($contents, true);
-	}
-
-	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::convertSimple837()
-	 */
-	public function testConvertSimple837() {
-		$contents = 'CONTROL 4 5 6 7 8 9 '.
-			implode(
-				"\r\n".'0 1 2 3 4 5 6 7 8 9 ',
-				$this->document
-			);
-
-		$this->assertEquals(
-			implode('~', $this->document).'~',
-			$this->callProtectedMethod(
-				$this->raw,
-				'convertSimple837',
-				[ $contents ]
-			),
-			'Simple 837 not converted correctly'
-		);
-	}
-
-	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::setInterchangeData()
 	 */
 	public function testSetInterchangeData() {
@@ -401,6 +342,65 @@ class RawTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::setInterchangeData()
 	 */
+	public function testSetInterchangeDataWithPosition105NewLine() {
+		$options = $this->getMockery(
+			Options::class
+		);
+
+		$this->raw->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options')
+			->andReturn($options);
+
+		$delimiters = [
+			'data'			=> '!',
+			'repetition'	=> '@',
+			'component'		=> '#',
+			'segment'		=> '$',
+		];
+
+		$options->shouldReceive('get')
+			->once()
+			->with('Document.delimiters.segment')
+			->andReturn('$');
+
+		$options->shouldReceive('set')
+			->once()
+			->with('Document.delimiters', $delimiters);
+
+		$interchangeData = [
+			'ISA',
+			'00',
+			'          ',
+			'00',
+			'          ',
+			'ZZ',
+			'15G8           ',
+			'ZZ',
+			'43142076400000 ',
+			'150306',
+			'1617',
+			$delimiters['repetition'],
+			'00501',
+			'000638905',
+			'1',
+			'P',
+			$delimiters['component']."\n".
+			'abcdefghijklmnopqrstuvwxyz',
+			'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+		];
+
+		$interchangeData = implode($delimiters['data'], $interchangeData);
+
+		$this->callProtectedMethod(
+			$this->raw,
+			'setInterchangeData',
+			[ $interchangeData ]
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::setInterchangeData()
+	 */
 	public function testSetInterchangeDataWithBadSegment() {
 		$contents = implode('~', $this->document).'~';
 
@@ -418,7 +418,7 @@ class RawTest extends BaseTestCase {
 
 		$this->setExpectedException(
 			'Exception',
-			'ISA segment not provided as first segment'
+			'Invalid EDI document, missing ISA segment'
 		);
 
 		$this->callProtectedMethod(
@@ -431,51 +431,28 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::correctSingleMode()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::convertSimple837()
 	 */
-	public function testCorrectSingleMode() {
-		$contents = implode('~', $this->document).'~';
-
-		$options = $this->getMockery(
-			Options::class
-		);
-
-		$this->raw->shouldAllowMockingProtectedMethods()
-			->shouldReceive('options')
-			->andReturn($options);
-
-		$options->shouldReceive('get')
-			->with('Document.delimiters')
-			->andReturn(
-				[
-					'data'			=> '*',
-					'repetition'	=> '^',
-					'component'		=> ':',
-					'segment'		=> '~',
-				]
+	public function testConvertSimple837() {
+		$contents = 'CONTROL HDR 6 7 8 9 '.
+			implode(
+				"\n".'0 1 2 3 4 5 6 7 8 9 ',
+				$this->document
 			);
 
+		$this->raw->shouldAllowMockingProtectedMethods()
+			->shouldReceive('options->get')
+			->with('Document.delimiters.segment')
+			->andReturn('~');
+
 		$this->assertEquals(
-			implode(
-				'~',
-				[
-					$this->document[0],
-					$this->document[1],
-					$this->document[2],
-					'HL*2',
-					'SE*28*0003',
-					'ST*837*0004*005010X222A1',
-					$this->document[4],
-				]
-			).'~',
+			implode('~', $this->document).'~',
 			$this->callProtectedMethod(
 				$this->raw,
-				'correctSingleMode',
-				[
-					$contents
-				]
+				'convertSimple837',
+				[ $contents ]
 			),
-			'Explosion of raw data failed'
+			'Simple 837 not converted correctly'
 		);
 	}
 

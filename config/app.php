@@ -4,7 +4,7 @@ return [
 
 	'Inbox' => [
 		'path' => __DIR__.'/../INBOX',
-		'pattern' => '*.txt',
+		'pattern' => '*',
 		'recursive' => true,
 	],
 
@@ -37,7 +37,6 @@ return [
 	],
 
 	'Document' => [
-		'autodetect' => true,
 		'delimiters' => [
 			'data'			=> '*',
 			'repetition'	=> '^',
