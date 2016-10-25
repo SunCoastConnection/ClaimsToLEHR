@@ -11,6 +11,7 @@ use \SunCoastConnection\ClaimsToOEMR\Document\Options;
 use \SunCoastConnection\ClaimsToOEMR\Models;
 use \SunCoastConnection\ClaimsToOEMR\Store\Database;
 use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \org\bovigo\vfs\vfsStream;
 
 class DatabaseTest extends BaseTestCase {
 
@@ -164,8 +165,6 @@ class DatabaseTest extends BaseTestCase {
 
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::logQuery()
-	 *
-	 * TODO: Modify to use \org\bovigo\vfs\vfsStream;
 	 */
 	public function testLogQueryWithFile() {
 		$queryExecuted = $this->getMockery(
@@ -184,30 +183,27 @@ class DatabaseTest extends BaseTestCase {
 
 		$queryExecuted->time = 1.04;
 
-		$fileName = tempnam(sys_get_temp_dir(), 'TEST');
+		$fileContents = 'This file should be appended to'.PHP_EOL;
+
+		$root = vfsStream::setup();
+
+		$file = vfsStream::newFile('query.log')
+			->at($root)
+			->setContent($fileContents);
 
 		$this->database->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options->get')
 			->with('Store.queryLog', false)
-			->andReturn($fileName);
-
-		$fileContents = 'This file should be appended to'.PHP_EOL;
-
-		file_put_contents($fileName, $fileContents);
+			->andReturn($file->url());
 
 		$this->database->logQuery($queryExecuted);
 
-
 		$this->assertEquals(
-			$fileContents.
-				'[1.04]: select * from "table" where "date" = "'.
-				$dateTimeString.
-				'" and "field1" = "ABC"'.PHP_EOL,
-			file_get_contents($fileName),
+			$fileContents.'[1.04]: select * from "table" where "date" = "'.
+				$dateTimeString.'" and "field1" = "ABC"'.PHP_EOL,
+			$file->getContent(),
 			'Log file was not written to correctly'
 		);
-
-		unlink($fileName);
 	}
 
 	/**
