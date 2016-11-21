@@ -2,11 +2,11 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests\Document\Raw;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Document\Options,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw\Element,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
+use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Element;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
 
 class SegmentTest extends BaseTestCase {
 
@@ -21,9 +21,9 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getNew()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getInstance()
 	 */
-	public function testGetNew() {
+	public function testGetInstance() {
 		$elements = [
 			'A',
 			'B:1',
@@ -33,13 +33,19 @@ class SegmentTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.data', '*');
-		$options->set('Document.delimiters.component', ':');
-		$options->set('Aliases.'.$elements[0], Segment::class);
+		$options->shouldReceive('get')
+			->with('Document.delimiters.data')
+			->andReturn('*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.component')
+			->andReturn(':');
+		$options->shouldReceive('get')
+			->with('Aliases.'.$elements[0])
+			->andReturn(Segment::class);
 
-		$segment = $this->segment::getNew($options, implode('*', $elements));
+		$segment = $this->segment::getInstance($options, implode('*', $elements));
 
 		$this->assertInstanceOf(
 			Segment::class,
@@ -58,9 +64,9 @@ class SegmentTest extends BaseTestCase {
 
 		$this->assertEquals(
 			[
-				Element::getNew($options, $elements[1]),
-				Element::getNew($options, $elements[2]),
-				Element::getNew($options, $elements[3]),
+				Element::getInstance($options, $elements[1]),
+				Element::getInstance($options, $elements[2]),
+				Element::getInstance($options, $elements[3]),
 			],
 			$this->getProtectedProperty(
 				$segment,
@@ -71,22 +77,28 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getNew()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getInstance()
 	 */
-	public function testGetNewWithMissingElements() {
+	public function testGetInstanceWithMissingElements() {
 		$elements = [
 			'E',
 		];
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.data', '*');
-		$options->set('Document.delimiters.component', ':');
-		$options->set('Aliases.'.$elements[0], Segment::class);
+		$options->shouldReceive('get')
+			->with('Document.delimiters.data')
+			->andReturn('*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.component')
+			->andReturn(':');
+		$options->shouldReceive('get')
+			->with('Aliases.'.$elements[0])
+			->andReturn(Segment::class);
 
-		$segment = $this->segment::getNew($options, implode('*', $elements));
+		$segment = $this->segment::getInstance($options, implode('*', $elements));
 
 		$this->assertInstanceOf(
 			Segment::class,
@@ -115,9 +127,9 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getNew()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getInstance()
 	 */
-	public function testGetNewWithInvalidDesignator() {
+	public function testGetInstanceWithInvalidDesignator() {
 		$elements = [
 			'A',
 			'B:1',
@@ -127,16 +139,22 @@ class SegmentTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.data', '*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.data')
+			->andReturn('*');
+
+		$options->shouldReceive('get')
+			->with('Aliases.'.$elements[0])
+			->andReturnNull();
 
 		$this->setExpectedException(
 			'Exception',
 			'Segment designator can not be found: '.$elements[0]
 		);
 
-		$segment = $this->segment::getNew($options, implode('*', $elements));
+		$segment = $this->segment::getInstance($options, implode('*', $elements));
 	}
 
 	/**
@@ -193,9 +211,11 @@ class SegmentTest extends BaseTestCase {
 	public function testConstruct() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.data', '*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.data')
+			->andReturn('*');
 
 		$this->segment->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
@@ -219,7 +239,7 @@ class SegmentTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
 		$this->assertSame(
 			$options,
@@ -316,10 +336,14 @@ class SegmentTest extends BaseTestCase {
 
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.data', '*');
-		$options->set('Document.delimiters.component', ':');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.data')
+			->andReturn('*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.component')
+			->andReturn(':');
 
 		$this->segment->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
@@ -339,9 +363,9 @@ class SegmentTest extends BaseTestCase {
 
 		$this->assertEquals(
 			[
-				'Element 1' => Element::getNew($options, $elements[0]),
-				'Element 2' => Element::getNew($options, $elements[1]),
-				2 => Element::getNew($options, $elements[2]),
+				'Element 1' => Element::getInstance($options, $elements[0]),
+				'Element 2' => Element::getInstance($options, $elements[1]),
+				2 => Element::getInstance($options, $elements[2]),
 			],
 			$this->getProtectedProperty(
 				$this->segment,
@@ -469,10 +493,14 @@ class SegmentTest extends BaseTestCase {
 	public function testToString() {
 		$options = $this->getMockery(
 			Options::class
-		)->makePartial();
+		);
 
-		$options->set('Document.delimiters.component', ':');
-		$options->set('Document.delimiters.data', '*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.data')
+			->andReturn('*');
+		$options->shouldReceive('get')
+			->with('Document.delimiters.component')
+			->andReturn(':');
 
 		$this->segment->shouldAllowMockingProtectedMethods()
 			->shouldReceive('options')
@@ -482,11 +510,11 @@ class SegmentTest extends BaseTestCase {
 			$this->segment,
 			'elements',
 			[
-				'AB01' => Element::getNew($options, 'C'),
-				'AB02' => Element::getNew($options, 'D'),
-				'AB03' => Element::getNew($options, 'E'),
-				'AB04' => Element::getNew($options, ':'),
-				'AB05' => Element::getNew($options, '123'),
+				'AB01' => Element::getInstance($options, 'C'),
+				'AB02' => Element::getInstance($options, 'D'),
+				'AB03' => Element::getInstance($options, 'E'),
+				'AB04' => Element::getInstance($options, ':'),
+				'AB05' => Element::getInstance($options, '123'),
 			]
 		);
 

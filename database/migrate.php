@@ -21,7 +21,7 @@ DatabaseManager::schema()->create('addresses', function($table) {
 	//   KEY `foreign_id` (`foreign_id`)
 	// ) ENGINE=MyISAM;
 
-	$table->integer('id')->length(11)->default(0);
+	$table->increments('id');
 	$table->string('line1', 255)->nullable();
 	$table->string('line2', 255)->nullable();
 	$table->string('city', 255)->nullable();
@@ -30,7 +30,6 @@ DatabaseManager::schema()->create('addresses', function($table) {
 	$table->string('plus_four', 4)->nullable();
 	$table->string('country', 255)->nullable();
 	$table->integer('foreign_id')->length(11)->nullable();
-	$table->enum('status', ['loaded', 'mapped', 'transfered'])->default('loaded');
 });
 
 DatabaseManager::schema()->create('billing', function($table) {
@@ -87,7 +86,6 @@ DatabaseManager::schema()->create('billing', function($table) {
 	$table->integer('units')->length(3)->nullable();
 	$table->decimal('fee', 12, 2)->nullable();
 	$table->string('justify', 255)->nullable();
-	$table->enum('status', ['loaded', 'mapped', 'transfered'])->default('loaded');
 });
 
 DatabaseManager::schema()->create('facility', function($table) {
@@ -132,10 +130,10 @@ DatabaseManager::schema()->create('facility', function($table) {
 	$table->integer('pos_code')->length(4)->nullable();
 	$table->string('attn', 65)->nullable();
 	$table->string('domain_identifier', 60)->nullable();
+	$table->string('facility_npi', 15)->nullable();
 	$table->string('tax_id_type', 31)->default('');
 	$table->string('color', 7)->default('');
 	$table->integer('primary_business_entity')->length(10)->default(0)->comment = '0-Not Set as business entity 1-Set as business entity';
-	$table->enum('status', ['loaded', 'mapped', 'transfered'])->default('loaded');
 });
 
 DatabaseManager::schema()->create('form_encounter', function($table) {
@@ -184,7 +182,6 @@ DatabaseManager::schema()->create('form_encounter', function($table) {
 	$table->string('invoice_refno', 31)->default('');
 	$table->string('referral_source', 31)->default('');
 	$table->integer('billing_facility')->length(11)->default(0);
-	$table->enum('status', ['loaded', 'mapped', 'transfered'])->default('loaded');
 });
 
 DatabaseManager::schema()->create('forms', function($table) {
@@ -216,7 +213,6 @@ DatabaseManager::schema()->create('forms', function($table) {
 	$table->integer('authorized')->length(4)->nullable();
 	$table->integer('deleted')->length(4)->default('0')->comment = 'flag indicates form has been deleted';
 	$table->longText('formdir');
-	$table->enum('status', ['loaded', 'mapped', 'transfered'])->default('loaded');
 });
 
 DatabaseManager::schema()->create('groups', function($table) {
@@ -230,7 +226,6 @@ DatabaseManager::schema()->create('groups', function($table) {
 	$table->bigIncrements('id');
 	$table->longText('name');
 	$table->longText('user');
-	$table->enum('status', ['loaded', 'mapped', 'transfered'])->default('loaded');
 });
 
 DatabaseManager::schema()->create('insurance_companies', function($table) {
@@ -246,13 +241,12 @@ DatabaseManager::schema()->create('insurance_companies', function($table) {
 	//   PRIMARY KEY  (`id`)
 	// ) ENGINE=MyISAM;
 
-	$table->integer('id')->length(11)->default(0);
+	$table->increments('id');
 	$table->string('name', 255)->nullable();
 	$table->string('attn', 255)->nullable();
 	$table->string('cms_id', 15)->nullable();
 	$table->string('x12_receiver_id', 25)->nullable();
 	$table->integer('x12_default_partner_id')->length(11)->nullable();
-	$table->enum('status', ['loaded', 'mapped', 'transfered'])->default('loaded');
 });
 
 DatabaseManager::schema()->create('insurance_data', function($table) {
@@ -307,11 +301,10 @@ DatabaseManager::schema()->create('insurance_data', function($table) {
 	$table->string('subscriber_city', 255)->nullable();
 	$table->string('subscriber_state', 255)->nullable();
 	$table->string('subscriber_country', 255)->nullable();
-	$table->date('date')->default('0000-00-00');
-	$table->integer('pid')->length(20)->default('0');
 	$table->string('subscriber_sex', 25)->nullable();
 	$table->string('accept_assignment', 5)->default('TRUE');
-	$table->enum('status', ['loaded', 'mapped', 'transfered'])->default('loaded');
+	$table->integer('pid')->length(20)->default('0');
+	$table->date('date')->default('0000-00-00');
 });
 
 DatabaseManager::schema()->create('patient_data', function($table) {
@@ -419,7 +412,6 @@ DatabaseManager::schema()->create('patient_data', function($table) {
 	$table->integer('providerID')->length(11)->nullable();
 	$table->string('pubpid', 255)->default('');
 	$table->integer('pid')->length(20)->default('0');
-	$table->enum('status', ['loaded', 'mapped', 'transfered'])->default('loaded');
 });
 
 DatabaseManager::schema()->create('phone_numbers', function($table) {
@@ -435,14 +427,13 @@ DatabaseManager::schema()->create('phone_numbers', function($table) {
 	//   KEY `foreign_id` (`foreign_id`)
 	// ) ENGINE=MyISAM;
 
-	$table->integer('id')->length(11)->default(0);
+	$table->increments('id');
 	$table->string('country_code', 5)->nullable();
 	$table->char('area_code', 3)->nullable();
 	$table->char('prefix', 3)->nullable();
 	$table->string('number', 4)->nullable();
 	$table->integer('type')->length(11)->nullable();
 	$table->integer('foreign_id')->length(11)->nullable();
-	$table->enum('status', ['loaded', 'mapped', 'transfered'])->default('loaded');
 });
 
 DatabaseManager::schema()->create('users', function($table) {
@@ -522,7 +513,6 @@ DatabaseManager::schema()->create('users', function($table) {
 	$table->integer('calendar')->length(1)->default(0)->comment = '1 = appears in calendar';
 	$table->string('abook_type', 31)->default('');
 	$table->string('state_license_number', 25)->nullable();
-	$table->enum('status', ['loaded', 'mapped', 'transfered'])->default('loaded');
 });
 
 DatabaseManager::schema()->create('x12_partners', function($table) {
@@ -548,21 +538,20 @@ DatabaseManager::schema()->create('x12_partners', function($table) {
 	//   PRIMARY KEY  (`id`)
 	// ) ENGINE=MyISAM;
 
-	$table->integer('id')->length(11)->default(0);
+	$table->increments('id');
 	$table->string('name', 255)->nullable();
 	$table->string('id_number', 255)->nullable();
-	$table->string('x12_sender_id', 255)->nullable();
-	$table->string('x12_receiver_id', 255)->nullable();
 	$table->string('x12_version', 255)->nullable();
 	$table->string('x12_isa01', 2)->default('00')->comment = 'User logon Required Indicator';
 	$table->string('x12_isa02', 10)->default('          ')->comment = 'User Logon';
 	$table->string('x12_isa03', 2)->default('00')->comment = 'User password required Indicator';
 	$table->string('x12_isa04', 10)->default('          ')->comment = 'User Password';
 	$table->char('x12_isa05', 2)->default('ZZ');
+	$table->string('x12_sender_id', 255)->nullable();
 	$table->char('x12_isa07', 2)->default('ZZ');
+	$table->string('x12_receiver_id', 255)->nullable();
 	$table->char('x12_isa14', 1)->default('0');
 	$table->char('x12_isa15', 1)->default('P');
 	$table->string('x12_gs02', 15)->default('');
 	$table->string('x12_gs03', 15)->default('');
-	$table->enum('status', ['loaded', 'mapped', 'transfered'])->default('loaded');
 });

@@ -3,27 +3,16 @@
 
 namespace SunCoastConnection\ClaimsToOEMR;
 
-use \ErrorException,
-	\SunCoastConnection\ClaimsToOEMR\Database,
-	\SunCoastConnection\ClaimsToOEMR\Database\Cache,
-	\SunCoastConnection\ClaimsToOEMR\Document\Options,
-	\SunCoastConnection\ClaimsToOEMR\Document\Raw,
-	\SunCoastConnection\ClaimsToOEMR\X12N837,
-	\Symfony\Component\Finder\Finder;
+use \ErrorException;
+use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToOEMR\Store\Database;
+use \SunCoastConnection\ClaimsToOEMR\X12N837;
+use \SunCoastConnection\ClaimsToOEMR\X12N837\Cache;
+use \Symfony\Component\Finder\Finder;
 
 
 set_error_handler(__NAMESPACE__.'\exceptions_error_handler');
-
-function exceptions_error_handler($severity, $message, $filename, $lineno) {
-	if(error_reporting() !== 0 && (error_reporting() & $severity)) {
-		throw new ErrorException($message, 0, $severity, $filename, $lineno);
-	}
-}
-
-function exitError($message, $errorCode = 0) {
-	echo $message;
-	exit($errorCode);
-}
 
 echo 'Setting up autoloading...'.PHP_EOL;
 
@@ -52,7 +41,7 @@ if($autoload == false) {
 echo 'Loading configurations...'.PHP_EOL;
 
 //** GET CONFIGURATION OPTIONS **//
-$options = Options::getNew(require_once(__DIR__.'/config/app.php'));
+$options = Options::getInstance(require_once(__DIR__.'/config/app.php'));
 
 
 $cmd = array_shift($argv);
@@ -60,10 +49,17 @@ $cmdOption = array_shift($argv);
 
 switch($cmdOption) {
 	case 'migrate':
+		setupStore($options);
 		c2eMigrate($options);
 		break;
 
+	case 'store-count':
+		setupStore($options);
+		c2eStoreCount($options);
+		break;
+
 	case 'parse':
+		setupStore($options);
 		c2eParse($options);
 		break;
 
@@ -72,21 +68,48 @@ switch($cmdOption) {
 		break;
 }
 
-function setupDatabase($options) {
-	if($options->get('Database.driver') === 'sqlite' && !file_exists($options->get('Database.database'))) {
-		touch($options->get('Database.database')) || exitError(
-			'Database missing and can not be created: '.$options->get('Database.database').PHP_EOL,
+function exceptions_error_handler($severity, $message, $filename, $lineno) {
+	if(error_reporting() !== 0 && (error_reporting() & $severity)) {
+		throw new ErrorException($message, 0, $severity, $filename, $lineno);
+	}
+}
+
+function exitError($message, $errorCode = 0) {
+	echo $message;
+	exit($errorCode);
+}
+
+function getStoreConnection($options, $connection = null) {
+	if(is_null($connection)) {
+		$connection = $options->get('Store.default', 'memory');
+	}
+
+	return $options->get('Store.connections.'.$connection);
+}
+
+function setupStore($options) {
+	$connection = getStoreConnection($options);
+
+	if($connection['driver'] === 'sqlite' && !file_exists($connection['database'])) {
+		touch($connection['database']) || exitError(
+			'SQLite database missing and can not be created: '.$connection['database'].PHP_EOL,
 			1
 		);
 	}
 
-	$options->set('App.database', Database::getNew($options));
+	$options->set('App.store', Database::getInstance($options));
 }
 
 function c2eMigrate($options) {
-	setupDatabase($options);
+	include(__DIR__.'/database/migrate.php');
+}
 
-	include(__DIR__.'/Database/migrate.php');
+function c2eStoreCount($options) {
+	echo 'Store record counts:'.PHP_EOL.PHP_EOL;
+
+	$options->get('App.store')->printTableCounts();
+
+	echo PHP_EOL;
 }
 
 function c2eParse($options) {
@@ -96,13 +119,16 @@ function c2eParse($options) {
 	$finder = new Finder;
 	$finder->files()
 		->in($inboxPath)
-		->name($inboxPattern);
+		->name($inboxPattern)
+		->sortByName();
 
 	if($options->get('Inbox.recursive') == false) {
 		$finder->depth('== 0');
 	}
 
-	echo 'Found '.$finder->count().' file(s) in directory: '.realpath($inboxPath).PHP_EOL;
+	c2eStoreCount($options);
+
+	echo 'Found '.$finder->count().' file(s) in directory: '.realpath($inboxPath).PHP_EOL.PHP_EOL;
 
 	foreach($finder as $file) {
 		echo " - Filename:\t\t".$file->getRealpath().PHP_EOL;
@@ -113,19 +139,19 @@ function c2eParse($options) {
 }
 
 function c2eClaimLoad($options, $file) {
-	$raw = Raw::getNew($options);
+	$raw = Raw::getInstance($options);
 	$raw->parse($file->getContents());
 
-	$document = X12N837::getNew($options);
+	$document = X12N837::getInstance($options);
 	$document->parse($raw);
 
 	c2eClaimCache($options, $document);
 }
 
 function c2eClaimCache($options, $document) {
-	setupDatabase($options);
-
-	$cache = Cache::getNew($options->get('App.database'));
+	$cache = Cache::getInstance($options->get('App.store'));
 
 	$cache->processDocument($document);
+
+	c2eStoreCount($options);
 }

@@ -2,17 +2,17 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests\Document;
 
-use \Illuminate\Config\Repository,
-	\SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase,
-	\SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \Illuminate\Config\Repository;
+use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToOEMR\Document\Options;
 
 class OptionsTest extends BaseTestCase {
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Options::getNew()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Options::getInstance()
 	 */
-	public function testGetNew() {
-		$options = Options::getNew([]);
+	public function testGetInstance() {
+		$options = Options::getInstance([]);
 
 		$this->assertInstanceOf(
 			Options::class,

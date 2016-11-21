@@ -3,30 +3,40 @@
 return [
 
 	'Inbox' => [
-		'path' => __DIR__.'/../INBOX/ARSP',
-		'pattern' => '*.txt',
-		'recursive' => false,
+		'path' => __DIR__.'/../INBOX',
+		'pattern' => '*',
+		'recursive' => true,
 	],
 
-	'Database' => [
-		'driver'	=> 'mysql',
-		'host'		=> 'localhost',
-		'port'		=> '3306',
-		'database'	=> 'homestead',
-		'username'	=> 'homestead',
-		'password'	=> 'secret',
-		'charset'	=> 'utf8',
-		'collation'	=> 'utf8_unicode_ci',
-		'prefix'	=> '',
-		'strict'	=> false,
-		'engine'	=> null,
-
-		// 'driver'	=> 'sqlite',
-		// 'database'	=> __DIR__.'/../cache/database.sqlite',
+	'Store' => [
+		'default' => 'sqlite',
+		'connections' => [
+			'memory' => [
+				'driver'	=> 'sqlite',
+				'database'	=> ':memory:',
+			],
+			'sqlite' => [
+				'driver'	=> 'sqlite',
+				'database'	=> __DIR__.'/../cache/database.sqlite',
+			],
+			'mysql' => [
+				'driver'	=> 'mysql',
+				'host'		=> 'localhost',
+				'port'		=> '3306',
+				'database'	=> 'homestead',
+				'username'	=> 'homestead',
+				'password'	=> 'secret',
+				'charset'	=> 'utf8',
+				'collation'	=> 'utf8_unicode_ci',
+				'prefix'	=> '',
+				'strict'	=> false,
+				'engine'	=> null,
+			],
+		],
+		'queryLog' => __DIR__.'/../cache/database.log',
 	],
 
 	'Document' => [
-		'autodetect' => true,
 		'delimiters' => [
 			'data'			=> '*',
 			'repetition'	=> '^',
@@ -122,6 +132,20 @@ return [
 		'SVD' => \SunCoastConnection\ClaimsToOEMR\X12N837\Segment\SVD::class,
 		'TOO' => \SunCoastConnection\ClaimsToOEMR\X12N837\Segment\TOO::class,
 		'UR' => \SunCoastConnection\ClaimsToOEMR\X12N837\Segment\UR::class,
+
+		// Models Classes
+		'address' => \SunCoastConnection\ClaimsToOEMR\Models\Addresses::class,
+		'billing' => \SunCoastConnection\ClaimsToOEMR\Models\Billing::class,
+		'facility' => \SunCoastConnection\ClaimsToOEMR\Models\Facilities::class,
+		'formEncounter' => \SunCoastConnection\ClaimsToOEMR\Models\FormEncounters::class,
+		'form' => \SunCoastConnection\ClaimsToOEMR\Models\Forms::class,
+		'group' => \SunCoastConnection\ClaimsToOEMR\Models\Groups::class,
+		'insuranceCompany' => \SunCoastConnection\ClaimsToOEMR\Models\InsuranceCompanies::class,
+		'insuranceData' => \SunCoastConnection\ClaimsToOEMR\Models\InsuranceData::class,
+		'patientData' => \SunCoastConnection\ClaimsToOEMR\Models\PatientData::class,
+		'phoneNumber' => \SunCoastConnection\ClaimsToOEMR\Models\PhoneNumbers::class,
+		'user' => \SunCoastConnection\ClaimsToOEMR\Models\Users::class,
+		'x12Partners' => \SunCoastConnection\ClaimsToOEMR\Models\X12Partners::class,
 	],
 
 ];

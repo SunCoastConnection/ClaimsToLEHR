@@ -4,7 +4,7 @@ namespace SunCoastConnection\ClaimsToOEMR\Models;
 
 use \Illuminate\Database\Eloquent\Model as Eloquent;
 
-class FormEncounter extends Eloquent {
+class FormEncounters extends Eloquent {
 	protected $table = 'form_encounter';
 
 	public $timestamps = false;
