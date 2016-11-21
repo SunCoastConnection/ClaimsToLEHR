@@ -238,28 +238,31 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::recordCount()
+	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::addIfMissing()
 	 */
-	public function testRecordCount() {
-		$model = $this->getMockery(
-			Models\X12Partners::class
+	public function testAddIfMissing() {
+		$array = [];
+
+		$this->callProtectedMethod(
+			$this->database,
+			'addIfMissing',
+			[
+				'test',
+				&$array,
+				'123'
+			]
 		);
 
-		$this->database->shouldAllowMockingProtectedMethods();
-
-		$this->database->shouldReceive('getModelClass')
-			->once()
-			->with('x12Partners')
-			->andReturn(get_class($model));
-
-		$model->shouldReceive('count')
-			->once()
-			->andReturn(3);
+		$this->assertArrayHasKey(
+			'test',
+			$array,
+			'Index should have been added to array'
+		);
 
 		$this->assertEquals(
-			3,
-			$this->database->recordCount('x12Partners'),
-			'Model count not returned correctly'
+			'123',
+			$array['test'],
+			'Index value in array not set correctly'
 		);
 	}
 
@@ -495,6 +498,32 @@ class DatabaseTest extends BaseTestCase {
 				]
 			),
 			'Record not returned correctly'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::recordCount()
+	 */
+	public function testRecordCount() {
+		$model = $this->getMockery(
+			Models\X12Partners::class
+		);
+
+		$this->database->shouldAllowMockingProtectedMethods();
+
+		$this->database->shouldReceive('getModelClass')
+			->once()
+			->with('x12Partners')
+			->andReturn(get_class($model));
+
+		$model->shouldReceive('count')
+			->once()
+			->andReturn(3);
+
+		$this->assertEquals(
+			3,
+			$this->database->recordCount('x12Partners'),
+			'Model count not returned correctly'
 		);
 	}
 

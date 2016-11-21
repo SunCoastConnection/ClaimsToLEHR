@@ -160,7 +160,7 @@ class RawTest extends BaseTestCase {
 	public function testParseFromFileWithNonString() {
 		$this->setExpectedException(
 			'Exception',
-			'First paramiter should be a string: NULL passed'
+			'First parameter should be a string: NULL passed'
 		);
 
 		$this->raw->parseFromFile(null);
@@ -243,7 +243,7 @@ class RawTest extends BaseTestCase {
 	public function testParseWithNonString() {
 		$this->setExpectedException(
 			'Exception',
-			'First paramiter should be a string: NULL passed'
+			'First parameter should be a string: NULL passed'
 		);
 
 		$this->raw->parse(null);

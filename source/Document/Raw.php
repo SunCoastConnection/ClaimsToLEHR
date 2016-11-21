@@ -81,7 +81,7 @@ class Raw implements Iterator, Countable {
 	public function parseFromFile($fileName, $singleMode = false) {
 		if(!is_string($fileName)) {
 			// TODO: Replace exception
-			throw new Exception('First paramiter should be a string: '.gettype($fileName).' passed');
+			throw new Exception('First parameter should be a string: '.gettype($fileName).' passed');
 		} elseif(!is_readable($fileName)) {
 			// TODO: Replace exception
 			throw new Exception('Filename provided is not readable: '.$fileName);
@@ -101,7 +101,7 @@ class Raw implements Iterator, Countable {
 	public function parse($document) {
 		if(!is_string($document)) {
 			// TODO: Replace exception
-			throw new Exception('First paramiter should be a string: '.gettype($document).' passed');
+			throw new Exception('First parameter should be a string: '.gettype($document).' passed');
 		}
 
 		$this->setInterchangeData($document);
@@ -230,6 +230,7 @@ class Raw implements Iterator, Countable {
 
 	/**
 	 * Return the current segment
+	 *
 	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment  Current segment
 	 */
 	public function current() {

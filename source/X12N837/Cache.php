@@ -89,7 +89,16 @@ class Cache {
 	 * @param  array  $data  to store in table
 	 */
 	protected function storeBilling(array $data) {
-		$billing = [];
+		$billing = [
+			'code_type' => 'CPT4',
+			'groupname' => 'Default',
+			'authorized' => 1,
+			'billed' => 0,
+			'activity' => 1,
+			'bill_process' => 0,
+			'units' => 1,
+			'fee' => 10,
+		];
 
 		if(array_key_exists('User', $data)) {
 			$billing['provider_id'] = $data['User'];
@@ -100,17 +109,35 @@ class Cache {
 			$billing['payer_id'] = $data['InsuranceCompany'];
 		}
 
-		if(array_key_exists('Patient', $data)) {
-			$billing['pid'] = $data['Patient'];
+		if(array_key_exists('PatientData', $data)) {
+			$billing['pid'] = $data['PatientData'];
 		}
 
 		if(array_key_exists('CLM', $data)) {
-			$billing['encounter'] = (string) $data['CLM']->element('CLM01');
+			$billing['encounter'] = preg_replace(
+				'/[^A-Za-z0-9]/',
+				'',
+				(string) $data['CLM']->element('CLM01')
+			);
+		}
+
+		if(array_key_exists('DTP', $data)) {
+			if($data['DTP']->elementEquals('DTP02', 'RD8')) {
+				$billing['date'] = explode('-', (string) $data['DTP']->element('DTP03'));
+				$billing['date'] = $billing['date'][0];
+			} else {
+				$billing['date'] = (string) $data['DTP']->element('DTP03');
+			}
+			$billing['date'] .= rand(10, 20).rand(10, 59).rand(10, 59);
 		}
 
 		if(array_key_exists('SV1', $data)) {
 			if(array_key_exists('HI', $data)) {
 				$billing['justify'] = (string) $data['HI'][0]->element('HI01')->subElement(1);
+
+				if(strlen($billing['justify']) > 3) {
+					$billing['justify'] = substr_replace($billing['justify'], '.', 3, 0);
+				}
 			}
 
 			$billing['code'] = (string) $data['SV1']->element('SV101')->subElement(1);
@@ -127,10 +154,27 @@ class Cache {
 				'HI10', 'HI11', 'HI12'
 			];
 
+			$codeTypes = [
+				'ABK' => 'ICD10',
+				'ABF' => 'ICD10',
+				'BK' => 'ICD9',
+				'BF' => 'ICD9'
+			];
+
 			foreach($elements as $element) {
 				if($data['HI']->elementExists($element) && $data['HI']->element($element)->subElementCount() > 1) {
 					$billing['code_type'] = (string) $data['HI']->element($element)->subElement(0);
 					$billing['code'] = (string) $data['HI']->element($element)->subElement(1);
+
+					if(array_key_exists($billing['code_type'], $codeTypes)) {
+						if(strlen($billing['code']) > 3) {
+							$billing['code'] = substr_replace($billing['code'], '.', 3, 0);
+						}
+
+						$billing['code_type'] = $codeTypes[$billing['code_type']];
+					} else {
+						$billing['code_type'] = 'CPT4';
+					}
 
 					$this->store()->storeBilling($billing);
 				}
@@ -154,6 +198,7 @@ class Cache {
 
 		if(array_key_exists('NM1', $data)) {
 			$facility['name'] = (string) $data['NM1']->element('NM103');
+			$facility['facility_npi'] = (string) $data['NM1']->element('NM108');
 			$facility['domain_identifier'] = (string) $data['NM1']->element('NM109');
 		}
 
@@ -172,6 +217,20 @@ class Cache {
 		}
 
 		if(count($facility)) {
+			$facility = array_merge(
+				[
+					'country_code' => 'USA',
+					'service_location' => 1,
+					'billing_location' => 0,
+					'accepts_assignment' => 1,
+					'attn' => 'Billing',
+					'tax_id_type' => 'EI',
+					'color' => '#FFCC99',
+					'primary_business_entity' => 0,
+				],
+				$facility
+			);
+
 			return $this->store()->storeFacility($facility);
 		}
 	}
@@ -195,12 +254,30 @@ class Cache {
 			$formEncounter['provider_id'] = $data['User'];
 		}
 
-		if(array_key_exists('Patient', $data)) {
-			$formEncounter['pid'] = $data['Patient'];
+		if(array_key_exists('PatientData', $data)) {
+			$formEncounter['pid'] = $data['PatientData'];
 		}
 
 		if(array_key_exists('CLM', $data)) {
-			$formEncounter['encounter'] = (string) $data['CLM']->element('CLM01');
+			$formEncounter['encounter'] = preg_replace(
+				'/[^A-Za-z0-9]/',
+				'',
+				(string) $data['CLM']->element('CLM01')
+			);
+		}
+
+		if(array_key_exists('DTP', $data)) {
+			if($data['DTP']->elementEquals('DTP02', 'RD8')) {
+				$formEncounter['date'] = explode('-', (string) $data['DTP']->element('DTP03'));
+				$formEncounter['date'] = $formEncounter['date'][0];
+			} else {
+				$formEncounter['date'] = (string) $data['DTP']->element('DTP03');
+			}
+			$formEncounter['date'] .= rand(10, 20).rand(10, 59).rand(10, 59);
+		}
+
+		if(array_key_exists('DTP-431', $data)) {
+			$formEncounter['onset_date'] = (string) $data['DTP-431']->element('DTP03');
 		}
 
 		if(array_key_exists('NM1', $data) && $data['NM1']->elementEquals('NM101', '85')) {
@@ -208,6 +285,19 @@ class Cache {
 		}
 
 		if(count($formEncounter)) {
+			$formEncounter = array_merge([
+					'reason' => 'Imported Encounter',
+					'onset_date' => '0000-00-00 00:00:00',
+					'sensitivity' => 'normal',
+					'pc_catid' => 1,
+					'last_level_billed' => 0,
+					'last_level_closed' => 0,
+					'stmt_count' => 0,
+					'supervisor_id' => 0,
+				],
+				$formEncounter
+			);
+
 			return $this->store()->storeFormEncounter($formEncounter);
 		}
 	}
@@ -230,15 +320,39 @@ class Cache {
 			$form['user'] = $data['User'];
 		}
 
-		if(array_key_exists('Patient', $data)) {
-			$form['pid'] = $data['Patient'];
+		if(array_key_exists('PatientData', $data)) {
+			$form['pid'] = $data['PatientData'];
 		}
 
 		if(array_key_exists('CLM', $data)) {
-			$form['encounter'] = (string) $data['CLM']->element('CLM01');
+			$form['encounter'] = preg_replace(
+				'/[^A-Za-z0-9]/',
+				'',
+				(string) $data['CLM']->element('CLM01')
+			);
+		}
+
+		if(array_key_exists('DTP', $data)) {
+			if($data['DTP']->elementEquals('DTP02', 'RD8')) {
+				$form['date'] = explode('-', (string) $data['DTP']->element('DTP03'));
+				$form['date'] = $form['date'][0];
+			} else {
+				$form['date'] = (string) $data['DTP']->element('DTP03');
+			}
+			$form['date'] .= rand(10, 20).rand(10, 59).rand(10, 59);
 		}
 
 		if(count($form)) {
+			$form = array_merge([
+					'form_name' => 'New Patient Encounter',
+					'groupname' => 'Default',
+					'authorized' => 1,
+					'deleted' => 0,
+					'formdir' => 'newpatient',
+				],
+				$form
+			);
+
 			return $this->store()->storeForm($form);
 		}
 	}
@@ -254,10 +368,20 @@ class Cache {
 		$group = [];
 
 		if(array_key_exists('NM1', $data)) {
-			$group['user'] = (string) $data['NM1']->element('NM103').$data['NM1']->element('NM104');
+			$group['user'] = strtolower(preg_replace(
+				'/[^A-Za-z]/',
+				'',
+				(string) $data['NM1']->element('NM103').$data['NM1']->element('NM104')
+			));
 		}
 
 		if(count($group)) {
+			$group = array_merge([
+					'name' => 'Default',
+				],
+				$group
+			);
+
 			return $this->store()->storeGroup($group);
 		}
 	}
@@ -283,6 +407,12 @@ class Cache {
 		}
 
 		if(count($insuranceCompany)) {
+			$insuranceCompany = array_merge([
+					'attn' => 'Claims',
+				],
+				$insuranceCompany
+			);
+
 			return $this->store()->storeInsuranceCompany($insuranceCompany);
 		}
 	}
@@ -301,10 +431,19 @@ class Cache {
 			$insuranceData['pid'] = $data['PatientData'];
 		}
 
+		if(array_key_exists('GS', $data)) {
+			$insuranceData['date'] = substr((string) $data['GS']->element('GS04'), 0, 4).'0101010101';
+		}
+
 		if(array_key_exists('SBR', $data)) {
-			$insuranceData['subscriber_relationship'] = (string) $data['SBR']->element('SBR02');
+			$insuranceData['type'] = (string) $data['SBR']->element('SBR01');
 			$insuranceData['group_number'] = (string) $data['SBR']->element('SBR03');
 			$insuranceData['plan_name'] = (string) $data['SBR']->element('SBR04');
+			$insuranceData['subscriber_relationship'] = (string) $data['SBR']->element('SBR02');
+
+			if($insuranceData['subscriber_relationship'] == '18') {
+				$insuranceData['subscriber_relationship'] = 'self';
+			}
 		}
 
 		if(array_key_exists('NM1', $data)) {
@@ -334,6 +473,12 @@ class Cache {
 		}
 
 		if(count($insuranceData)) {
+			$insuranceData = array_merge([
+					'subscriber_country' => 'USA',
+				],
+				$insuranceData
+			);
+
 			return $this->store()->storeInsuranceData($insuranceData);
 		}
 	}
@@ -350,6 +495,10 @@ class Cache {
 
 		if(array_key_exists('User', $data)) {
 			$patientData['providerID'] = $data['User'];
+		}
+
+		if(array_key_exists('GS', $data)) {
+			$patientData['date'] = substr((string) $data['GS']->element('GS04'), 0, 4).'0101010101';
 		}
 
 		if(array_key_exists('NM1', $data)) {
@@ -371,9 +520,24 @@ class Cache {
 		if(array_key_exists('DMG', $data)) {
 			$patientData['DOB'] = (string) $data['DMG']->element('DMG02');
 			$patientData['sex'] = (string) $data['DMG']->element('DMG03');
+
+			$gender = [
+				'F' => 'Female',
+				'M' => 'Male'
+			];
+
+			if(array_key_exists(strtoupper($patientData['sex']), $gender)) {
+				$patientData['sex'] = $gender[strtoupper($patientData['sex'])];
+			}
 		}
 
 		if(count($patientData)) {
+			$patientData = array_merge([
+					'language' => 'English',
+				],
+				$patientData
+			);
+
 			return $this->store()->storePatientData($patientData);
 		}
 	}
@@ -393,6 +557,13 @@ class Cache {
 		}
 
 		if(count($phoneNumber)) {
+			$phoneNumber = array_merge([
+					'country_code' => '+1',
+					'type' => '2',
+				],
+				$phoneNumber
+			);
+
 			return $this->store()->storePhoneNumber($phoneNumber);
 		}
 	}
@@ -412,7 +583,9 @@ class Cache {
 		}
 
 		if(array_key_exists('NM1', $data)) {
-			$user['username'] = (string) $data['NM1']->element('NM103').$data['NM1']->element('NM104');
+			$user['username'] = strtolower(preg_replace("/[^A-Za-z]/", '',
+				(string) $data['NM1']->element('NM103').$data['NM1']->element('NM104')
+			));
 			$user['lname'] = (string) $data['NM1']->element('NM103');
 			$user['fname'] = (string) $data['NM1']->element('NM104');
 			$user['mname'] = (string) $data['NM1']->element('NM105');
@@ -424,6 +597,21 @@ class Cache {
 		}
 
 		if(count($user)) {
+			$user = array_merge([
+					'password' => '70702b9402107c11ef9d18d9daad4ff1',
+					'authorized' => 1,
+					'federaltaxid' => '',
+					'federaldrugid' => '',
+					'active' => 1,
+					'cal_ui' => 3,
+					'taxonomy' => '',
+					'calendar' => 1,
+					'abook_type' => 'miscellaneous',
+					'state_license_number' => '',
+				],
+				$user
+			);
+
 			return $this->store()->storeUser($user);
 		}
 	}
@@ -667,6 +855,7 @@ class Cache {
 					$this->existsAdd('Loop1000_N4', $data, 'N4', $facility);
 					$this->existsAdd('Loop1000_REF', $data, 'REF', $facility);
 
+					// TODO: Find missing CLM segment
 					$data['CurrentFacility'] = $this->storeFacility($facility);
 					break;
 			}
@@ -783,6 +972,7 @@ class Cache {
 					$this->existsAdd('Loop2010_N4', $data, 'N4', $facility);
 					$this->existsAdd('Loop2010_REF', $data, 'REF', $facility);
 
+					// TODO: Find missing CLM segment
 					$data['CurrentFacility'] = $this->storeFacility($facility);
 
 					$user = [
@@ -808,6 +998,7 @@ class Cache {
 					$this->existsAdd('Loop2010_N4', $data, 'N4', $facility);
 					$this->existsAdd('Loop2010_REF', $data, 'REF', $facility);
 
+					// TODO: Find missing CLM segment
 					$data['CurrentFacility'] = $this->storeFacility($facility);
 
 					$user = [
@@ -827,6 +1018,7 @@ class Cache {
 					// 2010BA — SUBSCRIBER NAME
 					if(array_key_exists('Loop2000_SBR', $data) && $data['Loop2000_SBR']->elementEquals('SBR02', '18')) {
 						$patientData = [
+							'GS' => $data['GS'],
 							'NM1' => $data['Loop2010_NM1'],
 						];
 
@@ -838,6 +1030,7 @@ class Cache {
 
 						$insuranceData = [
 							'PatientData' => $data['CurrentPatientData'],
+							'GS' => $data['GS'],
 							'NM1' => $data['Loop2010_NM1'],
 							'SBR' => $data['Loop2000_SBR']
 						];
@@ -872,6 +1065,7 @@ class Cache {
 				case 'QC':
 					// 2010CA — PATIENT NAME
 					$patientData = [
+						'GS' => $data['GS'],
 						'NM1' => $data['Loop2010_NM1']
 					];
 
@@ -914,7 +1108,11 @@ class Cache {
 						break;
 					case 'DTP':
 						// 2300 — CLAIM INFORMATION
-						$data['Loop2300_DTP'] = $segment;
+						if($segment->elementEquals('DTP01', '431')) {
+							$data['Loop2300_DTP_431'] = $segment;
+						} elseif($segment->elementEquals('DTP01', '472')) {
+							$data['Loop2300_DTP'] = $segment;
+						}
 						break;
 					case 'REF':
 						// 2300 — CLAIM INFORMATION
@@ -936,15 +1134,18 @@ class Cache {
 			}
 		} while(!is_null($segment));
 
+		// TODO: Move Loop2330 for NM1 85
 		if(array_key_exists('Loop2300_CLM', $data)) {
 			$formEncounter = [
 				'CLM' => $data['Loop2300_CLM'],
 			];
 
 			$this->existsAdd('CurrentUser', $data, 'User', $formEncounter);
-			$this->existsAdd('CurrentPatient', $data, 'Patient', $formEncounter);
+			$this->existsAdd('CurrentPatientData', $data, 'PatientData', $formEncounter);
 			$this->existsAdd('CurrentFacility', $data, 'Facility', $formEncounter);
 			$this->existsAdd('Loop2010_MN1', $data, 'MN1', $formEncounter);
+			$this->existsAdd('Loop2300_DTP', $data, 'DTP', $formEncounter);
+			$this->existsAdd('Loop2300_DTP_431', $data, 'DTP-431', $formEncounter);
 
 			$data['CurrentFormEncounter'] = $this->storeFormEncounter($formEncounter);
 
@@ -954,26 +1155,10 @@ class Cache {
 			];
 
 			$this->existsAdd('CurrentUser', $data, 'User', $form);
-			$this->existsAdd('CurrentPatient', $data, 'Patient', $form);
+			$this->existsAdd('CurrentPatientData', $data, 'PatientData', $form);
+			$this->existsAdd('Loop2300_DTP', $data, 'DTP', $form);
 
 			$this->storeForm($form);
-		}
-
-		if(array_key_exists('Loop2300_HI', $data)) {
-			foreach ($data['Loop2300_HI'] as $segmentHI) {
-				if($segmentHI->element('HI01')->subElementEquals(0, [ 'ABK', 'BK' ])) {
-					$billing = [
-						'HI' => $segmentHI
-					];
-
-					$this->existsAdd('CurrentUser', $data, 'User', $billing);
-					$this->existsAdd('CurrentPatient', $data, 'Patient', $billing);
-					$this->existsAdd('CurrentInsuranceCompany', $data, 'InsuranceCompany', $billing);
-					$this->existsAdd('Loop2300_CLM', $data, 'CLM', $billing);
-
-					$this->storeBilling($billing);
-				}
-			}
 		}
 
 		$descendant = $loop2300->getDescendant();
@@ -1258,7 +1443,9 @@ class Cache {
 					if(array_key_exists('Loop2320_SBR', $data) &&
 						$data['Loop2320_SBR']->elementEquals('SBR02', '18')
 					) {
-						$patientData = [];
+						$patientData = [
+							'GS' => $data['GS']
+						];
 
 						$this->existsAdd('CurrentUser', $data, 'User', $patientData);
 						$this->existsAdd('Loop2330_NM1', $data, 'NM1', $patientData);
@@ -1269,6 +1456,7 @@ class Cache {
 						$data['CurrentPatientData'] = $this->storePatientData($patientData);
 
 						$insuranceData = [
+							'GS' => $data['GS'],
 							'PatientData' => $data['CurrentPatientData'],
 						];
 
@@ -1339,7 +1527,9 @@ class Cache {
 						break;
 					case 'DTP':
 						// 2400 — SERVICE LINE NUMBER
-						$data['Loop2400_DTP'] = $segment;
+						if($segment->elementEquals('DTP01', '472')) {
+							$data['Loop2400_DTP'] = $segment;
+						}
 						break;
 					case 'NTE':
 						// 2400 — SERVICE LINE NUMBER
@@ -1349,14 +1539,33 @@ class Cache {
 			}
 		} while(!is_null($segment));
 
+		if(array_key_exists('Loop2300_HI', $data)) {
+			$billing = [];
+
+			$this->existsAdd('CurrentUser', $data, 'User', $billing);
+			$this->existsAdd('CurrentPatientData', $data, 'PatientData', $billing);
+			$this->existsAdd('CurrentInsuranceCompany', $data, 'InsuranceCompany', $billing);
+			$this->existsAdd('Loop2300_CLM', $data, 'CLM', $billing);
+			$this->existsAdd('Loop2400_DTP', $data, 'DTP', $billing);
+
+			foreach($data['Loop2300_HI'] as $segmentHI) {
+				if($segmentHI->element('HI01')->subElementEquals(0, [ 'ABK', 'BK' ])) {
+					$billing['HI'] = $segmentHI;
+
+					$this->storeBilling($billing);
+				}
+			}
+		}
+
 		if(array_key_exists('Loop2400_SV1', $data)) {
 			$billing = [];
 
 			$this->existsAdd('CurrentUser', $data, 'User', $billing);
-			$this->existsAdd('CurrentPatient', $data, 'Patient', $billing);
+			$this->existsAdd('CurrentPatientData', $data, 'PatientData', $billing);
 			$this->existsAdd('CurrentInsuranceCompany', $data, 'InsuranceCompany', $billing);
 			$this->existsAdd('Loop2300_HI', $data, 'HI', $billing);
 			$this->existsAdd('Loop2300_CLM', $data, 'CLM', $billing);
+			$this->existsAdd('Loop2400_DTP', $data, 'DTP', $billing);
 
 			foreach($data['Loop2400_SV1'] as $segmentSV1) {
 				if($segmentSV1->element('SV101')->subElementEquals(0, [ 'HC', 'WK' ])) {

@@ -220,22 +220,28 @@ class CacheTest extends BaseTestCase {
 	 */
 	public function testStoreBillingWithSegmentSV1() {
 		$storeBilling = [
+			'code_type' => 'CPT4',
+			'groupname' => 'Default',
+			'authorized' => 1,
+			'billed' => 0,
+			'activity' => 1,
+			'bill_process' => 0,
+			'units' => 'units',
+			'fee' => 'fee',
 			'provider_id' => 'User',
 			'user' => 'User',
 			'payer_id' => 'InsuranceCompany',
-			'pid' => 'Patient',
+			'pid' => 'PatientData',
 			'encounter' => 'encounter',
-			'justify' => 'justify',
+			'justify' => 'Z12.34',
 			'code' => 'code',
 			'modifier' => 'modifier',
-			'fee' => 'fee',
-			'units' => 'units',
 		];
 
 		$data = [
 			'User' => 'User',
 			'InsuranceCompany' => 'InsuranceCompany',
-			'Patient' => 'Patient',
+			'PatientData' => 'PatientData',
 			'CLM' => $this->getMockery(
 				Segment\CLM::class
 			),
@@ -266,7 +272,7 @@ class CacheTest extends BaseTestCase {
 		$elementHI01->shouldReceive('subElement')
 			->once()
 			->with(1)
-			->andReturn($storeBilling['justify']);
+			->andReturn('Z1234');
 
 		$elementSV101 = $this->getMockery(
 			Element::class
@@ -309,21 +315,172 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeBilling()
 	 */
-	public function testStoreBillingWithNoSegmentSV1() {
+	public function testStoreBillingWithSegmentSV1AndDTP02EqualsRD8() {
 		$storeBilling = [
+			'code' => 'code',
+			'modifier' => 'modifier',
+			'fee' => 'fee',
+			'units' => 'units',
+		];
+
+		$data = [
+			'DTP' => $this->getMockery(
+				Segment\DTP::class
+			),
+			'SV1' => $this->getMockery(
+				Segment\SV1::class
+			)
+		];
+
+		$data['DTP']->shouldReceive('elementEquals')
+			->once()
+			->with('DTP02', 'RD8')
+			->andReturn(true);
+
+		$data['DTP']->shouldReceive('element')
+			->once()
+			->with('DTP03')
+			->andReturn('12345678-87654321');
+
+		$elementSV101 = $this->getMockery(
+			Element::class
+		);
+
+		$data['SV1']->shouldReceive('element')
+			->twice()
+			->with('SV101')
+			->andReturn($elementSV101);
+
+		$elementSV101->shouldReceive('subElement')
+			->once()
+			->with(1)
+			->andReturn($storeBilling['code']);
+
+		$elementSV101->shouldReceive('subElement')
+			->once()
+			->with(2)
+			->andReturn($storeBilling['modifier']);
+
+		$data['SV1']->shouldReceive('element')
+			->once()
+			->with('SV102')
+			->andReturn($storeBilling['fee']);
+
+		$data['SV1']->shouldReceive('element')
+			->once()
+			->with('SV104')
+			->andReturn($storeBilling['units']);
+
+		$this->cache->shouldAllowMockingProtectedMethods()
+			->shouldReceive('store->storeBilling')
+			->once()
+			->with(\Mockery::on(function($billing) {
+				return array_key_exists('date', $billing) &&
+					strlen($billing['date']) == 14 &&
+					substr($billing['date'], 0, 8) == '12345678';
+			}))
+			->andReturn('storeBilling');
+
+		$this->cache->storeBilling($data);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeBilling()
+	 */
+	public function testStoreBillingWithSegmentSV1AndDTP02NotEqualsRD8() {
+		$storeBilling = [
+			'code' => 'code',
+			'modifier' => 'modifier',
+			'fee' => 'fee',
+			'units' => 'units',
+		];
+
+		$data = [
+			'DTP' => $this->getMockery(
+				Segment\DTP::class
+			),
+			'SV1' => $this->getMockery(
+				Segment\SV1::class
+			)
+		];
+
+		$data['DTP']->shouldReceive('elementEquals')
+			->once()
+			->with('DTP02', 'RD8')
+			->andReturn(false);
+
+		$data['DTP']->shouldReceive('element')
+			->once()
+			->with('DTP03')
+			->andReturn('12345678');
+
+		$elementSV101 = $this->getMockery(
+			Element::class
+		);
+
+		$data['SV1']->shouldReceive('element')
+			->twice()
+			->with('SV101')
+			->andReturn($elementSV101);
+
+		$elementSV101->shouldReceive('subElement')
+			->once()
+			->with(1)
+			->andReturn($storeBilling['code']);
+
+		$elementSV101->shouldReceive('subElement')
+			->once()
+			->with(2)
+			->andReturn($storeBilling['modifier']);
+
+		$data['SV1']->shouldReceive('element')
+			->once()
+			->with('SV102')
+			->andReturn($storeBilling['fee']);
+
+		$data['SV1']->shouldReceive('element')
+			->once()
+			->with('SV104')
+			->andReturn($storeBilling['units']);
+
+		$this->cache->shouldAllowMockingProtectedMethods()
+			->shouldReceive('store->storeBilling')
+			->once()
+			->with(\Mockery::on(function($billing) {
+				return array_key_exists('date', $billing) &&
+					strlen($billing['date']) == 14 &&
+					substr($billing['date'], 0, 8) == '12345678';
+			}))
+			->andReturn('storeBilling');
+
+		$this->cache->storeBilling($data);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeBilling()
+	 */
+	public function testStoreBillingWithNoSegmentSV1AndHI011IsCPT4() {
+		$storeBilling = [
+			'code_type' => 'CPT4',
+			'groupname' => 'Default',
+			'authorized' => 1,
+			'billed' => 0,
+			'activity' => 1,
+			'bill_process' => 0,
+			'units' => 1,
+			'fee' => 10,
 			'provider_id' => 'User',
 			'user' => 'User',
 			'payer_id' => 'InsuranceCompany',
-			'pid' => 'Patient',
+			'pid' => 'PatientData',
 			'encounter' => 'encounter',
-			'code_type' => 'code_type',
 			'code' => 'code',
 		];
 
 		$data = [
 			'User' => 'User',
 			'InsuranceCompany' => 'InsuranceCompany',
-			'Patient' => 'Patient',
+			'PatientData' => 'PatientData',
 			'CLM' => $this->getMockery(
 				Segment\CLM::class
 			),
@@ -358,12 +515,172 @@ class CacheTest extends BaseTestCase {
 		$elementHI01->shouldReceive('subElement')
 			->once()
 			->with(0)
-			->andReturn('code_type');
+			->andReturn('BP');
 
 		$elementHI01->shouldReceive('subElement')
 			->once()
 			->with(1)
 			->andReturn('code');
+
+		$data['HI']->shouldReceive('elementExists')
+			->times(11)
+			->with(\Mockery::not('HI01'))
+			->andReturn(false);
+
+		$this->cache->shouldAllowMockingProtectedMethods()
+			->shouldReceive('store->storeBilling')
+			->once()
+			->with($storeBilling)
+			->andReturn('storeBilling');
+
+		$this->cache->storeBilling($data);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeBilling()
+	 */
+	public function testStoreBillingWithNoSegmentSV1AndHI011IsICD9() {
+		$storeBilling = [
+			'code_type' => 'ICD9',
+			'groupname' => 'Default',
+			'authorized' => 1,
+			'billed' => 0,
+			'activity' => 1,
+			'bill_process' => 0,
+			'units' => 1,
+			'fee' => 10,
+			'provider_id' => 'User',
+			'user' => 'User',
+			'payer_id' => 'InsuranceCompany',
+			'pid' => 'PatientData',
+			'encounter' => 'encounter',
+			'code' => 'Z12.34',
+		];
+
+		$data = [
+			'User' => 'User',
+			'InsuranceCompany' => 'InsuranceCompany',
+			'PatientData' => 'PatientData',
+			'CLM' => $this->getMockery(
+				Segment\CLM::class
+			),
+			'HI' => $this->getMockery(
+				Segment\HI::class
+			)
+		];
+
+		$data['CLM']->shouldReceive('element')
+			->once()
+			->with('CLM01')
+			->andReturn($storeBilling['encounter']);
+
+		$data['HI']->shouldReceive('elementExists')
+			->once()
+			->with('HI01')
+			->andReturn(true);
+
+		$elementHI01 = $this->getMockery(
+			Element::class
+		);
+
+		$data['HI']->shouldReceive('element')
+			->times(3)
+			->with('HI01')
+			->andReturn($elementHI01);
+
+		$elementHI01->shouldReceive('subElementCount')
+			->once()
+			->andReturn(2);
+
+		$elementHI01->shouldReceive('subElement')
+			->once()
+			->with(0)
+			->andReturn('BK');
+
+		$elementHI01->shouldReceive('subElement')
+			->once()
+			->with(1)
+			->andReturn('Z1234');
+
+		$data['HI']->shouldReceive('elementExists')
+			->times(11)
+			->with(\Mockery::not('HI01'))
+			->andReturn(false);
+
+		$this->cache->shouldAllowMockingProtectedMethods()
+			->shouldReceive('store->storeBilling')
+			->once()
+			->with($storeBilling)
+			->andReturn('storeBilling');
+
+		$this->cache->storeBilling($data);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeBilling()
+	 */
+	public function testStoreBillingWithNoSegmentSV1AndHI011IsICD10() {
+		$storeBilling = [
+			'code_type' => 'ICD10',
+			'groupname' => 'Default',
+			'authorized' => 1,
+			'billed' => 0,
+			'activity' => 1,
+			'bill_process' => 0,
+			'units' => 1,
+			'fee' => 10,
+			'provider_id' => 'User',
+			'user' => 'User',
+			'payer_id' => 'InsuranceCompany',
+			'pid' => 'PatientData',
+			'encounter' => 'encounter',
+			'code' => 'Z12.34',
+		];
+
+		$data = [
+			'User' => 'User',
+			'InsuranceCompany' => 'InsuranceCompany',
+			'PatientData' => 'PatientData',
+			'CLM' => $this->getMockery(
+				Segment\CLM::class
+			),
+			'HI' => $this->getMockery(
+				Segment\HI::class
+			)
+		];
+
+		$data['CLM']->shouldReceive('element')
+			->once()
+			->with('CLM01')
+			->andReturn($storeBilling['encounter']);
+
+		$data['HI']->shouldReceive('elementExists')
+			->once()
+			->with('HI01')
+			->andReturn(true);
+
+		$elementHI01 = $this->getMockery(
+			Element::class
+		);
+
+		$data['HI']->shouldReceive('element')
+			->times(3)
+			->with('HI01')
+			->andReturn($elementHI01);
+
+		$elementHI01->shouldReceive('subElementCount')
+			->once()
+			->andReturn(2);
+
+		$elementHI01->shouldReceive('subElement')
+			->once()
+			->with(0)
+			->andReturn('ABK');
+
+		$elementHI01->shouldReceive('subElement')
+			->once()
+			->with(1)
+			->andReturn('Z1234');
 
 		$data['HI']->shouldReceive('elementExists')
 			->times(11)
@@ -399,8 +716,17 @@ class CacheTest extends BaseTestCase {
 	 */
 	public function testStoreFacility() {
 		$storeFacility = [
+			'country_code' => 'USA',
+			'service_location' => 1,
+			'billing_location' => 0,
+			'accepts_assignment' => 1,
+			'attn' => 'Billing',
+			'tax_id_type' => 'EI',
+			'color' => '#FFCC99',
+			'primary_business_entity' => 0,
 			'pos_code' => 'pos_code',
 			'name' => 'name',
+			'facility_npi' => 'facility_npi',
 			'domain_identifier' => 'domain_identifier',
 			'street' => 'street1 street2',
 			'city' => 'city',
@@ -445,6 +771,11 @@ class CacheTest extends BaseTestCase {
 			->once()
 			->with('NM103')
 			->andReturn($storeFacility['name']);
+
+		$data['NM1']->shouldReceive('element')
+			->once()
+			->with('NM108')
+			->andReturn($storeFacility['facility_npi']);
 
 		$data['NM1']->shouldReceive('element')
 			->once()
@@ -514,10 +845,18 @@ class CacheTest extends BaseTestCase {
 	 */
 	public function testStoreFormEncounter() {
 		$storeFormEncounter = [
+			'reason' => 'Imported Encounter',
+			'onset_date' => '0000-00-00 00:00:00',
+			'sensitivity' => 'normal',
+			'pc_catid' => 1,
+			'last_level_billed' => 0,
+			'last_level_closed' => 0,
+			'stmt_count' => 0,
+			'supervisor_id' => 0,
 			'facility_id' => 'Facility',
 			'billing_facility' => 'Facility',
 			'provider_id' => 'User',
-			'pid' => 'Patient',
+			'pid' => 'PatientData',
 			'encounter' => 'encounter',
 			'facility' => 'facility'
 		];
@@ -525,7 +864,7 @@ class CacheTest extends BaseTestCase {
 		$data = [
 			'Facility' => 'Facility',
 			'User' => 'User',
-			'Patient' => 'Patient',
+			'PatientData' => 'PatientData',
 			'CLM' => $this->getMockery(
 				Segment\CLM::class
 			),
@@ -537,7 +876,7 @@ class CacheTest extends BaseTestCase {
 		$data['CLM']->shouldReceive('element')
 			->once()
 			->with('CLM01')
-			->andReturn($storeFormEncounter['encounter']);
+			->andReturn('%#!@^'.$storeFormEncounter['encounter'].'-_=`\':');
 
 		$data['NM1']->shouldReceive('elementEquals')
 			->once()
@@ -553,6 +892,111 @@ class CacheTest extends BaseTestCase {
 			->shouldReceive('store->storeFormEncounter')
 			->once()
 			->with($storeFormEncounter)
+			->andReturn('storeFormEncounter');
+
+		$this->assertEquals(
+			'storeFormEncounter',
+			$this->cache->storeFormEncounter($data),
+			'Store Form Encounter should have returned Id'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeFormEncounter()
+	 */
+	public function testStoreFormEncounterWithSegmentDTP_431() {
+		$data = [
+			'DTP-431' => $this->getMockery(
+				Segment\DTP::class
+			)
+		];
+
+		$data['DTP-431']->shouldReceive('element')
+			->once()
+			->with('DTP03')
+			->andReturn('12345678');
+
+		$this->cache->shouldAllowMockingProtectedMethods()
+			->shouldReceive('store->storeFormEncounter')
+			->once()
+			->with(\Mockery::on(function($formEncounter) {
+				return array_key_exists('onset_date', $formEncounter) &&
+					$formEncounter['onset_date'] == '12345678';
+			}))
+			->andReturn('storeFormEncounter');
+
+		$this->assertEquals(
+			'storeFormEncounter',
+			$this->cache->storeFormEncounter($data),
+			'Store Form Encounter should have returned Id'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeFormEncounter()
+	 */
+	public function testStoreFormEncounterWithSegmentDTP02EqualsRD8() {
+		$data = [
+			'DTP' => $this->getMockery(
+				Segment\DTP::class
+			)
+		];
+
+		$data['DTP']->shouldReceive('elementEquals')
+			->once()
+			->with('DTP02', 'RD8')
+			->andReturn(true);
+
+		$data['DTP']->shouldReceive('element')
+			->once()
+			->with('DTP03')
+			->andReturn('12345678-87654321');
+
+		$this->cache->shouldAllowMockingProtectedMethods()
+			->shouldReceive('store->storeFormEncounter')
+			->once()
+			->with(\Mockery::on(function($formEncounter) {
+				return array_key_exists('date', $formEncounter) &&
+					strlen($formEncounter['date']) == 14 &&
+					substr($formEncounter['date'], 0, 8) == '12345678';
+			}))
+			->andReturn('storeFormEncounter');
+
+		$this->assertEquals(
+			'storeFormEncounter',
+			$this->cache->storeFormEncounter($data),
+			'Store Form Encounter should have returned Id'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeFormEncounter()
+	 */
+	public function testStoreFormEncounterWithSegmentDTP02NotEqualsRD8() {
+		$data = [
+			'DTP' => $this->getMockery(
+				Segment\DTP::class
+			)
+		];
+
+		$data['DTP']->shouldReceive('elementEquals')
+			->once()
+			->with('DTP02', 'RD8')
+			->andReturn(false);
+
+		$data['DTP']->shouldReceive('element')
+			->once()
+			->with('DTP03')
+			->andReturn('12345678');
+
+		$this->cache->shouldAllowMockingProtectedMethods()
+			->shouldReceive('store->storeFormEncounter')
+			->once()
+			->with(\Mockery::on(function($formEncounter) {
+				return array_key_exists('date', $formEncounter) &&
+					strlen($formEncounter['date']) == 14 &&
+					substr($formEncounter['date'], 0, 8) == '12345678';
+			}))
 			->andReturn('storeFormEncounter');
 
 		$this->assertEquals(
@@ -582,16 +1026,21 @@ class CacheTest extends BaseTestCase {
 	 */
 	public function testStoreForm() {
 		$storeForm = [
+			'form_name' => 'New Patient Encounter',
+			'groupname' => 'Default',
+			'authorized' => 1,
+			'deleted' => 0,
+			'formdir' => 'newpatient',
 			'form_id' => 'FormEncounter',
 			'user' => 'User',
-			'pid' => 'Patient',
+			'pid' => 'PatientData',
 			'encounter' => 'encounter'
 		];
 
 		$data = [
 			'FormEncounter' => 'FormEncounter',
 			'User' => 'User',
-			'Patient' => 'Patient',
+			'PatientData' => 'PatientData',
 			'CLM' => $this->getMockery(
 				Segment\CLM::class
 			)
@@ -606,6 +1055,80 @@ class CacheTest extends BaseTestCase {
 			->shouldReceive('store->storeForm')
 			->once()
 			->with($storeForm)
+			->andReturn('storeForm');
+
+		$this->assertEquals(
+			'storeForm',
+			$this->cache->storeForm($data),
+			'Store Form should have returned Id'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeForm()
+	 */
+	public function testStoreFormWithSegmentDTP02EqualsRD8() {
+		$data = [
+			'DTP' => $this->getMockery(
+				Segment\DTP::class
+			)
+		];
+
+		$data['DTP']->shouldReceive('elementEquals')
+			->once()
+			->with('DTP02', 'RD8')
+			->andReturn(true);
+
+		$data['DTP']->shouldReceive('element')
+			->once()
+			->with('DTP03')
+			->andReturn('12345678-87654321');
+
+		$this->cache->shouldAllowMockingProtectedMethods()
+			->shouldReceive('store->storeForm')
+			->once()
+			->with(\Mockery::on(function($form) {
+				return array_key_exists('date', $form) &&
+					strlen($form['date']) == 14 &&
+					substr($form['date'], 0, 8) == '12345678';
+			}))
+			->andReturn('storeForm');
+
+		$this->assertEquals(
+			'storeForm',
+			$this->cache->storeForm($data),
+			'Store Form should have returned Id'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeForm()
+	 */
+	public function testStoreFormWithSegmentDTP02NotEqualsRD8() {
+		$data = [
+			'DTP' => $this->getMockery(
+				Segment\DTP::class
+			)
+		];
+
+		$data['DTP']->shouldReceive('elementEquals')
+			->once()
+			->with('DTP02', 'RD8')
+			->andReturn(false);
+
+		$data['DTP']->shouldReceive('element')
+			->once()
+			->with('DTP03')
+			->andReturn('12345678');
+
+		$this->cache->shouldAllowMockingProtectedMethods()
+			->shouldReceive('store->storeForm')
+			->once()
+			->with(\Mockery::on(function($form) {
+				return array_key_exists('date', $form) &&
+					strlen($form['date']) == 14 &&
+					substr($form['date'], 0, 8) == '12345678';
+			}))
 			->andReturn('storeForm');
 
 		$this->assertEquals(
@@ -635,6 +1158,7 @@ class CacheTest extends BaseTestCase {
 	 */
 	public function testStoreGroup() {
 		$storeGroup = [
+			'name' => 'Default',
 			'user' => 'lnamefname'
 		];
 
@@ -687,6 +1211,7 @@ class CacheTest extends BaseTestCase {
 	 */
 	public function testStoreInsuranceCompany() {
 		$storeInsuranceCompany = [
+			'attn' => 'Claims',
 			'x12_receiver_id' => 'X12Partner',
 			'x12_default_partner_id' => 'X12Partner',
 			'name' => 'name',
@@ -743,10 +1268,13 @@ class CacheTest extends BaseTestCase {
 	 */
 	public function testStoreInsuranceData() {
 		$storeInsuranceData = [
+			'subscriber_country' => 'USA',
 			'pid' => 'PatientData',
-			'subscriber_relationship' => 'subscriber_relationship',
+			'date' => '12340101010101',
+			'type' => 'type',
 			'group_number' => 'group_number',
 			'plan_name' => 'plan_name',
+			'subscriber_relationship' => 'self',
 			'subscriber_lname' => 'subscriber_lname',
 			'subscriber_fname' => 'subscriber_fname',
 			'subscriber_mname' => 'subscriber_mname',
@@ -762,6 +1290,9 @@ class CacheTest extends BaseTestCase {
 
 		$data = [
 			'PatientData' => 'PatientData',
+			'GS' => $this->getMockery(
+				Segment\GS::class
+			),
 			'SBR' => $this->getMockery(
 				Segment\SBR::class
 			),
@@ -782,10 +1313,15 @@ class CacheTest extends BaseTestCase {
 			),
 		];
 
+		$data['GS']->shouldReceive('element')
+			->once()
+			->with('GS04')
+			->andReturn('12345678');
+
 		$data['SBR']->shouldReceive('element')
 			->once()
-			->with('SBR02')
-			->andReturn($storeInsuranceData['subscriber_relationship']);
+			->with('SBR01')
+			->andReturn($storeInsuranceData['type']);
 
 		$data['SBR']->shouldReceive('element')
 			->once()
@@ -796,6 +1332,11 @@ class CacheTest extends BaseTestCase {
 			->once()
 			->with('SBR04')
 			->andReturn($storeInsuranceData['plan_name']);
+
+		$data['SBR']->shouldReceive('element')
+			->once()
+			->with('SBR02')
+			->andReturn(18);
 
 		$data['NM1']->shouldReceive('element')
 			->once()
@@ -890,7 +1431,9 @@ class CacheTest extends BaseTestCase {
 	 */
 	public function testStorePatientData() {
 		$storePatientData = [
+			'language' => 'English',
 			'providerID' => 'User',
+			'date' => '12340101010101',
 			'lname' => 'lname',
 			'fname' => 'fname',
 			'mname' => 'mname',
@@ -899,11 +1442,14 @@ class CacheTest extends BaseTestCase {
 			'state' => 'state',
 			'postal_code' => 'postal_code',
 			'DOB' => 'DOB',
-			'sex' => 'sex',
+			'sex' => 'Female',
 		];
 
 		$data = [
 			'User' => 'User',
+			'GS' => $this->getMockery(
+				Segment\GS::class
+			),
 			'NM1' => $this->getMockery(
 				Segment\NM1::class
 			),
@@ -917,6 +1463,11 @@ class CacheTest extends BaseTestCase {
 				Segment\DMG::class
 			),
 		];
+
+		$data['GS']->shouldReceive('element')
+			->once()
+			->with('GS04')
+			->andReturn('12345678');
 
 		$data['NM1']->shouldReceive('element')
 			->once()
@@ -966,7 +1517,7 @@ class CacheTest extends BaseTestCase {
 		$data['DMG']->shouldReceive('element')
 			->once()
 			->with('DMG03')
-			->andReturn($storePatientData['sex']);
+			->andReturn('f');
 
 		$this->cache->shouldAllowMockingProtectedMethods()
 			->shouldReceive('store->storePatientData')
@@ -1001,6 +1552,8 @@ class CacheTest extends BaseTestCase {
 	 */
 	public function testStorePhoneNumber() {
 		$storePhoneNumber = [
+			'country_code' => '+1',
+			'type' => '2',
 			'foreign_id' => 'InsuranceCompany',
 		];
 
@@ -1041,13 +1594,22 @@ class CacheTest extends BaseTestCase {
 	 */
 	public function testStoreUser() {
 		$storeUser = [
+			'password' => '70702b9402107c11ef9d18d9daad4ff1',
+			'authorized' => 1,
+			'federaltaxid' => '',
+			'federaldrugid' => '',
+			'active' => 1,
+			'cal_ui' => 3,
+			'taxonomy' => 'taxonomy',
+			'calendar' => 1,
+			'abook_type' => 'miscellaneous',
+			'state_license_number' => '',
 			'facility_id' => 'facility_id',
 			'username' => 'lnamefname',
 			'lname' => 'lname',
 			'fname' => 'fname',
 			'mname' => 'mname',
 			'npi' => 'npi',
-			'taxonomy' => 'taxonomy',
 		];
 
 		$data = [
@@ -2101,6 +2663,9 @@ class CacheTest extends BaseTestCase {
 			->andReturn('IL');
 
 		$data = [
+			'GS' => $this->getMockery(
+				Segment\GS::class
+			),
 			'Loop2000_SBR' => $this->getMockery(
 				Segment\SRB::class
 			)
@@ -2224,7 +2789,11 @@ class CacheTest extends BaseTestCase {
 			->once()
 			->andReturn(123);
 
-		$data = [];
+		$data = [
+			'GS' => $this->getMockery(
+				Segment\GS::class
+			)
+		];
 
 		$this->callProtectedMethod(
 			$this->cache,
@@ -2432,7 +3001,7 @@ class CacheTest extends BaseTestCase {
 		);
 
 		$this->cache->shouldReceive('existsAdd')
-			->times(6);
+			->times(9);
 
 		$this->cache->shouldReceive('storeFormEncounter')
 			->once()
@@ -2445,7 +3014,8 @@ class CacheTest extends BaseTestCase {
 			->once()
 			->andReturnNull();
 
-		$data = [];
+		$data = [
+		];
 
 		$this->callProtectedMethod(
 			$this->cache,
@@ -2472,12 +3042,59 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2300()
 	 */
-	public function testProcessLoop2300WithSegmentDTP() {
+	public function testProcessLoop2300WithSegmentDTP01Equals431() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2300::class,
 			[ 'CLM', 'DTP', 'REF', 'NTE', 'HI' ],
 			Segment\DTP::class
 		);
+
+		$mockObjects['segments'][0]->shouldReceive('elementEquals')
+			->once()
+			->with('DTP01', '431')
+			->andReturn(true);
+
+		$mockObjects['loop']->shouldReceive('getDescendant')
+			->once()
+			->andReturnNull();
+
+		$data = [];
+
+		$this->callProtectedMethod(
+			$this->cache,
+			'processLoop2300',
+			[
+				$mockObjects['loop'],
+				&$data
+			]
+		);
+
+		$this->assertSame(
+			$mockObjects['segments'][0],
+			$data['Loop2300_DTP_431'],
+			'Loop2300 DTP 431 was not set correctly'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2300()
+	 */
+	public function testProcessLoop2300WithSegmentDTP01Equals472() {
+		$mockObjects = $this->setupTestProcessLoop(
+			Loop\Loop2300::class,
+			[ 'CLM', 'DTP', 'REF', 'NTE', 'HI' ],
+			Segment\DTP::class
+		);
+
+		$mockObjects['segments'][0]->shouldReceive('elementEquals')
+			->once()
+			->with('DTP01', '431')
+			->andReturn(false);
+
+		$mockObjects['segments'][0]->shouldReceive('elementEquals')
+			->once()
+			->with('DTP01', '472')
+			->andReturn(true);
 
 		$mockObjects['loop']->shouldReceive('getDescendant')
 			->once()
@@ -2574,26 +3191,6 @@ class CacheTest extends BaseTestCase {
 			[ 'CLM', 'DTP', 'REF', 'NTE', 'HI' ],
 			Segment\HI::class
 		);
-
-		$elementHI01 = $this->getMockery(
-			Element::class
-		);
-
-		$mockObjects['segments'][0]->shouldReceive('element')
-			->once()
-			->with('HI01')
-			->andReturn($elementHI01);
-
-		$elementHI01->shouldReceive('subElementEquals')
-			->once()
-			->with(0, [ 'ABK', 'BK' ])
-			->andReturn(true);
-
-		$this->cache->shouldReceive('existsAdd')
-			->times(4);
-
-		$this->cache->shouldReceive('storeBilling')
-			->once();
 
 		$mockObjects['loop']->shouldReceive('getDescendant')
 			->once()
@@ -3211,6 +3808,9 @@ class CacheTest extends BaseTestCase {
 			->andReturn('IL');
 
 		$data = [
+			'GS' => $this->getMockery(
+				Segment\GS::class
+			),
 			'Loop2320_SBR' => $this->getMockery(
 				Segment\SBR::class
 			)
@@ -3446,7 +4046,7 @@ class CacheTest extends BaseTestCase {
 		);
 
 		$this->cache->shouldReceive('existsAdd')
-			->times(5);
+			->times(6);
 
 		$elementSV101 = $this->getMockery(
 			Element::class
@@ -3496,6 +4096,11 @@ class CacheTest extends BaseTestCase {
 			[ 'SV1', 'DTP', 'NTE' ],
 			Segment\DTP::class
 		);
+
+		$mockObjects['segments'][0]->shouldReceive('elementEquals')
+			->once()
+			->with('DTP01', '472')
+			->andReturn(true);
 
 		$mockObjects['loop']->shouldReceive('getDescendant')
 			->once()
@@ -3548,6 +4153,57 @@ class CacheTest extends BaseTestCase {
 			$mockObjects['segments'][0],
 			$data['Loop2400_NTE'],
 			'Loop2400 NTE was not set correctly'
+		);
+	}
+
+	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2400()
+	 */
+	public function testProcessLoop2400WithLoop2300_HI() {
+		$mockObjects = $this->setupTestProcessLoop(
+			Loop\Loop2400::class,
+			[ 'SV1', 'DTP', 'NTE' ]
+		);
+
+		$data = [
+			'Loop2300_HI' => [
+				$this->getMockery(
+					Segment\HI::class
+				)
+			]
+		];
+
+		$this->cache->shouldReceive('existsAdd')
+			->times(5);
+
+		$elementHI01 = $this->getMockery(
+			Element::class
+		);
+
+		$data['Loop2300_HI'][0]->shouldReceive('element')
+			->once()
+			->with('HI01')
+			->andReturn($elementHI01);
+
+		$elementHI01->shouldReceive('subElementEquals')
+			->once()
+			->with(0, [ 'ABK', 'BK' ])
+			->andReturn(true);
+
+		$this->cache->shouldReceive('storeBilling')
+			->once();
+
+		$mockObjects['loop']->shouldReceive('getDescendant')
+			->once()
+			->andReturnNull();
+
+		$this->callProtectedMethod(
+			$this->cache,
+			'processLoop2400',
+			[
+				$mockObjects['loop'],
+				&$data
+			]
 		);
 	}
 
@@ -3850,5 +4506,4 @@ class CacheTest extends BaseTestCase {
 			'Loop2420 PRV was not set correctly'
 		);
 	}
-
 }

@@ -86,6 +86,19 @@ class Database extends Store {
 	}
 
 	/**
+	 * Add value to array if index is missing
+	 *
+	 * @param string  $index   Index in array to check and add if missing
+	 * @param array   &$array  Array to check and add to if index is missing
+	 * @param string  $value   Value to add to array if index is missing
+	 */
+	protected function addIfMissing($index, array &$array, $value = '') {
+		if(!array_key_exists($index, $array)) {
+			$array[$index] = $value;
+		}
+	}
+
+	/**
 	 * Find a record with matching fields
 	 *
 	 * @param  string  $modelClass   Class name for model
@@ -244,9 +257,9 @@ class Database extends Store {
 	 * @return integer  Id of record from table
 	 */
 	public function storeFormEncounter(array $data) {
-		$data['reason'] = '';
-		$data['facility'] = '';
-		$data['billing_note'] = '';
+		$this->addIfMissing('reason', $data, '');
+		$this->addIfMissing('facility', $data, '');
+		$this->addIfMissing('billing_note', $data, '');
 
 		$record = $this->insertUpdateRecord('formEncounter', $data, [
 			'facility_id',
@@ -267,8 +280,8 @@ class Database extends Store {
 	 * @return integer  Id of record from table
 	 */
 	public function storeForm(array $data) {
-		$data['form_name'] = '';
-		$data['formdir'] = '';
+		$this->addIfMissing('form_name', $data, '');
+		$this->addIfMissing('formdir', $data, '');
 
 		$record = $this->insertUpdateRecord('form', $data, [
 			'form_id',
@@ -288,7 +301,7 @@ class Database extends Store {
 	 * @return integer  Id of record from table
 	 */
 	public function storeGroup(array $data) {
-		$data['name'] = '';
+		$this->addIfMissing('name', $data, '');
 
 		$record = $this->insertUpdateRecord('group', $data, [
 			'user',
@@ -340,7 +353,7 @@ class Database extends Store {
 	 * @return integer  Id of record from table
 	 */
 	public function storePatientData(array $data) {
-		$data['mname'] = '';
+		$this->addIfMissing('mname', $data, '');
 
 		$record = $this->insertUpdateRecord('patientData', $data, [
 			'fname',
@@ -388,7 +401,7 @@ class Database extends Store {
 	 * @return integer  Id of record from table
 	 */
 	public function storeUser(array $data) {
-		$data['password'] = '';
+		$this->addIfMissing('password', $data, '');
 
 		$record = $this->insertUpdateRecord('user', $data, [
 			'username',
