@@ -17,4 +17,15 @@ class Options extends Repository {
 		return new static($options);
 	}
 
+    /**
+     * Get the specified configuration subset.
+     *
+     * @param  string  $key
+     * @param  mixed   $default
+     *
+	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Options  Subset of configurations wrapped in Options object
+     */
+	public function getSubset($key, $default = []) {
+		return static::getInstance($this->get($key, $default));
+	}
 }

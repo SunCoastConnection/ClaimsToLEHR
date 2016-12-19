@@ -207,6 +207,27 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
+	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::getManager()
+	 */
+	public function testGetManager() {
+		$manager = $this->getMockery(
+			Manager::class
+		);
+
+		$this->setProtectedProperty(
+			$this->database,
+			'manager',
+			$manager
+		);
+
+		$this->assertSame(
+			$manager,
+			$this->database->getManager(),
+			'Manager not returned'
+		);
+	}
+
+	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::getModelClass()
 	 */
 	public function testGetModelClass() {
