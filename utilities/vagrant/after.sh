@@ -24,9 +24,28 @@
 
 echo "## Vagrant post install script..."
 
+echo "## Enabling XDebug PHP Module"
+sudo phpenmod xdebug
+
+echo "## Refreshing the system packages"
 sudo apt-get update
 sudo apt-get upgrade
 
+echo "## Installing dependent system packages"
 sudo apt-get install -y gearman-job-server gearman-tools
 
-sudo phpenmod xdebug
+echo "## Installing dependent Python packages"
+sudo easy_install supervisor
+
+echo "## Configuring Supervisor Gearman initialization settings"
+sudo bash -c "cat > /etc/supervisor/conf.d/gearman-claimstooemr.conf" << EOL
+[program:gearman-claimstooemr]
+directory=/home/vagrant/ClaimsToOEMR
+command=/home/vagrant/ClaimsToOEMR/gearman-workers
+autorestart=true
+process_name=%(program_name)s-%(process_num)s
+numprocs=10
+EOL
+
+echo "## Restarting Supervisor service"
+sudo service supervisor restart
