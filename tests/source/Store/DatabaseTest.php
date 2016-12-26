@@ -228,37 +228,6 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::getModelClass()
-	 */
-	public function testGetModelClass() {
-		$className = '\\Namespace\\AbcdEfg';
-
-		$options = $this->getMockery(
-			Options::class
-		);
-
-		$this->database->shouldAllowMockingProtectedMethods()
-			->shouldReceive('options')
-			->once()
-			->andReturn($options);
-
-		$options->shouldReceive('get')
-			->once()
-			->with('Aliases.abcdEfg')
-			->andReturn($className);
-
-		$this->assertSame(
-			$className,
-			$this->callProtectedMethod(
-				$this->database,
-				'getModelClass',
-				[ 'abcdEfg' ]
-			),
-			'Class name not returned correctly'
-		);
-	}
-
-	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::addIfMissing()
 	 */
 	public function testAddIfMissing() {
@@ -350,7 +319,7 @@ class DatabaseTest extends BaseTestCase {
 
 		$this->database->shouldAllowMockingProtectedMethods();
 
-		$this->database->shouldReceive('getModelClass')
+		$this->database->shouldReceive('options->resolveAlias')
 			->once()
 			->with('x12Partners')
 			->andReturn(get_class($model));
@@ -434,7 +403,7 @@ class DatabaseTest extends BaseTestCase {
 
 		$this->database->shouldAllowMockingProtectedMethods();
 
-		$this->database->shouldReceive('getModelClass')
+		$this->database->shouldReceive('options->resolveAlias')
 			->once()
 			->with('x12Partners')
 			->andReturn(get_class($model));
@@ -489,7 +458,7 @@ class DatabaseTest extends BaseTestCase {
 
 		$this->database->shouldAllowMockingProtectedMethods();
 
-		$this->database->shouldReceive('getModelClass')
+		$this->database->shouldReceive('options->resolveAlias')
 			->once()
 			->with('x12Partners')
 			->andReturn(get_class($model));
@@ -532,7 +501,7 @@ class DatabaseTest extends BaseTestCase {
 
 		$this->database->shouldAllowMockingProtectedMethods();
 
-		$this->database->shouldReceive('getModelClass')
+		$this->database->shouldReceive('options->resolveAlias')
 			->once()
 			->with('x12Partners')
 			->andReturn(get_class($model));

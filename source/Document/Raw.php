@@ -76,9 +76,8 @@ class Raw implements Iterator, Countable {
 	 * Parse the segments from an raw X12 file
 	 *
 	 * @param  string   $fileName    Path to file to parse
-	 * @param  boolean  $singleMode  Parse file with single Transaction Set
 	 */
-	public function parseFromFile($fileName, $singleMode = false) {
+	public function parseFromFile($fileName) {
 		if(!is_string($fileName)) {
 			// TODO: Replace exception
 			throw new Exception('First parameter should be a string: '.gettype($fileName).' passed');
@@ -87,10 +86,7 @@ class Raw implements Iterator, Countable {
 			throw new Exception('Filename provided is not readable: '.$fileName);
 		}
 
-		$this->parse(
-			file_get_contents($fileName),
-			$singleMode
-		);
+		$this->parse(file_get_contents($fileName));
 	}
 
 	/**

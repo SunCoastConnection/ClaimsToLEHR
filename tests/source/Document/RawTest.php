@@ -149,7 +149,7 @@ class RawTest extends BaseTestCase {
 
 		$this->raw->shouldReceive('parse')
 			->once()
-			->with($contents, false);
+			->with($contents);
 
 		$this->raw->parseFromFile($file->url());
 	}
@@ -178,25 +178,6 @@ class RawTest extends BaseTestCase {
 		);
 
 		$this->raw->parseFromFile($fileName);
-	}
-
-	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parseFromFile()
-	 */
-	public function testParseFromFileWithSingleMode() {
-		$contents = implode('~', $this->document).'~';
-
-		$root = vfsStream::setup();
-
-		$file = vfsStream::newFile('claim.file')
-			->at($root)
-			->setContent($contents);
-
-		$this->raw->shouldReceive('parse')
-			->once()
-			->with($contents, true);
-
-		$this->raw->parseFromFile($file->url(), true);
 	}
 
 	/**

@@ -5,16 +5,11 @@ namespace SunCoastConnection\ClaimsToOEMR;
 
 use \ErrorException;
 use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
 use \SunCoastConnection\ClaimsToOEMR\Store\Database;
 use \SunCoastConnection\ClaimsToOEMR\X12N837;
-use \SunCoastConnection\ClaimsToOEMR\X12N837\Cache;
 use \Symfony\Component\Finder\Finder;
 
-
 set_error_handler(__NAMESPACE__.'\exceptions_error_handler');
-
-echo 'Setting up autoloading...'.PHP_EOL;
 
 //** LOAD AUTOLOADER **//
 $autoload = include(__DIR__.'/vendor/autoload.php');
@@ -39,8 +34,6 @@ if($autoload == false) {
 }
 
 echo 'Loading configurations...'.PHP_EOL;
-
-//** GET CONFIGURATION OPTIONS **//
 $options = Options::getInstance(require_once(__DIR__.'/config/app.php'));
 
 
@@ -58,9 +51,9 @@ switch($cmdOption) {
 		c2eStoreCount($options);
 		break;
 
-	case 'parse':
+	case 'process':
 		setupStore($options);
-		c2eParse($options);
+		c2eProcess($options);
 		break;
 
 	default:
@@ -112,7 +105,7 @@ function c2eStoreCount($options) {
 	echo PHP_EOL;
 }
 
-function c2eParse($options) {
+function c2eProcess($options) {
 	$inboxPath		= $options->get('Inbox.path');
 	$inboxPattern	= $options->get('Inbox.pattern');
 
@@ -128,30 +121,28 @@ function c2eParse($options) {
 
 	c2eStoreCount($options);
 
-	echo 'Found '.$finder->count().' file(s) in directory: '.realpath($inboxPath).PHP_EOL.PHP_EOL;
+	$fileCount = $finder->count();
+
+	echo 'Found '.$fileCount.' file(s) in directory: '.realpath($inboxPath).PHP_EOL.PHP_EOL;
+
+	$fileIndex = 0;
+
+	$x12n837 = new X12N837;
+	$x12n837->setOptions($options);
 
 	foreach($finder as $file) {
-		echo " - Filename:\t\t".$file->getRealpath().PHP_EOL;
-		echo " - Filesize:\t\t".$file->getSize().PHP_EOL;
+		echo ' - File '.++$fileIndex.' of '.$fileCount.PHP_EOL;
+		echo " - Name:\t".$file->getRealpath().PHP_EOL;
+		echo " - Size:\t".$file->getSize().PHP_EOL;
 
-		c2eClaimLoad($options, $file);
+		$x12n837->cacheClaim(
+			$x12n837->disposeClaim(
+				$x12n837->parseClaim(
+					$file->getContents()
+				)
+			)
+		);
+
+		c2eStoreCount($options);
 	}
-}
-
-function c2eClaimLoad($options, $file) {
-	$raw = Raw::getInstance($options);
-	$raw->parse($file->getContents());
-
-	$document = X12N837::getInstance($options);
-	$document->parse($raw);
-
-	c2eClaimCache($options, $document);
-}
-
-function c2eClaimCache($options, $document) {
-	$cache = Cache::getInstance($options->get('App.store'));
-
-	$cache->processDocument($document);
-
-	c2eStoreCount($options);
 }

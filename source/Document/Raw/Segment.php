@@ -54,14 +54,17 @@ class Segment {
 			$elements = '';
 		}
 
-		$class = $options->get('Aliases.'.$designator);
-
-		if($class === null) {
+		try {
+			$object = $options->instanciateAlias(
+				$designator,
+				[
+					$options
+				]
+			);
+		} catch (Exception $e) {
 			// TODO: Replace exception
 			throw new Exception('Segment designator can not be found: '.$designator);
 		}
-
-		$object = new $class($options);
 
 		$object->parse($elements);
 
