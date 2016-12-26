@@ -2,6 +2,7 @@
 
 namespace SunCoastConnection\ClaimsToOEMR\Tests\Document\Raw;
 
+use \Exception;
 use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
 use \SunCoastConnection\ClaimsToOEMR\Document\Options;
 use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
@@ -38,41 +39,28 @@ class SegmentTest extends BaseTestCase {
 		$options->shouldReceive('get')
 			->with('Document.delimiters.data')
 			->andReturn('*');
-		$options->shouldReceive('get')
-			->with('Document.delimiters.component')
-			->andReturn(':');
-		$options->shouldReceive('get')
-			->with('Aliases.'.$elements[0])
-			->andReturn(Segment::class);
+
+		$segmentA = $this->getMockery(
+			Segment::class
+		);
+
+		$options->shouldReceive('instanciateAlias')
+			->with($elements[0], [ $options ])
+			->andReturn($segmentA);
+
+		$justElements = $elements;
+		array_shift($justElements);
+
+		$segmentA->shouldReceive('parse')
+			->once()
+			->with(implode('*', $justElements));
 
 		$segment = $this->segment::getInstance($options, implode('*', $elements));
 
-		$this->assertInstanceOf(
-			Segment::class,
+		$this->assertSame(
+			$segmentA,
 			$segment,
-			'Expected new instance of '.Section::class.'.'
-		);
-
-		$this->assertEquals(
-			$options,
-			$this->callProtectedMethod(
-				$segment,
-				'options'
-			),
-			'Options was not set on segment'
-		);
-
-		$this->assertEquals(
-			[
-				Element::getInstance($options, $elements[1]),
-				Element::getInstance($options, $elements[2]),
-				Element::getInstance($options, $elements[3]),
-			],
-			$this->getProtectedProperty(
-				$segment,
-				'elements'
-			),
-			'Segment not set with elements'
+			'Segment not returned'
 		);
 	}
 
@@ -91,38 +79,25 @@ class SegmentTest extends BaseTestCase {
 		$options->shouldReceive('get')
 			->with('Document.delimiters.data')
 			->andReturn('*');
-		$options->shouldReceive('get')
-			->with('Document.delimiters.component')
-			->andReturn(':');
-		$options->shouldReceive('get')
-			->with('Aliases.'.$elements[0])
-			->andReturn(Segment::class);
+
+		$segmentE = $this->getMockery(
+			Segment::class
+		);
+
+		$options->shouldReceive('instanciateAlias')
+			->with($elements[0], [ $options ])
+			->andReturn($segmentE);
+
+		$segmentE->shouldReceive('parse')
+			->once()
+			->with('');
 
 		$segment = $this->segment::getInstance($options, implode('*', $elements));
 
-		$this->assertInstanceOf(
-			Segment::class,
+		$this->assertSame(
+			$segmentE,
 			$segment,
-			'Expected new instance of '.Section::class.'.'
-		);
-
-		$this->assertEquals(
-			$options,
-			$this->callProtectedMethod(
-				$segment,
-				'options'
-			),
-			'Options was not set on segment'
-		);
-
-		$this->assertEquals(
-			[
-			],
-			$this->getProtectedProperty(
-				$segment,
-				'elements'
-			),
-			'Segment should not have been set with elements'
+			'Segment not returned'
 		);
 	}
 
@@ -145,9 +120,9 @@ class SegmentTest extends BaseTestCase {
 			->with('Document.delimiters.data')
 			->andReturn('*');
 
-		$options->shouldReceive('get')
-			->with('Aliases.'.$elements[0])
-			->andReturnNull();
+		$options->shouldReceive('instanciateAlias')
+			->with($elements[0], [ $options ])
+			->andThrow(new Exception);
 
 		$this->setExpectedException(
 			'Exception',

@@ -6,6 +6,8 @@ use \Illuminate\Database\Capsule\Manager as DatabaseManager;
 
 // SQL Schema was extracted from the database.sql file in the OpenEMR project.
 
+DatabaseManager::schema()->dropIfExists('addresses');
+
 DatabaseManager::schema()->create('addresses', function($table) {
 	// CREATE TABLE `addresses` (
 	//   `id` int(11) NOT NULL default '0',
@@ -31,6 +33,8 @@ DatabaseManager::schema()->create('addresses', function($table) {
 	$table->string('country', 255)->nullable();
 	$table->integer('foreign_id')->length(11)->nullable();
 });
+
+DatabaseManager::schema()->dropIfExists('billing');
 
 DatabaseManager::schema()->create('billing', function($table) {
 	// CREATE TABLE `billing` (
@@ -88,6 +92,8 @@ DatabaseManager::schema()->create('billing', function($table) {
 	$table->string('justify', 255)->nullable();
 });
 
+DatabaseManager::schema()->dropIfExists('facility');
+
 DatabaseManager::schema()->create('facility', function($table) {
 	// CREATE TABLE `facility` (
 	//   `id` int(11) NOT NULL auto_increment,
@@ -135,6 +141,8 @@ DatabaseManager::schema()->create('facility', function($table) {
 	$table->string('color', 7)->default('');
 	$table->integer('primary_business_entity')->length(10)->default(0)->comment = '0-Not Set as business entity 1-Set as business entity';
 });
+
+DatabaseManager::schema()->dropIfExists('form_encounter');
 
 DatabaseManager::schema()->create('form_encounter', function($table) {
 	// CREATE TABLE `form_encounter` (
@@ -184,6 +192,8 @@ DatabaseManager::schema()->create('form_encounter', function($table) {
 	$table->integer('billing_facility')->length(11)->default(0);
 });
 
+DatabaseManager::schema()->dropIfExists('forms');
+
 DatabaseManager::schema()->create('forms', function($table) {
 	// CREATE TABLE `forms` (
 	//   `id` bigint(20) NOT NULL auto_increment,
@@ -215,6 +225,8 @@ DatabaseManager::schema()->create('forms', function($table) {
 	$table->longText('formdir');
 });
 
+DatabaseManager::schema()->dropIfExists('groups');
+
 DatabaseManager::schema()->create('groups', function($table) {
 	// CREATE TABLE `groups` (
 	//   `id` bigint(20) NOT NULL auto_increment,
@@ -227,6 +239,8 @@ DatabaseManager::schema()->create('groups', function($table) {
 	$table->longText('name');
 	$table->longText('user');
 });
+
+DatabaseManager::schema()->dropIfExists('insurance_companies');
 
 DatabaseManager::schema()->create('insurance_companies', function($table) {
 	// CREATE TABLE `insurance_companies` (
@@ -248,6 +262,8 @@ DatabaseManager::schema()->create('insurance_companies', function($table) {
 	$table->string('x12_receiver_id', 25)->nullable();
 	$table->integer('x12_default_partner_id')->length(11)->nullable();
 });
+
+DatabaseManager::schema()->dropIfExists('insurance_data');
 
 DatabaseManager::schema()->create('insurance_data', function($table) {
 	// CREATE TABLE `insurance_data` (
@@ -306,6 +322,8 @@ DatabaseManager::schema()->create('insurance_data', function($table) {
 	$table->integer('pid')->length(20)->default('0');
 	$table->date('date')->default('0000-00-00');
 });
+
+DatabaseManager::schema()->dropIfExists('patient_data');
 
 DatabaseManager::schema()->create('patient_data', function($table) {
 	// CREATE TABLE `patient_data` (
@@ -414,6 +432,8 @@ DatabaseManager::schema()->create('patient_data', function($table) {
 	$table->integer('pid')->length(20)->default('0');
 });
 
+DatabaseManager::schema()->dropIfExists('phone_numbers');
+
 DatabaseManager::schema()->create('phone_numbers', function($table) {
 	// CREATE TABLE `phone_numbers` (
 	//   `id` int(11) NOT NULL default '0',
@@ -435,6 +455,8 @@ DatabaseManager::schema()->create('phone_numbers', function($table) {
 	$table->integer('type')->length(11)->nullable();
 	$table->integer('foreign_id')->length(11)->nullable();
 });
+
+DatabaseManager::schema()->dropIfExists('users');
 
 DatabaseManager::schema()->create('users', function($table) {
 	// CREATE TABLE `users` (
@@ -515,6 +537,8 @@ DatabaseManager::schema()->create('users', function($table) {
 	$table->string('state_license_number', 25)->nullable();
 });
 
+DatabaseManager::schema()->dropIfExists('x12_partners');
+
 DatabaseManager::schema()->create('x12_partners', function($table) {
 	// CREATE TABLE `x12_partners` (
 	//   `id` int(11) NOT NULL default '0',
@@ -555,6 +579,8 @@ DatabaseManager::schema()->create('x12_partners', function($table) {
 	$table->string('x12_gs02', 15)->default('');
 	$table->string('x12_gs03', 15)->default('');
 });
+
+DatabaseManager::schema()->dropIfExists('pqrs_import_files');
 
 DatabaseManager::schema()->create('pqrs_import_files', function($table) {
 	// CREATE TABLE `pqrs_import_files` (

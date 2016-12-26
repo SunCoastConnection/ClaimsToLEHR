@@ -2,13 +2,60 @@
 
 namespace SunCoastConnection\ClaimsToOEMR;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Section\Root;
+use \SunCoastConnection\ClaimsToOEMR\Document\Options;
 
-// TODO: Cleanup, rename, and replace properties with sub-objects
-class X12N837 extends Root {
+class X12N837 {
 
-	static protected $descendantSequence = [
-		['name' => 'InterchangeControl', 'required' => true, 'repeat' => 1],
-	];
+	/**
+	 * Options object
+	 * @var \SunCoastConnection\ClaimsToOEMR\Document\Options
+	 */
+	protected $options;
 
+	public function setOptions(Options $options) {
+		$this->options = $options;
+	}
+
+	public function getOptions() {
+		return $this->options;
+	}
+
+	public function parseClaim($claim) {
+		$rawClaim = $this->getOptions()->instanciateAlias(
+			'Raw',
+			[
+				$this->getOptions()
+			]
+		);
+
+		$rawClaim->parse($claim);
+
+		return $rawClaim;
+	}
+
+	public function disposeClaim($rawClaim) {
+		$document = $this->getOptions()->instanciateAlias(
+			'Document',
+			[
+				$this->getOptions()
+			]
+		);
+
+		$document->parse($rawClaim);
+
+		return $document;
+	}
+
+	public function cacheClaim($document) {
+		$cache = $this->getOptions()->instanciateAlias(
+			'Cache',
+			[
+				$this->getOptions()->get('App.store')
+			]
+		);
+
+		$cache->processDocument($document);
+
+		return $cache;
+	}
 }

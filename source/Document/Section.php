@@ -132,17 +132,6 @@ abstract class Section {
 	}
 
 	/**
-	 * Resolve alias name to class name
-	 *
-	 * @param  string  $alias  Alias name
-	 *
-	 * @return string  Class name
-	 */
-	protected function resolveAlias($alias) {
-		return $this->options()->get('Aliases.'.$alias);
-	}
-
-	/**
 	 * Find segments and add to sub-sections
 	 *
 	 * @param  array                                          $sequence  Sequence array for section
@@ -163,7 +152,7 @@ abstract class Section {
 		foreach($sequence as $sectionData) {
 			$sectionData = array_merge($sectionDataTemplate, $sectionData);
 
-			$sectionData['class'] = $this->resolveAlias($sectionData['name']);
+			$sectionData['class'] = $this->options()->resolveAlias($sectionData['name']);
 
 			if(get_parent_class($sectionData['class']) !== Segment::class ||
 				($raw->valid() && $raw->current()->getName() === $sectionData['name'])

@@ -90,17 +90,6 @@ class Database extends Store {
 	}
 
 	/**
-	 * Resolve alias name to class name
-	 *
-	 * @param  string  $model  Alias name
-	 *
-	 * @return string  Class name for model
-	 */
-	protected function getModelClass($model) {
-		return $this->options()->get('Aliases.'.$model);
-	}
-
-	/**
 	 * Add value to array if index is missing
 	 *
 	 * @param string  $index   Index in array to check and add if missing
@@ -143,7 +132,7 @@ class Database extends Store {
 	 * @return \Illuminate\Database\Eloquent\Model  Record inserted
 	 */
 	protected function insertRecord($table, array $data) {
-		$modelClass = $this->getModelClass($table);
+		$modelClass = $this->options()->resolveAlias($table);
 
 		$record = new $modelClass();
 
@@ -176,7 +165,7 @@ class Database extends Store {
 	 * @return \Illuminate\Database\Eloquent\Model  Record inserted or updated
 	 */
 	protected function insertUpdateRecord($table, array $data, array $matchFields) {
-		$modelClass = $this->getModelClass($table);
+		$modelClass = $this->options()->resolveAlias($table);
 
 		$record = $this->findRecord($modelClass, $data, $matchFields);
 
@@ -197,7 +186,7 @@ class Database extends Store {
 	 * @return integer  Current count of records
 	 */
 	public function recordCount($table) {
-		$modelClass = $this->getModelClass($table);
+		$modelClass = $this->options()->resolveAlias($table);
 
 		return $modelClass::count();
 	}
