@@ -12,7 +12,9 @@
         "symfony/finder": "3.0.*",
         "illuminate/config": "5.2.*",
         "illuminate/database": "5.2.*",
-        "illuminate/events": "5.2.*"
+        "illuminate/events": "5.2.*",
+        "kicken/gearman-php": "dev-master",
+        "phpseclib/phpseclib": "2.0.*"
    	},
     "autoload": {
         "psr-4": {
@@ -20,7 +22,7 @@
         }
     },
     "require-dev": {
-        "laravel/homestead": "3.0.*",
+        "laravel/homestead": "^4",
         "phploc/phploc": "3.0.*",
         "phpunit/phpunit": "5.3.*",
         "mockery/mockery": "0.9.*",

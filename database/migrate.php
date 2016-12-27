@@ -555,3 +555,40 @@ DatabaseManager::schema()->create('x12_partners', function($table) {
 	$table->string('x12_gs02', 15)->default('');
 	$table->string('x12_gs03', 15)->default('');
 });
+
+DatabaseManager::schema()->create('pqrs_import_files', function($table) {
+	// CREATE TABLE `pqrs_import_files` (
+	//   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+	//   `status` enum('Staged', 'Queued', 'Processing', 'Failed', 'Completed') DEFAULT 'Staged',
+	//   `relative_path` varchar(255) NOT NULL,
+	//   `size` int(11) NOT NULL,
+	//   `md5` varchar(32) NOT NULL,
+	//   `staged_datetime` datetime NOT NULL,
+	//   `queued_datetime` datetime DEFAULT NULL,
+	//   `processing_datetime` datetime DEFAULT NULL,
+	//   `processing_id` int(11) DEFAULT NULL,
+	//   `failed_datetime` datetime DEFAULT NULL,
+	//   `failed_reason` text DEFAULT NULL,
+	//   `completed_datetime` datetime DEFAULT NULL,
+	//   PRIMARY KEY  (`id`),
+	//   KEY `relative_path` (`relative_path`),
+	//   KEY `processing_id` (`processing_id`),
+	//   KEY `md5` (`md5`)
+	// ) ENGINE=InnoDB;
+
+	$table->increments('id');
+	$table->enum('status', ['Staged', 'Queued', 'Processing', 'Failed', 'Completed'])->default('Staged');
+	$table->string('relative_path', 255);
+	$table->integer('size')->length(11);
+	$table->string('md5', 32);
+	$table->dateTime('staged_datetime');
+	$table->dateTime('queued_datetime')->nullable();
+	$table->dateTime('processing_datetime')->nullable();
+	$table->integer('processing_id')->length(11)->nullable();
+	$table->dateTime('failed_datetime')->nullable();
+	$table->text('failed_reason')->nullable();
+	$table->dateTime('completed_datetime')->nullable();
+	$table->index('relative_path');
+	$table->index('processing_id');
+	$table->index('md5');
+});

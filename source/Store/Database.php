@@ -13,27 +13,33 @@ use \SunCoastConnection\ClaimsToOEMR\Store;
 class Database extends Store {
 
 	/**
+	 * Database manager
+	 * @var \Illuminate\Database\Capsule\Manager
+	 */
+	protected $manager;
+
+	/**
 	 * Initialize Eloquent Database
 	 */
 	protected function onConstruct() {
-		$manager = new Manager;
+		$this->manager = new Manager;
 
-		$manager->addConnection(
+		$this->manager->addConnection(
 			$this->options()->get(
 				'Store.connections.'.
 					$this->options()->get('Store.default', 'memory')
 			)
 		);
 
-		$manager->setAsGlobal();
-		$manager->bootEloquent();
+		$this->manager->setAsGlobal();
+		$this->manager->bootEloquent();
 
 		if($this->options()->get('Store.queryLog', false)) {
-			$manager->setEventDispatcher(new Dispatcher(new Container));
+			$this->manager->setEventDispatcher(new Dispatcher(new Container));
 
-			$manager->connection()->enableQueryLog();
+			$this->manager->connection()->enableQueryLog();
 
-			$manager->connection()->listen(
+			$this->manager->connection()->listen(
 				function(QueryExecuted $queryExecuted) { $this->logQuery($queryExecuted); }
 			);
 		}
@@ -72,6 +78,15 @@ class Database extends Store {
 		} elseif($queryLog != false) {
 			file_put_contents($queryLog, $query.PHP_EOL, FILE_APPEND);
 		}
+	}
+
+	/**
+	 * Get the database manager
+	 *
+	 * @return \Illuminate\Database\Capsule\Manager  Database manager
+	 */
+	public function getManager() {
+		return $this->manager;
 	}
 
 	/**
