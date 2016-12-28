@@ -29,7 +29,7 @@ class Element {
 	}
 
 	/**
-	 * Create a new Store
+	 * Create a new Element
 	 *
 	 * @param \SunCoastConnection\ClaimsToOEMR\Document\Options  $options  Options to create store object with
 	 */

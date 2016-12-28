@@ -6,7 +6,7 @@ use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
 use \SunCoastConnection\ClaimsToOEMR\Document\Options;
 use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Element;
 use \SunCoastConnection\ClaimsToOEMR\Store;
-use \SunCoastConnection\ClaimsToOEMR\X12N837;
+use \SunCoastConnection\ClaimsToOEMR\X12N837\Document;
 use \SunCoastConnection\ClaimsToOEMR\X12N837\Cache;
 use \SunCoastConnection\ClaimsToOEMR\X12N837\Envelope;
 use \SunCoastConnection\ClaimsToOEMR\X12N837\Loop;
@@ -1916,18 +1916,18 @@ class CacheTest extends BaseTestCase {
 	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processDocument()
 	 */
 	public function testProcessDocumentWithNoDescendantArray() {
-		$x12N837 = $this->getMockery(
-			X12N837::class
+		$document = $this->getMockery(
+			Document::class
 		);
 
-		$x12N837->shouldReceive('getDescendant')
+		$document->shouldReceive('getDescendant')
 			->once()
 			->andReturnNull();
 
 		$this->cache->shouldAllowMockingProtectedMethods()
 			->shouldNotReceive('processInterchangeControl');
 
-		$this->cache->processDocument($x12N837);
+		$this->cache->processDocument($document);
 	}
 
 	/**
@@ -1936,18 +1936,18 @@ class CacheTest extends BaseTestCase {
 	public function testProcessDocumentWithEmptyDescendantArray() {
 		$descendant = [];
 
-		$x12N837 = $this->getMockery(
-			X12N837::class
+		$document = $this->getMockery(
+			Document::class
 		);
 
-		$x12N837->shouldReceive('getDescendant')
+		$document->shouldReceive('getDescendant')
 			->once()
 			->andReturn($descendant);
 
 		$this->cache->shouldAllowMockingProtectedMethods()
 			->shouldNotReceive('processInterchangeControl');
 
-		$this->cache->processDocument($x12N837);
+		$this->cache->processDocument($document);
 	}
 
 	/**
@@ -1963,11 +1963,11 @@ class CacheTest extends BaseTestCase {
 			$interchangeControl
 		];
 
-		$x12N837 = $this->getMockery(
-			X12N837::class
+		$document = $this->getMockery(
+			Document::class
 		);
 
-		$x12N837->shouldReceive('getDescendant')
+		$document->shouldReceive('getDescendant')
 			->once()
 			->andReturn($descendant);
 
@@ -1976,7 +1976,7 @@ class CacheTest extends BaseTestCase {
 			->twice()
 			->with($interchangeControl);
 
-		$this->cache->processDocument($x12N837);
+		$this->cache->processDocument($document);
 	}
 
 	/**

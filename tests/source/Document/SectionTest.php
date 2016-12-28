@@ -181,26 +181,6 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::resolveAlias()
-	 */
-	public function testResolveAlias() {
-		$alias = 'TestAlias';
-		$class = '/Namespace/To/TestClass';
-
-		$this->section->shouldAllowMockingProtectedMethods()
-			->shouldReceive('options->get')
-			->once()
-			->with('Aliases.'.$alias)
-			->andReturn($class);
-
-		$this->assertSame(
-			$class,
-			$this->section->resolveAlias($alias),
-			'Alias did not return correct class string.'
-		);
-	}
-
-	/**
 	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::parseSequence()
 	 */
 	public function testParseSequenceWithEmptySequence() {
@@ -255,7 +235,7 @@ class SectionTest extends BaseTestCase {
 
 		$this->section->shouldAllowMockingProtectedMethods();
 
-		$this->section->shouldReceive('resolveAlias')
+		$this->section->shouldReceive('options->resolveAlias')
 			->once()
 			->with($sequence[0]['name'])
 			->andReturn($class);
@@ -298,7 +278,7 @@ class SectionTest extends BaseTestCase {
 
 		$this->section->shouldAllowMockingProtectedMethods();
 
-		$this->section->shouldReceive('resolveAlias')
+		$this->section->shouldReceive('options->resolveAlias')
 			->once()
 			->with($sequence[0]['name'])
 			->andReturn($class);

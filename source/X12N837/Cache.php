@@ -3,6 +3,7 @@
 namespace SunCoastConnection\ClaimsToOEMR\X12N837;
 
 use \SunCoastConnection\ClaimsToOEMR\Store;
+use \SunCoastConnection\ClaimsToOEMR\Document\Section\Root;
 use \SunCoastConnection\ClaimsToOEMR\X12N837;
 use \SunCoastConnection\ClaimsToOEMR\X12N837\Envelope;
 use \SunCoastConnection\ClaimsToOEMR\X12N837\Loop;
@@ -690,11 +691,11 @@ class Cache {
 	}
 
 	/**
-	 * Process an X12N837 document
+	 * Process a document root
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837  $document  X12N837 document to process
+	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Section\Root  $document  Root document to process
 	 */
-	public function processDocument(X12N837 $document) {
+	public function processDocument(Root $document) {
 		$descendant = $document->getDescendant();
 
 		if(is_array($descendant)) {
