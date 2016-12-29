@@ -38,6 +38,23 @@ $worker->registerFunction('registerRemoteConnection',
 	}
 );
 
+// Register worker ReturnRemoteConnection
+$worker->registerFunction('returnRemoteConnection',
+	function(WorkerJob $job) use ($options) {
+		$workerJob = ReturnRemoteConnection::getInstance($options);
+
+		$log = [];
+
+		$returnValue = $workerJob->run($job, $log);
+
+		if(count($log)) {
+			echo "Error:\t".implode(PHP_EOL."Error:\t", $log).PHP_EOL;
+		}
+
+		return $returnValue;
+	}
+);
+
 // Register worker ImportClaims
 $worker->registerFunction('importClaims',
 	function(WorkerJob $job) use ($options) {
