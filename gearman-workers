@@ -3,28 +3,51 @@
 
 namespace SunCoastConnection\ClaimsToOEMR;
 
-// Gearman Worker Test Job
+// Gearman Worker Jobs
 
 use \Kicken\Gearman\Worker;
 use \Kicken\Gearman\Job\WorkerJob;
 use \SunCoastConnection\ClaimsToOEMR\Document\Options;
 use \SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims;
+use \SunCoastConnection\ClaimsToOEMR\Gearman\Job\ReturnRemoteConnection;
 use \SunCoastConnection\ClaimsToOEMR\Gearman\Job\RegisterRemoteConnection;
 
 //** LOAD AUTOLOADER **//
-require_once(__DIR__.'/vendor/autoload.php');
+if(strpos(__DIR__, '/vendor/') === false) {
+	require_once(__DIR__.'/vendor/autoload.php');
+} else {
+	require_once(substr(__DIR__, 0, strpos(__DIR__, '/vendor/') + 8).'autoload.php');
+}
 
+// Load Configurations
 $options = Options::getInstance(require_once(__DIR__.'/config/gearman-worker.php'));
 
+// Setup Gearman connection to servers
 $worker = new Worker(
-	$options->get('Gearman.server.ip', '127.0.0.1').
-	':'.$options->get('Gearman.server.port', '4730')
+	$options->get('Gearman.servers', '127.0.0.1:4730')
 );
 
 // Register worker RegisterRemoteConnection
 $worker->registerFunction('registerRemoteConnection',
 	function(WorkerJob $job) use ($options) {
 		$workerJob = RegisterRemoteConnection::getInstance($options);
+
+		$log = [];
+
+		$returnValue = $workerJob->run($job, $log);
+
+		if(count($log)) {
+			echo "Error:\t".implode(PHP_EOL."Error:\t", $log).PHP_EOL;
+		}
+
+		return $returnValue;
+	}
+);
+
+// Register worker ReturnRemoteConnection
+$worker->registerFunction('returnRemoteConnection',
+	function(WorkerJob $job) use ($options) {
+		$workerJob = ReturnRemoteConnection::getInstance($options);
 
 		$log = [];
 
