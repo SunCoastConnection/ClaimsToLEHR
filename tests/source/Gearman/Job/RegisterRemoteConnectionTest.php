@@ -88,10 +88,6 @@ class RegisterRemoteConnectionTest extends BaseTestCase {
 			),
 			'Client credentials contents does not match expected'
 		);
-
-		// $file = vfsStream::newFile('query.log')
-		// 	->at($root)
-		// 	->setContent($fileContents);
 	}
 
 	/**
