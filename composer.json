@@ -5,16 +5,15 @@
     "authors": [
         {
             "name": "Sam Likins",
-            "email": "sam.likins@wsi-services.com"
+            "email": "sam.likins@wsi-services.com",
+            "role": "Developer"
         }
     ],
     "require": {
         "symfony/finder": "3.0.*",
         "illuminate/config": "5.2.*",
         "illuminate/database": "5.2.*",
-        "illuminate/events": "5.2.*",
-        "kicken/gearman-php": "dev-master",
-        "phpseclib/phpseclib": "2.0.*"
+        "illuminate/events": "5.2.*"
    	},
     "autoload": {
         "psr-4": {
@@ -22,6 +21,8 @@
         }
     },
     "require-dev": {
+        "kicken/gearman-php": "dev-master",
+        "phpseclib/phpseclib": "2.0.*",
         "laravel/homestead": "^4",
         "phploc/phploc": "3.0.*",
         "phpunit/phpunit": "5.3.*",
@@ -35,5 +36,9 @@
     },
     "config": {
         "preferred-install": "dist"
+    },
+    "suggest": {
+        "kicken/gearman-php": "Provides API for connecting to a Gearman server as a worker",
+        "phpseclib/phpseclib": "Allows remote SSH capabilities to connect to remote server"
     }
 }

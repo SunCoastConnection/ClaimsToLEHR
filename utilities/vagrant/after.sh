@@ -24,6 +24,9 @@
 
 echo "## Vagrant post install script..."
 
+echo "## Resetting MySQL Password for user 'homestead' to 'secret'"
+mysql -u homestead -psecret -e "SET PASSWORD=PASSWORD('secret');"
+
 echo "## Enabling XDebug PHP Module"
 sudo phpenmod xdebug
 

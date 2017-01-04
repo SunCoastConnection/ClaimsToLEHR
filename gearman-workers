@@ -9,10 +9,15 @@ use \Kicken\Gearman\Worker;
 use \Kicken\Gearman\Job\WorkerJob;
 use \SunCoastConnection\ClaimsToOEMR\Document\Options;
 use \SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims;
+use \SunCoastConnection\ClaimsToOEMR\Gearman\Job\ReturnRemoteConnection;
 use \SunCoastConnection\ClaimsToOEMR\Gearman\Job\RegisterRemoteConnection;
 
 //** LOAD AUTOLOADER **//
-require_once(__DIR__.'/vendor/autoload.php');
+if(strpos(__DIR__, '/vendor/') === false) {
+	require_once(__DIR__.'/vendor/autoload.php');
+} else {
+	require_once(substr(__DIR__, 0, strpos(__DIR__, '/vendor/') + 8).'autoload.php');
+}
 
 // Load Configurations
 $options = Options::getInstance(require_once(__DIR__.'/config/gearman-worker.php'));
