@@ -1,8 +1,8 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\X12N837\Loop;
+namespace SunCoastConnection\ClaimsToEMR\X12N837\Loop;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Section\Loop;
+use \SunCoastConnection\ClaimsToEMR\Document\Section\Loop;
 
 class Loop2320 extends Loop {
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Store;
+namespace SunCoastConnection\ClaimsToEMR\Store;
 
 use \Illuminate\Container\Container;
 use \Illuminate\Database\Capsule\Manager;
 use \Illuminate\Database\Eloquent\Model;
 use \Illuminate\Database\Events\QueryExecuted;
 use \Illuminate\Events\Dispatcher;
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Store;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Store;
 
 class Database extends Store {
 

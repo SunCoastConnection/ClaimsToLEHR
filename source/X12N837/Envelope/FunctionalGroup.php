@@ -1,8 +1,8 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\X12N837\Envelope;
+namespace SunCoastConnection\ClaimsToEMR\X12N837\Envelope;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope;
+use \SunCoastConnection\ClaimsToEMR\Document\Section\Envelope;
 
 class FunctionalGroup extends Envelope {
 

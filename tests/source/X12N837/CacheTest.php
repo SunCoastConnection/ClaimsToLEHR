@@ -1,16 +1,16 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\X12N837;
+namespace SunCoastConnection\ClaimsToEMR\Tests\X12N837;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Element;
-use \SunCoastConnection\ClaimsToOEMR\Store;
-use \SunCoastConnection\ClaimsToOEMR\X12N837\Document;
-use \SunCoastConnection\ClaimsToOEMR\X12N837\Cache;
-use \SunCoastConnection\ClaimsToOEMR\X12N837\Envelope;
-use \SunCoastConnection\ClaimsToOEMR\X12N837\Loop;
-use \SunCoastConnection\ClaimsToOEMR\X12N837\Segment;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw\Element;
+use \SunCoastConnection\ClaimsToEMR\Store;
+use \SunCoastConnection\ClaimsToEMR\X12N837\Document;
+use \SunCoastConnection\ClaimsToEMR\X12N837\Cache;
+use \SunCoastConnection\ClaimsToEMR\X12N837\Envelope;
+use \SunCoastConnection\ClaimsToEMR\X12N837\Loop;
+use \SunCoastConnection\ClaimsToEMR\X12N837\Segment;
 
 class CacheTest extends BaseTestCase {
 
@@ -65,7 +65,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::getInstance()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::getInstance()
 	 */
 	public function testGetInstance() {
 		$options = $this->getMockery(
@@ -82,7 +82,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::__construct()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::__construct()
 	 */
 	public function testConstruct() {
 		$store = $this->getMockery(
@@ -98,7 +98,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::store()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::store()
 	 */
 	public function testStore() {
 		$this->assertNull(
@@ -124,7 +124,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeAddress()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeAddress()
 	 */
 	public function testStoreAddressWithNoData() {
 		$data = [];
@@ -139,7 +139,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeAddress()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeAddress()
 	 */
 	public function testStoreAddress() {
 		$storeAddress = [
@@ -201,7 +201,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeBilling()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeBilling()
 	 */
 	public function testStoreBillingWithNoData() {
 		$data = [];
@@ -216,7 +216,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeBilling()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeBilling()
 	 */
 	public function testStoreBillingWithSegmentSV1() {
 		$storeBilling = [
@@ -313,7 +313,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeBilling()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeBilling()
 	 */
 	public function testStoreBillingWithSegmentSV1AndDTP02EqualsRD8() {
 		$storeBilling = [
@@ -385,7 +385,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeBilling()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeBilling()
 	 */
 	public function testStoreBillingWithSegmentSV1AndDTP02NotEqualsRD8() {
 		$storeBilling = [
@@ -457,7 +457,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeBilling()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeBilling()
 	 */
 	public function testStoreBillingWithNoSegmentSV1AndHI011IsCPT4() {
 		$storeBilling = [
@@ -537,7 +537,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeBilling()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeBilling()
 	 */
 	public function testStoreBillingWithNoSegmentSV1AndHI011IsICD9() {
 		$storeBilling = [
@@ -617,7 +617,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeBilling()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeBilling()
 	 */
 	public function testStoreBillingWithNoSegmentSV1AndHI011IsICD10() {
 		$storeBilling = [
@@ -697,7 +697,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeFacility()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeFacility()
 	 */
 	public function testStoreFacilityWithNoData() {
 		$data = [];
@@ -712,7 +712,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeFacility()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeFacility()
 	 */
 	public function testStoreFacility() {
 		$storeFacility = [
@@ -826,7 +826,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeFormEncounter()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeFormEncounter()
 	 */
 	public function testStoreFormEncounterWithNoData() {
 		$data = [];
@@ -841,7 +841,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeFormEncounter()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeFormEncounter()
 	 */
 	public function testStoreFormEncounter() {
 		$storeFormEncounter = [
@@ -902,7 +902,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeFormEncounter()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeFormEncounter()
 	 */
 	public function testStoreFormEncounterWithSegmentDTP_431() {
 		$data = [
@@ -933,7 +933,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeFormEncounter()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeFormEncounter()
 	 */
 	public function testStoreFormEncounterWithSegmentDTP02EqualsRD8() {
 		$data = [
@@ -970,7 +970,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeFormEncounter()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeFormEncounter()
 	 */
 	public function testStoreFormEncounterWithSegmentDTP02NotEqualsRD8() {
 		$data = [
@@ -1007,7 +1007,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeForm()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeForm()
 	 */
 	public function testStoreFormWithNoData() {
 		$data = [];
@@ -1022,7 +1022,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeForm()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeForm()
 	 */
 	public function testStoreForm() {
 		$storeForm = [
@@ -1065,7 +1065,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeForm()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeForm()
 	 */
 	public function testStoreFormWithSegmentDTP02EqualsRD8() {
 		$data = [
@@ -1102,7 +1102,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeForm()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeForm()
 	 */
 	public function testStoreFormWithSegmentDTP02NotEqualsRD8() {
 		$data = [
@@ -1139,7 +1139,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeGroup()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeGroup()
 	 */
 	public function testStoreGroupWithNoData() {
 		$data = [];
@@ -1154,7 +1154,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeGroup()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeGroup()
 	 */
 	public function testStoreGroup() {
 		$storeGroup = [
@@ -1192,7 +1192,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeInsuranceCompany()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeInsuranceCompany()
 	 */
 	public function testStoreInsuranceCompanyWithNoData() {
 		$data = [];
@@ -1207,7 +1207,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeInsuranceCompany()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeInsuranceCompany()
 	 */
 	public function testStoreInsuranceCompany() {
 		$storeInsuranceCompany = [
@@ -1249,7 +1249,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeInsuranceData()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeInsuranceData()
 	 */
 	public function testStoreInsuranceDataWithNoData() {
 		$data = [];
@@ -1264,7 +1264,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeInsuranceData()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeInsuranceData()
 	 */
 	public function testStoreInsuranceData() {
 		$storeInsuranceData = [
@@ -1412,7 +1412,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storePatientData()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storePatientData()
 	 */
 	public function testStorePatientDataWithNoData() {
 		$data = [];
@@ -1427,7 +1427,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storePatientData()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storePatientData()
 	 */
 	public function testStorePatientData() {
 		$storePatientData = [
@@ -1533,7 +1533,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storePhoneNumber()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storePhoneNumber()
 	 */
 	public function testStorePhoneNumberWithNoData() {
 		$data = [];
@@ -1548,7 +1548,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storePhoneNumber()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storePhoneNumber()
 	 */
 	public function testStorePhoneNumber() {
 		$storePhoneNumber = [
@@ -1575,7 +1575,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeUser()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeUser()
 	 */
 	public function testStoreUserWithNoData() {
 		$data = [];
@@ -1590,7 +1590,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeUser()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeUser()
 	 */
 	public function testStoreUser() {
 		$storeUser = [
@@ -1666,7 +1666,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeX12Partner()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeX12Partner()
 	 */
 	public function testStoreX12PartnerWithNoData() {
 		$this->cache->shouldAllowMockingProtectedMethods()
@@ -1681,7 +1681,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::storeX12Partner()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::storeX12Partner()
 	 */
 	public function testStoreX12Partner() {
 		$storeX12Partner = [
@@ -1803,7 +1803,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::existsAdd()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::existsAdd()
 	 */
 	public function testExistsAddWithMissingIndex() {
 		$findArray = [
@@ -1828,7 +1828,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::existsAdd()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::existsAdd()
 	 */
 	public function testExistsAddWithExistingIndex() {
 		$findArray = [
@@ -1860,7 +1860,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::findNextSegment()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::findNextSegment()
 	 */
 	public function testFindNextSegment() {
 		$segmentGroup = [
@@ -1913,7 +1913,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processDocument()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processDocument()
 	 */
 	public function testProcessDocumentWithNoDescendantArray() {
 		$document = $this->getMockery(
@@ -1931,7 +1931,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processDocument()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processDocument()
 	 */
 	public function testProcessDocumentWithEmptyDescendantArray() {
 		$descendant = [];
@@ -1951,7 +1951,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processDocument()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processDocument()
 	 */
 	public function testProcessDocumentWithDescendantArray() {
 		$interchangeControl = $this->getMockery(
@@ -1980,7 +1980,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processInterchangeControl()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processInterchangeControl()
 	 */
 	public function testProcessInterchangeControl() {
 		$interchangeControl = $this->getMockery(
@@ -2024,7 +2024,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processFunctionalGroup()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processFunctionalGroup()
 	 */
 	public function testProcessFunctionalGroup() {
 		$functionalGroup = $this->getMockery(
@@ -2081,7 +2081,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processTransactionSet()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processTransactionSet()
 	 */
 	public function testProcessTransactionSet() {
 		$transactionSet = $this->getMockery(
@@ -2161,7 +2161,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop1000()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop1000()
 	 */
 	public function testProcessLoop1000WithSegmentNM101_40() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2221,7 +2221,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop1000()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop1000()
 	 */
 	public function testProcessLoop1000WithSegmentNM101_41() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2267,7 +2267,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop1000()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop1000()
 	 */
 	public function testProcessLoop1000WithSegmentN3() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2295,7 +2295,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop1000()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop1000()
 	 */
 	public function testProcessLoop1000WithSegmentN4() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2323,7 +2323,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop1000()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop1000()
 	 */
 	public function testProcessLoop1000WithSegmentREF() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2351,7 +2351,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2000()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2000()
 	 */
 	public function testProcessLoop2000WithDescendantAndNoSegment() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2401,7 +2401,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2000()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2000()
 	 */
 	public function testProcessLoop2000WithSegmentPRV() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2433,7 +2433,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2000()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2000()
 	 */
 	public function testProcessLoop2000WithSegmentSBR() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2465,7 +2465,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2000()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2000()
 	 */
 	public function testProcessLoop2000WithSegmentPAT() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2497,7 +2497,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2010()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2010()
 	 */
 	public function testProcessLoop2010WithSegmentNM101_85() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2556,7 +2556,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2010()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2010()
 	 */
 	public function testProcessLoop2010WithSegmentNM101_87() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2615,7 +2615,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2010()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2010()
 	 */
 	public function testProcessLoop2010WithSegmentNM101_ILAndNoLoop2000_SBR() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2648,7 +2648,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2010()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2010()
 	 */
 	public function testProcessLoop2010WithSegmentNM101_ILAndLoop2000_SBR() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2716,7 +2716,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2010()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2010()
 	 */
 	public function testProcessLoop2010WithSegmentNM101_PR() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2768,7 +2768,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2010()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2010()
 	 */
 	public function testProcessLoop2010WithSegmentNM101_QC() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2818,7 +2818,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2010()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2010()
 	 */
 	public function testProcessLoop2010WithSegmentN3() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2846,7 +2846,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2010()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2010()
 	 */
 	public function testProcessLoop2010WithSegmentN4() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2874,7 +2874,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2010()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2010()
 	 */
 	public function testProcessLoop2010WithSegmentDMG() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2902,7 +2902,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2010()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2010()
 	 */
 	public function testProcessLoop2010WithSegmentREF() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2930,7 +2930,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2300()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2300()
 	 */
 	public function testProcessLoop2300WithDescendantAndNoSegment() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -2991,7 +2991,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2300()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2300()
 	 */
 	public function testProcessLoop2300WithSegmentCLM() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3040,7 +3040,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2300()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2300()
 	 */
 	public function testProcessLoop2300WithSegmentDTP01Equals431() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3077,7 +3077,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2300()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2300()
 	 */
 	public function testProcessLoop2300WithSegmentDTP01Equals472() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3119,7 +3119,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2300()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2300()
 	 */
 	public function testProcessLoop2300WithSegmentREF() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3151,7 +3151,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2300()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2300()
 	 */
 	public function testProcessLoop2300WithSegmentNTE() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3183,7 +3183,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2300()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2300()
 	 */
 	public function testProcessLoop2300WithSegmentHI() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3215,7 +3215,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2310()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2310()
 	 */
 	public function testProcessLoop2310WithSegmentNM101_77() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3266,7 +3266,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2310()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2310()
 	 */
 	public function testProcessLoop2310WithSegmentNM101_82() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3315,7 +3315,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2310()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2310()
 	 */
 	public function testProcessLoop2310WithSegmentNM101_DN() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3364,7 +3364,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2310()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2310()
 	 */
 	public function testProcessLoop2310WithSegmentNM101_DQ() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3397,7 +3397,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2310()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2310()
 	 */
 	public function testProcessLoop2310WithSegmentN3() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3425,7 +3425,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2310()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2310()
 	 */
 	public function testProcessLoop2310WithSegmentN4() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3453,7 +3453,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2310()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2310()
 	 */
 	public function testProcessLoop2310WithSegmentPRV() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3481,7 +3481,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2320()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2320()
 	 */
 	public function testProcessLoop2320WithDescendantAndNoSegment() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3520,7 +3520,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2320()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2320()
 	 */
 	public function testProcessLoop2320WithSegmentSBR() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3552,7 +3552,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2330()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2330()
 	 */
 	public function testProcessLoop2330WithSegmentNM101_77() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3603,7 +3603,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2330()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2330()
 	 */
 	public function testProcessLoop2330WithSegmentNM101_82() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3652,7 +3652,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2330()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2330()
 	 */
 	public function testProcessLoop2330WithSegmentNM101_85() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3711,7 +3711,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2330()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2330()
 	 */
 	public function testProcessLoop2330WithSegmentNM101_DN() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3760,7 +3760,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2330()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2330()
 	 */
 	public function testProcessLoop2330WithSegmentNM101_DQ() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3793,7 +3793,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2330()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2330()
 	 */
 	public function testProcessLoop2330WithSegmentNM101_IL() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3861,7 +3861,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2330()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2330()
 	 */
 	public function testProcessLoop2330WithSegmentNM101_PR() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3913,7 +3913,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2330()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2330()
 	 */
 	public function testProcessLoop2330WithSegmentN3() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3941,7 +3941,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2330()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2330()
 	 */
 	public function testProcessLoop2330WithSegmentN4() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3969,7 +3969,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2330()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2330()
 	 */
 	public function testProcessLoop2330WithSegmentREF() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -3997,7 +3997,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2400()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2400()
 	 */
 	public function testProcessLoop2400WithDescendantAndNoSegment() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -4036,7 +4036,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2400()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2400()
 	 */
 	public function testProcessLoop2400WithSegmentSV1() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -4088,7 +4088,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2400()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2400()
 	 */
 	public function testProcessLoop2400WithSegmentDTP() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -4125,7 +4125,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2400()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2400()
 	 */
 	public function testProcessLoop2400WithSegmentNTE() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -4157,7 +4157,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2400()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2400()
 	 */
 	public function testProcessLoop2400WithLoop2300_HI() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -4208,7 +4208,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2420()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2420()
 	 */
 	public function testProcessLoop2420WithSegmentNM101_77() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -4259,7 +4259,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2420()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2420()
 	 */
 	public function testProcessLoop2420WithSegmentNM101_82() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -4308,7 +4308,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2420()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2420()
 	 */
 	public function testProcessLoop2420WithSegmentNM101_DK() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -4367,7 +4367,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2420()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2420()
 	 */
 	public function testProcessLoop2420WithSegmentNM101_DN() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -4416,7 +4416,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2420()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2420()
 	 */
 	public function testProcessLoop2420WithSegmentN3() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -4448,7 +4448,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2420()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2420()
 	 */
 	public function testProcessLoop2420WithSegmentN4() {
 		$mockObjects = $this->setupTestProcessLoop(
@@ -4480,7 +4480,7 @@ class CacheTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837\Cache::processLoop2420()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837\Cache::processLoop2420()
 	 */
 	public function testProcessLoop2420WithSegmentPRV() {
 		$mockObjects = $this->setupTestProcessLoop(

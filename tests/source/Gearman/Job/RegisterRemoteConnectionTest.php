@@ -1,11 +1,11 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Gearman\Job;
+namespace SunCoastConnection\ClaimsToEMR\Tests\Gearman\Job;
 
 use \Kicken\Gearman\Job\WorkerJob;
 use \org\bovigo\vfs\vfsStream;
-use \SunCoastConnection\ClaimsToOEMR\Gearman\Job\RegisterRemoteConnection;
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Gearman\Job\RegisterRemoteConnection;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
 
 class RegisterRemoteConnectionTest extends BaseTestCase {
 
@@ -20,7 +20,7 @@ class RegisterRemoteConnectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\RegisterRemoteConnection::run()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\RegisterRemoteConnection::run()
 	 */
 	public function testRunWithSuccessfulWrite() {
 		$job = $this->getMockery(
@@ -91,7 +91,7 @@ class RegisterRemoteConnectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\RegisterRemoteConnection::run()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\RegisterRemoteConnection::run()
 	 */
 	public function testRunWithParentDirectoryOwnedByRoot() {
 		$job = $this->getMockery(
@@ -135,7 +135,7 @@ class RegisterRemoteConnectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\RegisterRemoteConnection::run()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\RegisterRemoteConnection::run()
 	 */
 	public function testRunWithCredentialsDirectoryOwnedByRoot() {
 		$job = $this->getMockery(
@@ -165,7 +165,7 @@ class RegisterRemoteConnectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\RegisterRemoteConnection::run()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\RegisterRemoteConnection::run()
 	 */
 	public function testRunWithCredentialsFileOwnedByRoot() {
 		$job = $this->getMockery(

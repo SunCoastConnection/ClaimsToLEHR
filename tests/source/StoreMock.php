@@ -1,8 +1,8 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests;
+namespace SunCoastConnection\ClaimsToEMR\Tests;
 
-use \SunCoastConnection\ClaimsToOEMR\Store;
+use \SunCoastConnection\ClaimsToEMR\Store;
 
 class StoreMock extends Store {
 

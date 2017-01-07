@@ -1,18 +1,18 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Gearman\Job;
+namespace SunCoastConnection\ClaimsToEMR\Gearman\Job;
 
 use \Carbon\Carbon;
 use \Exception;
 use \Kicken\Gearman\Job\WorkerJob;
 use \phpseclib\Crypt\RSA;
 use \phpseclib\Net\SFTP;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
-use \SunCoastConnection\ClaimsToOEMR\Gearman\Job;
-use \SunCoastConnection\ClaimsToOEMR\Models\PqrsImportFiles;
-use \SunCoastConnection\ClaimsToOEMR\Store\Database;
-use \SunCoastConnection\ClaimsToOEMR\X12N837;
-use \SunCoastConnection\ClaimsToOEMR\X12N837\Cache;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToEMR\Gearman\Job;
+use \SunCoastConnection\ClaimsToEMR\Models\PqrsImportFiles;
+use \SunCoastConnection\ClaimsToEMR\Store\Database;
+use \SunCoastConnection\ClaimsToEMR\X12N837;
+use \SunCoastConnection\ClaimsToEMR\X12N837\Cache;
 
 class ImportClaims extends Job {
 

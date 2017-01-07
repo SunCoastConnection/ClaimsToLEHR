@@ -40,8 +40,8 @@ your preferences:
 ip: "192.168.153.165"
 memory: 2048
 cpus: 1
-hostname: ClaimsToOEMR
-name: ClaimsToOEMR
+hostname: ClaimsToEMR
+name: ClaimsToEMR
 provider: virtualbox
 ```
 

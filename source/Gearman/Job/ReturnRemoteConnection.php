@@ -1,9 +1,9 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Gearman\Job;
+namespace SunCoastConnection\ClaimsToEMR\Gearman\Job;
 
 use \Kicken\Gearman\Job\WorkerJob;
-use \SunCoastConnection\ClaimsToOEMR\Gearman\Job;
+use \SunCoastConnection\ClaimsToEMR\Gearman\Job;
 
 class ReturnRemoteConnection extends Job {
 

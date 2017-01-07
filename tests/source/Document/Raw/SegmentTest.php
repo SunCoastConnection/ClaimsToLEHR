@@ -1,13 +1,13 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Document\Raw;
+namespace SunCoastConnection\ClaimsToEMR\Tests\Document\Raw;
 
 use \Exception;
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Element;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw\Element;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw\Segment;
 
 class SegmentTest extends BaseTestCase {
 
@@ -22,7 +22,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getInstance()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::getInstance()
 	 */
 	public function testGetInstance() {
 		$elements = [
@@ -65,7 +65,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getInstance()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::getInstance()
 	 */
 	public function testGetInstanceWithMissingElements() {
 		$elements = [
@@ -102,7 +102,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getInstance()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::getInstance()
 	 */
 	public function testGetInstanceWithInvalidDesignator() {
 		$elements = [
@@ -133,7 +133,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getElementSequence()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::getElementSequence()
 	 */
 	public function testGetElementSequence() {
 		$elementSequence = [
@@ -156,7 +156,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getElementNames()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::getElementNames()
 	 */
 	public function testGetElementNames() {
 		$elementNames = [
@@ -181,7 +181,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::__construct()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::__construct()
 	 */
 	public function testConstruct() {
 		$options = $this->getMockery(
@@ -201,7 +201,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::options()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::options()
 	 */
 	public function testOptions() {
 		$this->assertNull(
@@ -237,7 +237,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::setParentName()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::setParentName()
 	 */
 	public function testSetParentName() {
 		$parentName = '/ROOT';
@@ -255,7 +255,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getName()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::getName()
 	 */
 	public function testGetName() {
 		$this->assertEquals(
@@ -266,7 +266,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getName()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::getName()
 	 */
 	public function testGetNameWithFull() {
 		$this->setProtectedProperty(
@@ -283,7 +283,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::getName()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::getName()
 	 */
 	public function testGetNameWithFullAndNoNameParrent() {
 		$this->setProtectedProperty(
@@ -300,7 +300,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::Parse()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::Parse()
 	 */
 	public function testParse() {
 		$elements = [
@@ -351,7 +351,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::Parse()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::Parse()
 	 */
 	public function testParseWithNoElements() {
 		$this->segment->parse('');
@@ -368,7 +368,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::elementExists()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::elementExists()
 	 */
 	public function testElementExistsWithMissingElement() {
 		$this->assertFalse(
@@ -378,7 +378,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::elementExists()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::elementExists()
 	 */
 	public function testElementExistsWithExistingElement() {
 		$this->setProtectedProperty(
@@ -394,7 +394,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::element()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::element()
 	 */
 	public function testElementWithMissingElement() {
 		$this->assertNull(
@@ -404,7 +404,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::element()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::element()
 	 */
 	public function testElementWithExistingElement() {
 		$this->setProtectedProperty(
@@ -421,7 +421,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::elementEquals()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::elementEquals()
 	 */
 	public function testElementEqualsWithMissingElement() {
 		$this->assertFalse(
@@ -431,7 +431,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::elementEquals()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::elementEquals()
 	 */
 	public function testElementEqualsWithWrongValue() {
 		$this->setProtectedProperty(
@@ -447,7 +447,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::elementEquals()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::elementEquals()
 	 */
 	public function testElementEqualsWithCorrectValue() {
 		$this->setProtectedProperty(
@@ -463,7 +463,7 @@ class SegmentTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment::__toString()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Segment::__toString()
 	 */
 	public function testToString() {
 		$options = $this->getMockery(

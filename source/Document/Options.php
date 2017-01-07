@@ -1,6 +1,6 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Document;
+namespace SunCoastConnection\ClaimsToEMR\Document;
 
 use \Exception;
 use \Illuminate\Config\Repository;
@@ -13,7 +13,7 @@ class Options extends Repository {
 	 *
 	 * @param  array  $options  Options to create store object with
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Options  Options object
+	 * @return \SunCoastConnection\ClaimsToEMR\Document\Options  Options object
 	 */
 	static public function getInstance(array $options) {
 		return new static($options);
@@ -56,7 +56,7 @@ class Options extends Repository {
 	 * @param  string  $key      Key of subset to return
 	 * @param  mixed   $default  Default value to use for subset if key not found
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Options  Subset of configurations wrapped in Options object
+	 * @return \SunCoastConnection\ClaimsToEMR\Document\Options  Subset of configurations wrapped in Options object
 	 */
 	public function getSubset($key, $default = []) {
 		$subset = $this->get($key, $default);

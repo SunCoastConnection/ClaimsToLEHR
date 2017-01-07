@@ -1,19 +1,19 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Gearman\Job;
+namespace SunCoastConnection\ClaimsToEMR\Tests\Gearman\Job;
 
 use \Exception;
 use \Kicken\Gearman\Job\WorkerJob;
 use \org\bovigo\vfs\vfsStream;
 use \phpseclib\Crypt\RSA;
 use \phpseclib\Net\SFTP;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
-use \SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims;
-use \SunCoastConnection\ClaimsToOEMR\Models\PqrsImportFiles;
-use \SunCoastConnection\ClaimsToOEMR\Store\Database;
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
-use \SunCoastConnection\ClaimsToOEMR\X12N837;
-use \SunCoastConnection\ClaimsToOEMR\X12N837\Cache;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims;
+use \SunCoastConnection\ClaimsToEMR\Models\PqrsImportFiles;
+use \SunCoastConnection\ClaimsToEMR\Store\Database;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\X12N837;
+use \SunCoastConnection\ClaimsToEMR\X12N837\Cache;
 
 class ImportClaimsTest extends BaseTestCase {
 
@@ -28,7 +28,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::run()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::run()
 	 */
 	public function testRunWithLoadConfigurationsException() {
 		$job = $this->getMockery(
@@ -78,7 +78,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::run()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::run()
 	 */
 	public function testRunWithProcessClaimException() {
 		$job = $this->getMockery(
@@ -133,7 +133,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::run()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::run()
 	 */
 	public function testRunWithoutException() {
 		$job = $this->getMockery(
@@ -174,7 +174,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::loadConfigurations()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::loadConfigurations()
 	 */
 	public function testLoadConfigurationsWithMissingCredentialsConfiguration() {
 		$workload = [
@@ -212,7 +212,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::loadConfigurations()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::loadConfigurations()
 	 */
 	public function testLoadConfigurationsWithMissingClaimsConfiguration() {
 		$workload = [
@@ -277,7 +277,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::loadConfigurations()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::loadConfigurations()
 	 */
 	public function testLoadConfigurationsWithoutMissingConfigurations() {
 		$workload = [
@@ -343,7 +343,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::processClaim()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::processClaim()
 	 */
 	public function testProcessClaimWithFailureFindingRecord() {
 		$workload = [
@@ -382,7 +382,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::processClaim()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::processClaim()
 	 */
 	public function testProcessClaimWithFailureProcessing() {
 		$workload = [
@@ -469,7 +469,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::processClaim()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::processClaim()
 	 */
 	public function testProcessClaimWithSuccessProcessing() {
 		$workload = [
@@ -573,7 +573,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::setupDatabaseConnection()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::setupDatabaseConnection()
 	 */
 	public function testSetupDatabaseConnectionWithFailedConnection() {
 		$this->importClaims->shouldAllowMockingProtectedMethods();
@@ -649,7 +649,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::setupDatabaseConnection()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::setupDatabaseConnection()
 	 */
 	public function testSetupDatabaseConnectionWithSuccessfulConnection() {
 		$this->importClaims->shouldAllowMockingProtectedMethods();
@@ -712,7 +712,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::getClaimsFile()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::getClaimsFile()
 	 */
 	public function testGetClaimsFileWithFailedSftpConnection() {
 		$exception = [
@@ -745,7 +745,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::getClaimsFile()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::getClaimsFile()
 	 */
 	public function testGetClaimsFileWithFailedStfpChdir() {
 		$sftp = $this->getMockery(
@@ -789,7 +789,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::getClaimsFile()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::getClaimsFile()
 	 */
 	public function testGetClaimsFileWithFailedRetrieval() {
 		$sftp = $this->getMockery(
@@ -838,7 +838,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::getClaimsFile()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::getClaimsFile()
 	 */
 	public function testGetClaimsFileWithoutFailure() {
 		$sftp = $this->getMockery(
@@ -887,7 +887,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::getSFTPconnection()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::getSFTPconnection()
 	 */
 	public function testGetSFTPconnectionWithPasswordAndLoginFailure() {
 		$this->importClaims->shouldAllowMockingProtectedMethods();
@@ -945,7 +945,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::getSFTPconnection()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::getSFTPconnection()
 	 */
 	public function testGetSFTPconnectionWithPassword() {
 		$this->importClaims->shouldAllowMockingProtectedMethods();
@@ -1002,7 +1002,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::getSFTPconnection()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::getSFTPconnection()
 	 */
 	public function testGetSFTPconnectionWithPrivateKey() {
 		$this->importClaims->shouldAllowMockingProtectedMethods();
@@ -1078,7 +1078,7 @@ class ImportClaimsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims::getSFTPconnection()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims::getSFTPconnection()
 	 */
 	public function testGetSFTPconnectionWithPrivateKeyAndPassphrase() {
 		$this->importClaims->shouldAllowMockingProtectedMethods();

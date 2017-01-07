@@ -1,16 +1,16 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Store;
+namespace SunCoastConnection\ClaimsToEMR\Tests\Store;
 
 use \DateTime;
 use \Illuminate\Container\Container;
 use \Illuminate\Database\Capsule\Manager;
 use \Illuminate\Database\Events\QueryExecuted;
 use \Illuminate\Events\Dispatcher;
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Models;
-use \SunCoastConnection\ClaimsToOEMR\Store\Database;
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Models;
+use \SunCoastConnection\ClaimsToEMR\Store\Database;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
 use \org\bovigo\vfs\vfsStream;
 
 class DatabaseTest extends BaseTestCase {
@@ -26,7 +26,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::onConstruct()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::onConstruct()
 	 */
 	public function testOnConstructWithNoQueryLog() {
 		$this->database->shouldAllowMockingProtectedMethods();
@@ -69,7 +69,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::onConstruct()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::onConstruct()
 	 */
 	public function testOnConstructWithQueryLog() {
 		$this->database->shouldAllowMockingProtectedMethods();
@@ -130,7 +130,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::logQuery()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::logQuery()
 	 */
 	public function testLogQueryWithEcho() {
 		$queryExecuted = $this->getMockery(
@@ -164,7 +164,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::logQuery()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::logQuery()
 	 */
 	public function testLogQueryWithFile() {
 		$queryExecuted = $this->getMockery(
@@ -207,7 +207,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::getManager()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::getManager()
 	 */
 	public function testGetManager() {
 		$manager = $this->getMockery(
@@ -228,7 +228,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::addIfMissing()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::addIfMissing()
 	 */
 	public function testAddIfMissing() {
 		$array = [];
@@ -257,7 +257,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::findRecord()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::findRecord()
 	 */
 	public function testFindRecord() {
 		$model = $this->getMockery(
@@ -303,7 +303,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::insertRecord()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::insertRecord()
 	 */
 	public function testInsertRecord() {
 		$model = $this->getMockery(
@@ -344,7 +344,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::updateRecord()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::updateRecord()
 	 */
 	public function testUpdateRecord() {
 		$model = $this->getMockery(
@@ -382,7 +382,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::insertUpdateRecord()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::insertUpdateRecord()
 	 */
 	public function testInsertUpdateRecordWithMissingRecord() {
 		$data = [
@@ -437,7 +437,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::insertUpdateRecord()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::insertUpdateRecord()
 	 */
 	public function testInsertUpdateRecordWithFoundRecord() {
 		$data = [
@@ -492,7 +492,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::recordCount()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::recordCount()
 	 */
 	public function testRecordCount() {
 		$model = $this->getMockery(
@@ -518,7 +518,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::storeAddress()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::storeAddress()
 	 */
 	public function testStoreAddress() {
 		$data = [
@@ -563,7 +563,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::storeBilling()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::storeBilling()
 	 */
 	public function testStoreBilling() {
 		$data = [
@@ -623,7 +623,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::storeFacility()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::storeFacility()
 	 */
 	public function testStoreFacility() {
 		$data = [
@@ -677,7 +677,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::storeFormEncounter()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::storeFormEncounter()
 	 */
 	public function testStoreFormEncounter() {
 		$data = [
@@ -735,7 +735,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::storeForm()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::storeForm()
 	 */
 	public function testStoreForm() {
 		$data = [
@@ -783,7 +783,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::storeGroup()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::storeGroup()
 	 */
 	public function testStoreGroup() {
 		$data = [
@@ -816,7 +816,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::storeInsuranceCompany()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::storeInsuranceCompany()
 	 */
 	public function testStoreInsuranceCompany() {
 		$data = [
@@ -853,7 +853,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::storeInsuranceData()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::storeInsuranceData()
 	 */
 	public function testStoreInsuranceData() {
 		$data = [
@@ -907,7 +907,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::storePatientData()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::storePatientData()
 	 */
 	public function testStorePatientData() {
 		$data = [
@@ -977,7 +977,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::storePhoneNumber()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::storePhoneNumber()
 	 */
 	public function testStorePhoneNumber() {
 		$data = [
@@ -1019,7 +1019,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::storeUser()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::storeUser()
 	 */
 	public function testStoreUser() {
 		$data = [
@@ -1069,7 +1069,7 @@ class DatabaseTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store\Database::storeX12Partner()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store\Database::storeX12Partner()
 	 */
 	public function testStoreX12Partner() {
 		$data = [

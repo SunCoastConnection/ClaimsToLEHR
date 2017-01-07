@@ -1,11 +1,11 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Document;
+namespace SunCoastConnection\ClaimsToEMR\Tests\Document;
 
 use \Exception;
 use \Illuminate\Config\Repository;
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
 
 class OptionsTest extends BaseTestCase {
 
@@ -20,7 +20,7 @@ class OptionsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Options::getInstance()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Options::getInstance()
 	 */
 	public function testGetInstance() {
 		$options = Options::getInstance([]);
@@ -39,7 +39,7 @@ class OptionsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Options::resolveAlias()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Options::resolveAlias()
 	 */
 	public function testResolveAlias() {
 		$alias = 'TestAlias';
@@ -58,7 +58,7 @@ class OptionsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Options::instanciateAlias()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Options::instanciateAlias()
 	 */
 	public function testInstanciateAliasWithMissingAlias() {
 		$alias = 'TestAlias';
@@ -78,7 +78,7 @@ class OptionsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Options::instanciateAlias()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Options::instanciateAlias()
 	 */
 	public function testInstanciateAlias() {
 		$alias = 'TestAlias';
@@ -114,7 +114,7 @@ class OptionsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Options::getSubset()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Options::getSubset()
 	 */
 	public function testGetSubsetWithMissingKeyAndNullDefault() {
 		$key = 'set';
@@ -132,7 +132,7 @@ class OptionsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Options::getSubset()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Options::getSubset()
 	 */
 	public function testGetSubsetWithMissingKey() {
 		$key = 'set';
@@ -157,7 +157,7 @@ class OptionsTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Options::getSubset()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Options::getSubset()
 	 */
 	public function testGetSubset() {
 		$key = 'set';

@@ -1,10 +1,10 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Document;
+namespace SunCoastConnection\ClaimsToEMR\Document;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw\Segment;
 
 abstract class Section {
 
@@ -35,7 +35,7 @@ abstract class Section {
 	/**
 	 * Parse sub-section
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Raw  $raw  Raw X12 document object
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Raw  $raw  Raw X12 document object
 	 *
 	 * @return boolean  True if section was parsable or false otherwise
 	 */
@@ -44,10 +44,10 @@ abstract class Section {
 	/**
 	 * Get instance of section class with provided options
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Options  $options     Options to create section object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options  $options     Options to create section object with
 	 * @param  string                                             $parentName  Section parent name
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Raw  Raw object
+	 * @return \SunCoastConnection\ClaimsToEMR\Document\Raw  Raw object
 	 */
 	static public function getInstance(Options $options, $parentName = '/') {
 		return new static($options, $parentName);
@@ -69,7 +69,7 @@ abstract class Section {
 	/**
 	 * Create a new Section
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Options  $options     Options to create section object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options  $options     Options to create section object with
 	 * @param  string                                             $parentName  Section parent name
 	 */
 	public function __construct(Options $options, $parentName = '/') {
@@ -117,9 +117,9 @@ abstract class Section {
 	/**
 	 * Set section options or retrieve section options
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Options|null  $setOptions  Options to set section object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options|null  $setOptions  Options to set section object with
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Options|null  Section options or null when not set
+	 * @return \SunCoastConnection\ClaimsToEMR\Document\Options|null  Section options or null when not set
 	 */
 	protected function options(Options $setOptions = null) {
 		static $options = null;
@@ -135,7 +135,7 @@ abstract class Section {
 	 * Find segments and add to sub-sections
 	 *
 	 * @param  array                                          $sequence  Sequence array for section
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Raw  $raw       Raw object containing segments
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Raw   $raw       Raw object containing segments
 	 * @param  array                                          &$objects  Array of sub-sections to add to
 	 *
 	 * @return boolean  True if sub-section added to objects, false otherwise
@@ -172,7 +172,7 @@ abstract class Section {
 	 * Find segments and add to section
 	 *
 	 * @param  array                                          $sectionData  Sub-section data
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Raw  $raw          Raw object containing segments
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Raw   $raw          Raw object containing segments
 	 * @param  array                                          &$objects     Array of sub-sections to add to
 	 *
 	 * @return boolean  True if sub-section added to objects, false otherwise

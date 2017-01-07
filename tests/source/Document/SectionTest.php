@@ -1,13 +1,13 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Document;
+namespace SunCoastConnection\ClaimsToEMR\Tests\Document;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
-use \SunCoastConnection\ClaimsToOEMR\Tests\Document\SectionMock;
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
-use \SunCoastConnection\ClaimsToOEMR\Document\Section;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Tests\Document\SectionMock;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToEMR\Document\Section;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw\Segment;
 
 class SectionTest extends BaseTestCase {
 
@@ -27,7 +27,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::getInstance()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::getInstance()
 	 */
 	public function testGetInstance() {
 		$options = $this->getMockery(
@@ -44,7 +44,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::getSequence()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::getSequence()
 	 */
 	public function testGetSequence() {
 		$this->assertEquals(
@@ -55,7 +55,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::getSequence()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::getSequence()
 	 */
 	public function testGetSequenceWithMissing() {
 		$this->assertEquals(
@@ -66,7 +66,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::__construct()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::__construct()
 	 */
 	public function testConstruct() {
 		$options = $this->getMockery(
@@ -93,7 +93,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::getName()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::getName()
 	 */
 	public function testGetName() {
 		$this->assertEquals(
@@ -104,7 +104,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::getName()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::getName()
 	 */
 	public function testGetNameWithFull() {
 		$this->setProtectedProperty(
@@ -121,7 +121,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::getName()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::getName()
 	 */
 	public function testGetNameWithFullAndNoNameParrent() {
 		$this->setProtectedProperty(
@@ -138,7 +138,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::getSubSectionCount()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::getSubSectionCount()
 	 */
 	public function testGetSubSectionCount() {
 		$this->setProtectedProperty(
@@ -155,7 +155,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::options()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::options()
 	 */
 	public function testOptions() {
 		$this->assertNull(
@@ -181,7 +181,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::parseSequence()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::parseSequence()
 	 */
 	public function testParseSequenceWithEmptySequence() {
 		$sequence = [];
@@ -216,7 +216,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::parseSequence()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::parseSequence()
 	 */
 	public function testParseSequenceWithSegmentSectionNotSameAsDesignator() {
 		$sequence = [
@@ -259,7 +259,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::parseSequence()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::parseSequence()
 	 */
 	public function testParseSequenceWithSegmentSectionSameAsDesignator() {
 		$sequence = [
@@ -310,7 +310,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::parseSection()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::parseSection()
 	 */
 	public function testParseSectionWithSegment() {
 		$options = $this->getMockery(
@@ -379,7 +379,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::parseSection()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::parseSection()
 	 */
 	public function testParseSectionWithNonSegmentFailedParse() {
 		$options = $this->getMockery(
@@ -436,7 +436,7 @@ class SectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section::parseSection()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section::parseSection()
 	 */
 	public function testParseSectionWithNonSegmentSuccessfulParse() {
 		$options = $this->getMockery(

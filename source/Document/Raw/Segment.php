@@ -1,10 +1,10 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Document\Raw;
+namespace SunCoastConnection\ClaimsToEMR\Document\Raw;
 
 use \Exception;
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Element;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw\Element;
 
 class Segment {
 
@@ -35,10 +35,10 @@ class Segment {
 	/**
 	 * Get instance of segment class with provided options
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Options  $options  Options to create store object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options   $options  Options to create store object with
 	 * @param  string                                             $segment  Raw segment string including segment designator
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment  Segment object
+	 * @return \SunCoastConnection\ClaimsToEMR\Document\Raw\Segment  Segment object
 	 */
 	static public function getInstance(Options $options, $segment) {
 		$delimiterPos = strpos(
@@ -92,7 +92,7 @@ class Segment {
 	/**
 	 * Create a new Segment
 	 *
-	 * @param \SunCoastConnection\ClaimsToOEMR\Document\Options  $options  Options to create store object with
+	 * @param \SunCoastConnection\ClaimsToEMR\Document\Options  $options  Options to create store object with
 	 */
 	public function __construct(Options $options) {
 		$this->options($options);
@@ -101,9 +101,9 @@ class Segment {
 	/**
 	 * Set segment options or retrieve segment options
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Options|null  $setOptions  Options to set segment object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options|null  $setOptions  Options to set segment object with
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Options|null  Segment options or null when not set
+	 * @return \SunCoastConnection\ClaimsToEMR\Document\Options|null  Segment options or null when not set
 	 */
 	protected function options(Options $setOptions = null) {
 		static $options = null;

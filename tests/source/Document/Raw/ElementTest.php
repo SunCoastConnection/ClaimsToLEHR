@@ -1,10 +1,10 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Document\Raw;
+namespace SunCoastConnection\ClaimsToEMR\Tests\Document\Raw;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Element;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw\Element;
 
 class ElementTest extends BaseTestCase {
 
@@ -19,7 +19,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::getInstance()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::getInstance()
 	 */
 	public function testGetInstance() {
 		$options = $this->getMockery(
@@ -40,7 +40,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::__construct()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::__construct()
 	 */
 	public function testConstruct() {
 		$options = $this->getMockery(
@@ -56,7 +56,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::options()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::options()
 	 */
 	public function testOptions() {
 		$this->assertNull(
@@ -82,7 +82,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::parse()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::parse()
 	 */
 	public function testParseWithSubElements() {
 		$options = $this->getMockery(
@@ -107,7 +107,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::parse()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::parse()
 	 */
 	public function testParseWithNoSubElements() {
 		$options = $this->getMockery(
@@ -132,7 +132,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::subElementExists()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::subElementExists()
 	 */
 	public function testSubElementExistsWithMissingSubElement() {
 		$this->assertFalse(
@@ -142,7 +142,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::subElementExists()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::subElementExists()
 	 */
 	public function testSubElementExistsWithExistingSubElement() {
 		$this->setProtectedProperty(
@@ -158,7 +158,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::subElement()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::subElement()
 	 */
 	public function testSubElementWithMissingSubElement() {
 		$this->assertNull(
@@ -168,7 +168,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::subElement()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::subElement()
 	 */
 	public function testSubElementWithExistingSubElement() {
 		$this->setProtectedProperty(
@@ -185,7 +185,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::subElementEquals()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::subElementEquals()
 	 */
 	public function testSubElementEqualsWithMissingSubElement() {
 		$this->assertFalse(
@@ -195,7 +195,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::subElementEquals()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::subElementEquals()
 	 */
 	public function testSubElementEqualsWithWrongValue() {
 		$this->setProtectedProperty(
@@ -211,7 +211,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::subElementEquals()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::subElementEquals()
 	 */
 	public function testSubElementEqualsWithCorrectValue() {
 		$this->setProtectedProperty(
@@ -227,7 +227,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::subElementCount()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::subElementCount()
 	 */
 	public function testSubElementCountWithNoSubElements() {
 		$this->setProtectedProperty(
@@ -244,7 +244,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::subElementCount()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::subElementCount()
 	 */
 	public function testSubElementCountWithSubElements() {
 		$this->setProtectedProperty(
@@ -261,7 +261,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::__toString()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::__toString()
 	 */
 	public function testToStringWithNoSubElements() {
 		$options = $this->getMockery(
@@ -290,7 +290,7 @@ class ElementTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw\Element::__toString()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw\Element::__toString()
 	 */
 	public function testToStringWithSubElements() {
 		$options = $this->getMockery(

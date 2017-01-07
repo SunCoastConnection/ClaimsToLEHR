@@ -2,8 +2,8 @@
 ip: "192.168.153.165"
 memory: 2048
 cpus: 1
-hostname: ClaimsToOEMR
-name: ClaimsToOEMR
+hostname: ClaimsToEMR
+name: ClaimsToEMR
 provider: virtualbox
 
 authorize: ~/.ssh/id_rsa.pub
@@ -13,11 +13,11 @@ keys:
 
 folders:
     - map: "./"
-      to: "/home/vagrant/ClaimsToOEMR"
+      to: "/home/vagrant/ClaimsToEMR"
 
 sites:
-    - map: claimstooemr.homestead
-      to: "/home/vagrant/ClaimsToOEMR/tests/logs/report"
+    - map: ClaimsToEMR.homestead
+      to: "/home/vagrant/ClaimsToEMR/tests/logs/report"
 
 databases:
     - homestead

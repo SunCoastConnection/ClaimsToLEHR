@@ -1,12 +1,12 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Document;
+namespace SunCoastConnection\ClaimsToEMR\Document;
 
 use \Countable;
 use \Exception;
 use \Iterator;
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw\Segment;
 
 class Raw implements Iterator, Countable {
 
@@ -19,9 +19,9 @@ class Raw implements Iterator, Countable {
 	/**
 	 * Get instance of raw class with provided options
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Options  $options  Options to create raw object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options  $options  Options to create raw object with
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Raw  Raw object
+	 * @return \SunCoastConnection\ClaimsToEMR\Document\Raw  Raw object
 	 */
 	static public function getInstance(Options $options) {
 		return new static($options);
@@ -30,7 +30,7 @@ class Raw implements Iterator, Countable {
 	/**
 	 * Create a new Raw
 	 *
-	 * @param \SunCoastConnection\ClaimsToOEMR\Document\Options  $options  Options to create raw object with
+	 * @param \SunCoastConnection\ClaimsToEMR\Document\Options  $options  Options to create raw object with
 	 */
 	public function __construct(Options $options) {
 		$delimiters = $options->get('Document.delimiters');
@@ -58,9 +58,9 @@ class Raw implements Iterator, Countable {
 	/**
 	 * Set raw options or retrieve raw options
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Options|null  $setOptions  Options to set raw object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options|null  $setOptions  Options to set raw object with
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Options|null  Raw options or null when not set
+	 * @return \SunCoastConnection\ClaimsToEMR\Document\Options|null  Raw options or null when not set
 	 */
 	protected function options(Options $setOptions = null) {
 		static $options = null;
@@ -227,7 +227,7 @@ class Raw implements Iterator, Countable {
 	/**
 	 * Return the current segment
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment  Current segment
+	 * @return \SunCoastConnection\ClaimsToEMR\Document\Raw\Segment  Current segment
 	 */
 	public function current() {
 		return current($this->segments);

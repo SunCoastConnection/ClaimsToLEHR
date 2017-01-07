@@ -41,10 +41,10 @@ echo "## Installing dependent Python packages"
 sudo easy_install supervisor
 
 echo "## Configuring Supervisor Gearman initialization settings"
-sudo bash -c "cat > /etc/supervisor/conf.d/gearman-claimstooemr.conf" << EOL
-[program:gearman-claimstooemr]
-directory=/home/vagrant/ClaimsToOEMR
-command=/home/vagrant/ClaimsToOEMR/gearman-workers
+sudo bash -c "cat > /etc/supervisor/conf.d/gearman-claimstoemr.conf" << EOL
+[program:gearman-claimstoemr]
+directory=/home/vagrant/ClaimsToEMR
+command=/home/vagrant/ClaimsToEMR/gearman-workers
 autorestart=true
 process_name=%(program_name)s-%(process_num)s
 numprocs=10

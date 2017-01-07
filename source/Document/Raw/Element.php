@@ -1,8 +1,8 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Document\Raw;
+namespace SunCoastConnection\ClaimsToEMR\Document\Raw;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
 
 class Element {
 
@@ -15,10 +15,10 @@ class Element {
 	/**
 	 * Get instance of store class with provided options
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Options  $options  Options to create store object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options   $options  Options to create store object with
 	 * @param  string                                             $element  Raw element string
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Raw\Element  Element object
+	 * @return \SunCoastConnection\ClaimsToEMR\Document\Raw\Element  Element object
 	 */
 	static public function getInstance(Options $options, $element) {
 		$object = new static($options);
@@ -31,7 +31,7 @@ class Element {
 	/**
 	 * Create a new Element
 	 *
-	 * @param \SunCoastConnection\ClaimsToOEMR\Document\Options  $options  Options to create store object with
+	 * @param \SunCoastConnection\ClaimsToEMR\Document\Options  $options  Options to create store object with
 	 */
 	public function __construct(Options $options) {
 		$this->options($options);
@@ -40,9 +40,9 @@ class Element {
 	/**
 	 * Set element options or retrieve element options
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Options|null  $setOptions  Options to set element object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options|null  $setOptions  Options to set element object with
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Options|null  Element options or null when not set
+	 * @return \SunCoastConnection\ClaimsToEMR\Document\Options|null  Element options or null when not set
 	 */
 	protected function options(Options $setOptions = null) {
 		static $options = null;

@@ -1,12 +1,12 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests;
+namespace SunCoastConnection\ClaimsToEMR\Tests;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
-use \SunCoastConnection\ClaimsToOEMR\X12N837;
-use \SunCoastConnection\ClaimsToOEMR\X12N837\Document;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToEMR\X12N837;
+use \SunCoastConnection\ClaimsToEMR\X12N837\Document;
 
 class X12N837Test extends BaseTestCase {
 
@@ -21,7 +21,7 @@ class X12N837Test extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837::setOptions()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837::setOptions()
 	 */
 	public function testSetOptions() {
 		$options = $this->getMockery(
@@ -41,7 +41,7 @@ class X12N837Test extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837::getOptions()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837::getOptions()
 	 */
 	public function testGetOptions() {
 		$options = $this->getMockery(
@@ -62,7 +62,7 @@ class X12N837Test extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837::parseClaim()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837::parseClaim()
 	 */
 	public function testParseClaim() {
 		$options = $this->getMockery(
@@ -101,7 +101,7 @@ class X12N837Test extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837::parseClaim()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837::parseClaim()
 	 */
 	public function testParseClaimWithFromFileTrue() {
 		$options = $this->getMockery(
@@ -140,7 +140,7 @@ class X12N837Test extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837::disposeClaim()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837::disposeClaim()
 	 */
 	public function testDisposeClaim() {
 		$options = $this->getMockery(
@@ -181,7 +181,7 @@ class X12N837Test extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\X12N837::cacheClaim()
+	 * @covers SunCoastConnection\ClaimsToEMR\X12N837::cacheClaim()
 	 */
 	public function testCacheClaim() {
 		$options = $this->getMockery(
