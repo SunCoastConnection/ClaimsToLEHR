@@ -12,7 +12,7 @@
          syntaxCheck="false"
 >
     <testsuites>
-        <testsuite name="ClaimsToOEMR Test Suite">
+        <testsuite name="ClaimsToEMR Test Suite">
             <directory suffix="Test.php">../tests/source/</directory>
         </testsuite>
     </testsuites>

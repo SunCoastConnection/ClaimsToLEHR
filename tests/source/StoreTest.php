@@ -1,11 +1,11 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests;
+namespace SunCoastConnection\ClaimsToEMR\Tests;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Store;
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
-use \SunCoastConnection\ClaimsToOEMR\Tests\StoreMock;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Store;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Tests\StoreMock;
 
 class StoreTest extends BaseTestCase {
 
@@ -41,7 +41,7 @@ class StoreTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store::getInstance()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store::getInstance()
 	 */
 	public function testGetInstance() {
 		$options = $this->getMockery(
@@ -58,7 +58,7 @@ class StoreTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store::__construct()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store::__construct()
 	 */
 	public function testConstructWithNoOnConstruct() {
 		$options = $this->getMockery(
@@ -77,7 +77,7 @@ class StoreTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store::__construct()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store::__construct()
 	 */
 	public function testConstructWithOnConstruct() {
 		$options = $this->getMockery(
@@ -101,7 +101,7 @@ class StoreTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store::options()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store::options()
 	 */
 	public function testOptions() {
 		$this->assertNull(
@@ -127,7 +127,7 @@ class StoreTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store::printTableCounts()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store::printTableCounts()
 	 */
 	public function testPrintTableCounts() {
 		$tableNames = [
@@ -151,7 +151,7 @@ class StoreTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store::tableCounts()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store::tableCounts()
 	 */
 	public function testTableCountsWithString() {
 		$this->store->shouldReceive('recordCount')
@@ -169,7 +169,7 @@ class StoreTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store::tableCounts()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store::tableCounts()
 	 */
 	public function testTableCountsWithNoArray() {
 		$this->store->shouldReceive('recordCount')
@@ -183,7 +183,7 @@ class StoreTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store::tableCounts()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store::tableCounts()
 	 */
 	public function testTableCountsWithArray() {
 		$this->store->shouldReceive('recordCount')
@@ -197,7 +197,7 @@ class StoreTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Store::tableCounts()
+	 * @covers SunCoastConnection\ClaimsToEMR\Store::tableCounts()
 	 */
 	public function testTableCountsWithMissingTable() {
 		$this->store->shouldReceive('recordCount')

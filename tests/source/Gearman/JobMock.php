@@ -1,9 +1,9 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Gearman;
+namespace SunCoastConnection\ClaimsToEMR\Tests\Gearman;
 
 use \Kicken\Gearman\Job\WorkerJob;
-use \SunCoastConnection\ClaimsToOEMR\Gearman\Job;
+use \SunCoastConnection\ClaimsToEMR\Gearman\Job;
 
 class JobMock extends Job {
 

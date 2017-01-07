@@ -1,8 +1,8 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\X12N837;
+namespace SunCoastConnection\ClaimsToEMR\X12N837;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Section\Root;
+use \SunCoastConnection\ClaimsToEMR\Document\Section\Root;
 
 // TODO: Cleanup, rename, and replace properties with sub-objects
 class Document extends Root {

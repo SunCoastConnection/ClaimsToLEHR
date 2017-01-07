@@ -1,13 +1,13 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\X12N837;
+namespace SunCoastConnection\ClaimsToEMR\X12N837;
 
-use \SunCoastConnection\ClaimsToOEMR\Store;
-use \SunCoastConnection\ClaimsToOEMR\Document\Section\Root;
-use \SunCoastConnection\ClaimsToOEMR\X12N837;
-use \SunCoastConnection\ClaimsToOEMR\X12N837\Envelope;
-use \SunCoastConnection\ClaimsToOEMR\X12N837\Loop;
-use \SunCoastConnection\ClaimsToOEMR\X12N837\Segment;
+use \SunCoastConnection\ClaimsToEMR\Store;
+use \SunCoastConnection\ClaimsToEMR\Document\Section\Root;
+use \SunCoastConnection\ClaimsToEMR\X12N837;
+use \SunCoastConnection\ClaimsToEMR\X12N837\Envelope;
+use \SunCoastConnection\ClaimsToEMR\X12N837\Loop;
+use \SunCoastConnection\ClaimsToEMR\X12N837\Segment;
 
 class Cache {
 
@@ -16,9 +16,9 @@ class Cache {
 	/**
 	 * Get instance of cache class with provided Store
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Store  $store  Store to create cache object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Store  $store  Store to create cache object with
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\X12N837\Cache  Cache object
+	 * @return \SunCoastConnection\ClaimsToEMR\X12N837\Cache  Cache object
 	 */
 	static public function getInstance(Store $store) {
 		return new static($store);
@@ -27,7 +27,7 @@ class Cache {
 	/**
 	 * Create a new Cache
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Store  $store  Store to create cache object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Store  $store  Store to create cache object with
 	 */
 	public function __construct(Store $store) {
 		$this->store($store);
@@ -36,9 +36,9 @@ class Cache {
 	/**
 	 * Set cache store or retrieve cache store
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Store|null  $setStore  Store to set cache object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Store|null  $setStore  Store to set cache object with
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Store|null  Cache store or null when not set
+	 * @return \SunCoastConnection\ClaimsToEMR\Store|null  Cache store or null when not set
 	 */
 	protected function store(Store $setStore = null) {
 		static $store = null;
@@ -676,7 +676,7 @@ class Cache {
 	 * @param  array       $segmentGroup    Array of segments to search
 	 * @param  array|null  $segmentMatches  Array of segment names to check against or null to return next segment regardles of name
 	 *
-	 * @return SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment|null  Segment found or null on fail
+	 * @return SunCoastConnection\ClaimsToEMR\Document\Raw\Segment|null  Segment found or null on fail
 	 */
 	protected function findNextSegment(array &$segmentGroup, array $segmentMatches = null) {
 		do {
@@ -693,7 +693,7 @@ class Cache {
 	/**
 	 * Process a document root
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Section\Root  $document  Root document to process
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Section\Root  $document  Root document to process
 	 */
 	public function processDocument(Root $document) {
 		$descendant = $document->getDescendant();
@@ -708,7 +708,7 @@ class Cache {
 	/**
 	 * Process the interchange control envelope of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Envelope\InterchangeControl  $interchangeControl  Interchange control envelope of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Envelope\InterchangeControl  $interchangeControl  Interchange control envelope of the X12N837 document
 	 */
 	protected function processInterchangeControl(Envelope\InterchangeControl $interchangeControl) {
 		$data = [];
@@ -732,7 +732,7 @@ class Cache {
 	/**
 	 * Process the functional group envelope of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Envelope\FunctionalGroup  $functionalGroup  Functional group envelope of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Envelope\FunctionalGroup   $functionalGroup  Functional group envelope of the X12N837 document
 	 * @param  array                                                              $data             Array of data to pass to subsequent envelopes and loops
 	 */
 	protected function processFunctionalGroup(Envelope\FunctionalGroup $functionalGroup, array &$data) {
@@ -761,7 +761,7 @@ class Cache {
 	/**
 	 * Process the functional group envelope of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Envelope\TransactionSet  $transactionSet  Transaction set envelope of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Envelope\TransactionSet   $transactionSet  Transaction set envelope of the X12N837 document
 	 * @param  array                                                             $data            Array of data to pass to subsequent loops
 	 */
 	protected function processTransactionSet(Envelope\TransactionSet $transactionSet, array &$data) {
@@ -799,7 +799,7 @@ class Cache {
 	/**
 	 * Process loop 1000 of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop1000  $loop1000  Loop 1000 of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Loop\Loop1000   $loop1000  Loop 1000 of the X12N837 document
 	 * @param  array                                                   $data      Array of data to pass to subsequent loops
 	 */
 	protected function processLoop1000(Loop\Loop1000 $loop1000, array &$data) {
@@ -866,7 +866,7 @@ class Cache {
 	/**
 	 * Process loop 2000 of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2000  $loop2000  Loop 2000 of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Loop\Loop2000   $loop2000  Loop 2000 of the X12N837 document
 	 * @param  array                                                   $data      Array of data to pass to subsequent loops
 	 */
 	protected function processLoop2000(Loop\Loop2000 $loop2000, array &$data) {
@@ -920,7 +920,7 @@ class Cache {
 	/**
 	 * Process loop 2010 of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2010  $loop2010  Loop 2010 of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Loop\Loop2010   $loop2010  Loop 2010 of the X12N837 document
 	 * @param  array                                                   $data      Array of data to pass to subsequent loops
 	 */
 	protected function processLoop2010(Loop\Loop2010 $loop2010, array &$data) {
@@ -1083,7 +1083,7 @@ class Cache {
 	/**
 	 * Process loop 2300 of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2300  $loop2300  Loop 2300 of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Loop\Loop2300   $loop2300  Loop 2300 of the X12N837 document
 	 * @param  array                                                   $data      Array of data to pass to subsequent loops
 	 */
 	protected function processLoop2300(Loop\Loop2300 $loop2300, array &$data) {
@@ -1189,7 +1189,7 @@ class Cache {
 	/**
 	 * Process loop 2305 of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2305  $loop2305  Loop 2305 of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Loop\Loop2305   $loop2305  Loop 2305 of the X12N837 document
 	 * @param  array                                                   $data      Array of data to pass to subsequent loops
 	 */
 	// protected function processLoop2305(Loop\Loop2305 $loop2305, array &$data) {
@@ -1199,7 +1199,7 @@ class Cache {
 	/**
 	 * Process loop 2310 of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2310  $loop2310  Loop 2310 of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Loop\Loop2310   $loop2310  Loop 2310 of the X12N837 document
 	 * @param  array                                                   $data      Array of data to pass to subsequent loops
 	 */
 	protected function processLoop2310(Loop\Loop2310 $loop2310, array &$data) {
@@ -1290,7 +1290,7 @@ class Cache {
 	/**
 	 * Process loop 2320 of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2320  $loop2320  Loop 2320 of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Loop\Loop2320   $loop2320  Loop 2320 of the X12N837 document
 	 * @param  array                                                   $data      Array of data to pass to subsequent loops
 	 */
 	protected function processLoop2320(Loop\Loop2320 $loop2320, array &$data) {
@@ -1330,7 +1330,7 @@ class Cache {
 	/**
 	 * Process loop 2330 of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2330  $loop2330  Loop 2330 of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Loop\Loop2330   $loop2330  Loop 2330 of the X12N837 document
 	 * @param  array                                                   $data      Array of data to pass to subsequent loops
 	 */
 	protected function processLoop2330(Loop\Loop2330 $loop2330, array &$data) {
@@ -1500,7 +1500,7 @@ class Cache {
 	/**
 	 * Process loop 2400 of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2400  $loop2400  Loop 2400 of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Loop\Loop2400   $loop2400  Loop 2400 of the X12N837 document
 	 * @param  array                                                   $data      Array of data to pass to subsequent loops
 	 */
 	protected function processLoop2400(Loop\Loop2400 $loop2400, array &$data) {
@@ -1606,7 +1606,7 @@ class Cache {
 	/**
 	 * Process loop 2410 of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2410  $loop2410  Loop 2410 of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Loop\Loop2410   $loop2410  Loop 2410 of the X12N837 document
 	 * @param  array                                                   $data      Array of data to pass to subsequent loops
 	 */
 	// protected function processLoop2410(Loop\Loop2410 $loop2410, array &$data) {
@@ -1616,7 +1616,7 @@ class Cache {
 	/**
 	 * Process loop 2420 of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2420  $loop2420  Loop 2420 of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Loop\Loop2420   $loop2420  Loop 2420 of the X12N837 document
 	 * @param  array                                                   $data      Array of data to pass to subsequent loops
 	 */
 	protected function processLoop2420(Loop\Loop2420 $loop2420, array &$data) {
@@ -1727,7 +1727,7 @@ class Cache {
 	/**
 	 * Process loop 2430 of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2430  $loop2430  Loop 2430 of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Loop\Loop2430   $loop2430  Loop 2430 of the X12N837 document
 	 * @param  array                                                   $data      Array of data to pass to subsequent loops
 	 */
 	// protected function processLoop2430(Loop\Loop2430 $loop2430, array &$data) {
@@ -1737,7 +1737,7 @@ class Cache {
 	/**
 	 * Process loop 2440 of the X12N837 document
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\X12N837\Loop\Loop2440  $loop2440  Loop 2440 of the X12N837 document
+	 * @param  \SunCoastConnection\ClaimsToEMR\X12N837\Loop\Loop2440   $loop2440  Loop 2440 of the X12N837 document
 	 * @param  array                                                   $data      Array of data to pass to subsequent loops
 	 */
 	// protected function processLoop2440(Loop\Loop2440 $loop2440, array &$data) {

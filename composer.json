@@ -1,5 +1,5 @@
 {
-    "name": "suncoast-connection/claims-to-oemr",
+    "name": "suncoast-connection/claims-to-emr",
     "description": "Convert X12 claims files to OpenEMR database records.",
     "type": "project",
     "authors": [
@@ -17,7 +17,7 @@
    	},
     "autoload": {
         "psr-4": {
-            "SunCoastConnection\\ClaimsToOEMR\\": "source/"
+            "SunCoastConnection\\ClaimsToEMR\\": "source/"
         }
     },
     "require-dev": {
@@ -31,7 +31,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "SunCoastConnection\\ClaimsToOEMR\\Tests\\": "tests/source"
+            "SunCoastConnection\\ClaimsToEMR\\Tests\\": "tests/source"
         }
     },
     "config": {

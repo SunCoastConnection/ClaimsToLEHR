@@ -1,9 +1,9 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests;
+namespace SunCoastConnection\ClaimsToEMR\Tests;
 
-use \SunCoastConnection\ClaimsToOEMR\Template;
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Template;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
 
 class TemplateTest extends BaseTestCase {
 
@@ -24,7 +24,7 @@ class TemplateTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Template::()
+	 * @covers SunCoastConnection\ClaimsToEMR\Template::()
 	 */
 	public function test() {
 		$this->markTestIncomplete('Not yet implemented');

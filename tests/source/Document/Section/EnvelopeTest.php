@@ -1,11 +1,11 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Document\Section;
+namespace SunCoastConnection\ClaimsToEMR\Tests\Document\Section;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
-use \SunCoastConnection\ClaimsToOEMR\Document\Section;
-use \SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToEMR\Document\Section;
+use \SunCoastConnection\ClaimsToEMR\Document\Section\Envelope;
 
 class EnvelopeTest extends BaseTestCase {
 
@@ -20,7 +20,7 @@ class EnvelopeTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope::parse()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section\Envelope::parse()
 	 */
 	public function testParseWithNoHeaderSegment() {
 		$raw = $this->getMockery(
@@ -50,7 +50,7 @@ class EnvelopeTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope::parse()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section\Envelope::parse()
 	 */
 	public function testParseWithHeaderSegment() {
 		$raw = $this->getMockery(
@@ -93,7 +93,7 @@ class EnvelopeTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope::getHeader()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section\Envelope::getHeader()
 	 */
 	public function testGetHeader() {
 		$header = [
@@ -116,7 +116,7 @@ class EnvelopeTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope::getDescendant()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section\Envelope::getDescendant()
 	 */
 	public function testGetDescendant() {
 		$descendant = [
@@ -139,7 +139,7 @@ class EnvelopeTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope::getTrailer()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section\Envelope::getTrailer()
 	 */
 	public function testGetTrailer() {
 		$trailer = [
@@ -162,7 +162,7 @@ class EnvelopeTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Envelope::__toString()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section\Envelope::__toString()
 	 */
 	public function testToString() {
 		$this->setProtectedProperty(

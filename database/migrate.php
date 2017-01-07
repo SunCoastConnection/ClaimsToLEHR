@@ -1,6 +1,6 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR;
+namespace SunCoastConnection\ClaimsToEMR;
 
 use \Illuminate\Database\Capsule\Manager as DatabaseManager;
 

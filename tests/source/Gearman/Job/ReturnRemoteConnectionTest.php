@@ -1,11 +1,11 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Gearman\Job;
+namespace SunCoastConnection\ClaimsToEMR\Tests\Gearman\Job;
 
 use \Kicken\Gearman\Job\WorkerJob;
 use \org\bovigo\vfs\vfsStream;
-use \SunCoastConnection\ClaimsToOEMR\Gearman\Job\ReturnRemoteConnection;
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Gearman\Job\ReturnRemoteConnection;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
 
 class ReturnRemoteConnectionTest extends BaseTestCase {
 
@@ -20,7 +20,7 @@ class ReturnRemoteConnectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ReturnRemoteConnection::run()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ReturnRemoteConnection::run()
 	 */
 	public function testRunWithSuccessfulRead() {
 		$job = $this->getMockery(
@@ -74,7 +74,7 @@ class ReturnRemoteConnectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ReturnRemoteConnection::run()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ReturnRemoteConnection::run()
 	 */
 	public function testRunWithFileMissing() {
 		$job = $this->getMockery(
@@ -111,7 +111,7 @@ class ReturnRemoteConnectionTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job\ReturnRemoteConnection::run()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job\ReturnRemoteConnection::run()
 	 */
 	public function testRunWithFileOwnedByRoot() {
 		$job = $this->getMockery(

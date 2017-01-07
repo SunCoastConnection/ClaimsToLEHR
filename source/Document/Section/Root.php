@@ -1,9 +1,9 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Document\Section;
+namespace SunCoastConnection\ClaimsToEMR\Document\Section;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
-use \SunCoastConnection\ClaimsToOEMR\Document\Section;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToEMR\Document\Section;
 
 class Root extends Section {
 
@@ -24,7 +24,7 @@ class Root extends Section {
 	/**
 	 * Parse root sub-sections
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Raw  $raw  Raw X12 document object
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Raw  $raw  Raw X12 document object
 	 *
 	 * @return boolean  True if root was parsable or false otherwise
 	 */

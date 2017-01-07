@@ -1,11 +1,11 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests;
+namespace SunCoastConnection\ClaimsToEMR\Tests;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Gearman\Job;
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
-use \SunCoastConnection\ClaimsToOEMR\Tests\Gearman\JobMock;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Gearman\Job;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Tests\Gearman\JobMock;
 
 class JobTest extends BaseTestCase {
 
@@ -20,7 +20,7 @@ class JobTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job::getInstance()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job::getInstance()
 	 */
 	public function testGetInstance() {
 		$options = $this->getMockery(
@@ -37,7 +37,7 @@ class JobTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job::__construct()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job::__construct()
 	 */
 	public function testConstructWith() {
 		$options = $this->getMockery(
@@ -54,7 +54,7 @@ class JobTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Gearman\Job::options()
+	 * @covers SunCoastConnection\ClaimsToEMR\Gearman\Job::options()
 	 */
 	public function testOptions() {
 		$this->assertNull(

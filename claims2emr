@@ -1,12 +1,12 @@
 #!/usr/bin/env php
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR;
+namespace SunCoastConnection\ClaimsToEMR;
 
 use \ErrorException;
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Store\Database;
-use \SunCoastConnection\ClaimsToOEMR\X12N837;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Store\Database;
+use \SunCoastConnection\ClaimsToEMR\X12N837;
 use \Symfony\Component\Finder\Finder;
 
 set_error_handler(__NAMESPACE__.'\exceptions_error_handler');

@@ -1,9 +1,9 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Document;
+namespace SunCoastConnection\ClaimsToEMR\Tests\Document;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
-use \SunCoastConnection\ClaimsToOEMR\Document\Section;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToEMR\Document\Section;
 
 class SectionMock extends Section {
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR;
+namespace SunCoastConnection\ClaimsToEMR;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
 
 class X12N837 {
 
 	/**
 	 * Options object
-	 * @var \SunCoastConnection\ClaimsToOEMR\Document\Options
+	 * @var \SunCoastConnection\ClaimsToEMR\Document\Options
 	 */
 	protected $options;
 

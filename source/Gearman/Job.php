@@ -1,18 +1,18 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Gearman;
+namespace SunCoastConnection\ClaimsToEMR\Gearman;
 
 use \Kicken\Gearman\Job\WorkerJob;
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
 
 abstract class Job {
 
 	/**
 	 * Get instance of Job class with provided options
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Options  $options  Options to create Job object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options  $options  Options to create Job object with
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Gearman\Job  Job object
+	 * @return \SunCoastConnection\ClaimsToEMR\Gearman\Job  Job object
 	 */
 	static public function getInstance(Options $options) {
 		return new static($options);
@@ -21,7 +21,7 @@ abstract class Job {
 	/**
 	 * Create a new Job
 	 *
-	 * @param \SunCoastConnection\ClaimsToOEMR\Document\Options  $options  Options to create Job object with
+	 * @param \SunCoastConnection\ClaimsToEMR\Document\Options  $options  Options to create Job object with
 	 */
 	public function __construct(Options $options) {
 		$this->options($options);
@@ -30,9 +30,9 @@ abstract class Job {
 	/**
 	 * Set Job options or retrieve Job options
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Options|null  $setOptions  Options to set Job object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options|null  $setOptions  Options to set Job object with
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Options|null  Job options or null when not set
+	 * @return \SunCoastConnection\ClaimsToEMR\Document\Options|null  Job options or null when not set
 	 */
 	protected function options(Options $setOptions = null) {
 		static $options = null;

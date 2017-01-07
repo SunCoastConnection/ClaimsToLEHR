@@ -1,8 +1,8 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR;
+namespace SunCoastConnection\ClaimsToEMR;
 
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
 
 abstract class Store {
 
@@ -28,9 +28,9 @@ abstract class Store {
 	/**
 	 * Get instance of store class with provided options
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Options  $options  Options to create store object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options  $options  Options to create store object with
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Store  Store object
+	 * @return \SunCoastConnection\ClaimsToEMR\Store  Store object
 	 */
 	static public function getInstance(Options $options) {
 		return new static($options);
@@ -39,7 +39,7 @@ abstract class Store {
 	/**
 	 * Create a new Store
 	 *
-	 * @param \SunCoastConnection\ClaimsToOEMR\Document\Options  $options  Options to create store object with
+	 * @param \SunCoastConnection\ClaimsToEMR\Document\Options  $options  Options to create store object with
 	 */
 	public function __construct(Options $options) {
 		$this->options($options);
@@ -52,9 +52,9 @@ abstract class Store {
 	/**
 	 * Set store options or retrieve store options
 	 *
-	 * @param  \SunCoastConnection\ClaimsToOEMR\Document\Options|null  $setOptions  Options to set store object with
+	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options|null  $setOptions  Options to set store object with
 	 *
-	 * @return \SunCoastConnection\ClaimsToOEMR\Document\Options|null  Store options or null when not set
+	 * @return \SunCoastConnection\ClaimsToEMR\Document\Options|null  Store options or null when not set
 	 */
 	protected function options(Options $setOptions = null) {
 		static $options = null;

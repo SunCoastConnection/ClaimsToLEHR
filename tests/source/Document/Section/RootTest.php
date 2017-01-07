@@ -1,11 +1,11 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Document\Section;
+namespace SunCoastConnection\ClaimsToEMR\Tests\Document\Section;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
-use \SunCoastConnection\ClaimsToOEMR\Document\Section;
-use \SunCoastConnection\ClaimsToOEMR\Document\Section\Root;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToEMR\Document\Section;
+use \SunCoastConnection\ClaimsToEMR\Document\Section\Root;
 
 class RootTest extends BaseTestCase {
 
@@ -21,7 +21,7 @@ class RootTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Root::parse()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section\Root::parse()
 	 */
 	public function testParseWithNoHeaderSegment() {
 		$descendantSequence = [];
@@ -56,7 +56,7 @@ class RootTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Root::getDescendant()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section\Root::getDescendant()
 	 */
 	public function testGetDescendant() {
 		$descendant = [
@@ -79,7 +79,7 @@ class RootTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Root::__toString()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section\Root::__toString()
 	 */
 	public function testToString() {
 		$descendant = [

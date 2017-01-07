@@ -1,16 +1,16 @@
 #!/usr/bin/env php
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR;
+namespace SunCoastConnection\ClaimsToEMR;
 
 // Gearman Worker Jobs
 
 use \Kicken\Gearman\Worker;
 use \Kicken\Gearman\Job\WorkerJob;
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Gearman\Job\ImportClaims;
-use \SunCoastConnection\ClaimsToOEMR\Gearman\Job\ReturnRemoteConnection;
-use \SunCoastConnection\ClaimsToOEMR\Gearman\Job\RegisterRemoteConnection;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Gearman\Job\ImportClaims;
+use \SunCoastConnection\ClaimsToEMR\Gearman\Job\ReturnRemoteConnection;
+use \SunCoastConnection\ClaimsToEMR\Gearman\Job\RegisterRemoteConnection;
 
 //** LOAD AUTOLOADER **//
 if(strpos(__DIR__, '/vendor/') === false) {

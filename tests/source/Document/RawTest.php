@@ -1,13 +1,13 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Document;
+namespace SunCoastConnection\ClaimsToEMR\Tests\Document;
 
 use \Countable;
 use \Iterator;
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
-use \SunCoastConnection\ClaimsToOEMR\Document\Options;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw\Segment;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw\Segment;
 use \org\bovigo\vfs\vfsStream;
 
 class RawTest extends BaseTestCase {
@@ -31,7 +31,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::getInstance()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::getInstance()
 	 */
 	public function testGetInstance() {
 		$options = $this->getMockery(
@@ -77,7 +77,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::__construct()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::__construct()
 	 */
 	public function testConstruct() {
 		$options = $this->getMockery(
@@ -110,7 +110,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::options()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::options()
 	 */
 	public function testOptions() {
 		$this->assertNull(
@@ -136,7 +136,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parseFromFile()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::parseFromFile()
 	 */
 	public function testParseFromFile() {
 		$contents = implode('~', $this->document).'~';
@@ -155,7 +155,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parseFromFile()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::parseFromFile()
 	 */
 	public function testParseFromFileWithNonString() {
 		$this->setExpectedException(
@@ -167,7 +167,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parseFromFile()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::parseFromFile()
 	 */
 	public function testParseFromFileWithMissingFile() {
 		$fileName = __DIR__.'/missing.txt';
@@ -181,7 +181,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parse()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::parse()
 	 */
 	public function testParse() {
 		$contents = implode('~', $this->document).'~';
@@ -219,7 +219,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parse()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::parse()
 	 */
 	public function testParseWithNonString() {
 		$this->setExpectedException(
@@ -231,7 +231,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parse()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::parse()
 	 */
 	public function testParseWithAutodetect() {
 		$contents = implode('~', $this->document).'~';
@@ -266,7 +266,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::setInterchangeData()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::setInterchangeData()
 	 */
 	public function testSetInterchangeData() {
 		$options = $this->getMockery(
@@ -321,7 +321,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::setInterchangeData()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::setInterchangeData()
 	 */
 	public function testSetInterchangeDataWithPosition105NewLine() {
 		$options = $this->getMockery(
@@ -380,7 +380,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::setInterchangeData()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::setInterchangeData()
 	 */
 	public function testSetInterchangeDataWithBadSegment() {
 		$contents = implode('~', $this->document).'~';
@@ -412,7 +412,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::convertSimple837()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::convertSimple837()
 	 */
 	public function testConvertSimple837() {
 		$contents = 'CONTROL HDR 6 7 8 9 '.
@@ -438,7 +438,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::parseSegments()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::parseSegments()
 	 */
 	public function testParseSegments() {
 		$segmentString = 'AB*C*1*D*2';
@@ -486,7 +486,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::__tostring()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::__tostring()
 	 */
 	public function testToString() {
 		$options = $this->getMockery(
@@ -519,7 +519,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::key()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::key()
 	 */
 	public function testKey() {
 		$array = [
@@ -557,7 +557,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::valid()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::valid()
 	 */
 	public function testValidWithEmptyArray() {
 		$this->assertEquals(
@@ -568,7 +568,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::valid()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::valid()
 	 */
 	public function testValid() {
 		$array = [
@@ -607,7 +607,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::current()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::current()
 	 */
 	public function testCurrent() {
 		$array = [
@@ -658,7 +658,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::next()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::next()
 	 */
 	public function testNext() {
 		$array = [
@@ -689,7 +689,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::rewind()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::rewind()
 	 */
 	public function testRewind() {
 		$array = [
@@ -723,7 +723,7 @@ class RawTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Raw::count()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Raw::count()
 	 */
 	public function testCount() {
 		$array = [

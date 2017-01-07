@@ -1,11 +1,11 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests\Document\Section;
+namespace SunCoastConnection\ClaimsToEMR\Tests\Document\Section;
 
-use \SunCoastConnection\ClaimsToOEMR\Tests\BaseTestCase;
-use \SunCoastConnection\ClaimsToOEMR\Document\Raw;
-use \SunCoastConnection\ClaimsToOEMR\Document\Section;
-use \SunCoastConnection\ClaimsToOEMR\Document\Section\Loop;
+use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ClaimsToEMR\Document\Raw;
+use \SunCoastConnection\ClaimsToEMR\Document\Section;
+use \SunCoastConnection\ClaimsToEMR\Document\Section\Loop;
 
 class LoopTest extends BaseTestCase {
 
@@ -20,7 +20,7 @@ class LoopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Loop::parse()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section\Loop::parse()
 	 */
 	public function testParseWithNoHeaderSegment() {
 		$raw = $this->getMockery(
@@ -50,7 +50,7 @@ class LoopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Loop::parse()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section\Loop::parse()
 	 */
 	public function testParseWithHeaderSegment() {
 		$raw = $this->getMockery(
@@ -86,7 +86,7 @@ class LoopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Loop::getHeader()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section\Loop::getHeader()
 	 */
 	public function testGetHeader() {
 		$header = [
@@ -109,7 +109,7 @@ class LoopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Loop::getDescendant()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section\Loop::getDescendant()
 	 */
 	public function testGetDescendant() {
 		$descendant = [
@@ -132,7 +132,7 @@ class LoopTest extends BaseTestCase {
 	}
 
 	/**
-	 * @covers SunCoastConnection\ClaimsToOEMR\Document\Section\Loop::__toString()
+	 * @covers SunCoastConnection\ClaimsToEMR\Document\Section\Loop::__toString()
 	 */
 	public function testToString() {
 		$this->setProtectedProperty(

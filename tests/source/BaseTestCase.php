@@ -1,6 +1,6 @@
 <?php
 
-namespace SunCoastConnection\ClaimsToOEMR\Tests;
+namespace SunCoastConnection\ClaimsToEMR\Tests;
 
 use \PHPUnit_Framework_TestCase;
 use \Mockery;
