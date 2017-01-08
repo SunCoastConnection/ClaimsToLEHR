@@ -12,12 +12,7 @@ It's required to have the following installed and configured to run:
 
 Add this project to parent project `composer` configuration:
 ```bash
-$ composer require suncoast-connection/claims-to-emr
-```
-
-If your running the Gearman workers, add the following:
-```bash
-$ composer require kicken/gearman-php phpseclib/phpseclib:2.0.*
+$ composer require suncoast-connection/claimstoemr
 ```
 
 Install the project dependencies:
