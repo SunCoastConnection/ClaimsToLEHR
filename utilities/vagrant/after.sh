@@ -33,22 +33,3 @@ sudo phpenmod xdebug
 echo "## Refreshing the system packages"
 sudo apt-get update
 sudo apt-get upgrade
-
-echo "## Installing dependent system packages"
-sudo apt-get install -y gearman-job-server gearman-tools
-
-echo "## Installing dependent Python packages"
-sudo easy_install supervisor
-
-echo "## Configuring Supervisor Gearman initialization settings"
-sudo bash -c "cat > /etc/supervisor/conf.d/gearman-claimstoemr.conf" << EOL
-[program:gearman-claimstoemr]
-directory=/home/vagrant/ClaimsToEMR
-command=/home/vagrant/ClaimsToEMR/gearman-workers
-autorestart=true
-process_name=%(program_name)s-%(process_num)s
-numprocs=10
-EOL
-
-echo "## Restarting Supervisor service"
-sudo service supervisor restart

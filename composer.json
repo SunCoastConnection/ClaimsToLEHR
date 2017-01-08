@@ -1,6 +1,6 @@
 {
-    "name": "suncoast-connection/claims-to-emr",
-    "description": "Convert X12 claims files to OpenEMR database records.",
+    "name": "suncoast-connection/claimstoemr",
+    "description": "Convert X12 claims files to EMR database records.",
     "type": "project",
     "authors": [
         {
@@ -15,19 +15,17 @@
         "illuminate/database": "5.2.*",
         "illuminate/events": "5.2.*"
    	},
-    "autoload": {
-        "psr-4": {
-            "SunCoastConnection\\ClaimsToEMR\\": "source/"
-        }
-    },
     "require-dev": {
-        "kicken/gearman-php": "dev-master",
-        "phpseclib/phpseclib": "2.0.*",
         "laravel/homestead": "^4",
         "phploc/phploc": "3.0.*",
         "phpunit/phpunit": "5.3.*",
         "mockery/mockery": "0.9.*",
         "mikey179/vfsStream": "1.6.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "SunCoastConnection\\ClaimsToEMR\\": "source/"
+        }
     },
     "autoload-dev": {
         "psr-4": {
@@ -36,9 +34,5 @@
     },
     "config": {
         "preferred-install": "dist"
-    },
-    "suggest": {
-        "kicken/gearman-php": "Provides API for connecting to a Gearman server as a worker",
-        "phpseclib/phpseclib": "Allows remote SSH capabilities to connect to remote server"
     }
 }
