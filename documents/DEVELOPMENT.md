@@ -16,7 +16,7 @@ It's required to have the following installed and configured to run:
 [**virtualbox**](virtualbox.org)
 - 
 
-**NOTE**: All `vagrant` commands are run from you host system in the projects
+**NOTE**: All `vagrant` commands are run from your host system in the projects
 base directory.
 
 ### Initializing the Environment
@@ -82,7 +82,16 @@ $ vagrant up
 
 ## Destroying Environment
 
-Destroy the virtual maching from your host system:
+Destroy the virtual machine from your host system:
 ```bash
 $ vagrant destroy
 ```
+
+## Running the Unit Tests
+
+Run the unit tests from within the virtual machine
+```bash
+$ cd ClaimsToEMR
+$ ./utilities/phpunit.sh
+
+View the code compleation [report in your browser](http://claimstooemr.homestead/).
