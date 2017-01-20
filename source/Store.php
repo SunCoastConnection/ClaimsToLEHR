@@ -2,7 +2,7 @@
 
 namespace SunCoastConnection\ClaimsToEMR;
 
-use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ParseX12\Options;
 
 abstract class Store {
 
@@ -28,7 +28,7 @@ abstract class Store {
 	/**
 	 * Get instance of store class with provided options
 	 *
-	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options  $options  Options to create store object with
+	 * @param  \SunCoastConnection\ParseX12\Options  $options  Options to create store object with
 	 *
 	 * @return \SunCoastConnection\ClaimsToEMR\Store  Store object
 	 */
@@ -39,7 +39,7 @@ abstract class Store {
 	/**
 	 * Create a new Store
 	 *
-	 * @param \SunCoastConnection\ClaimsToEMR\Document\Options  $options  Options to create store object with
+	 * @param \SunCoastConnection\ParseX12\Options  $options  Options to create store object with
 	 */
 	public function __construct(Options $options) {
 		$this->options($options);
@@ -52,9 +52,9 @@ abstract class Store {
 	/**
 	 * Set store options or retrieve store options
 	 *
-	 * @param  \SunCoastConnection\ClaimsToEMR\Document\Options|null  $setOptions  Options to set store object with
+	 * @param  \SunCoastConnection\ParseX12\Options|null  $setOptions  Options to set store object with
 	 *
-	 * @return \SunCoastConnection\ClaimsToEMR\Document\Options|null  Store options or null when not set
+	 * @return \SunCoastConnection\ParseX12\Options|null  Store options or null when not set
 	 */
 	protected function options(Options $setOptions = null) {
 		static $options = null;

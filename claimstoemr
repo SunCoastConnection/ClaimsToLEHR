@@ -4,9 +4,9 @@
 namespace SunCoastConnection\ClaimsToEMR;
 
 use \ErrorException;
-use \SunCoastConnection\ClaimsToEMR\Document\Options;
 use \SunCoastConnection\ClaimsToEMR\Store\Database;
 use \SunCoastConnection\ClaimsToEMR\X12N837;
+use \SunCoastConnection\ParseX12\Options;
 use \Symfony\Component\Finder\Finder;
 
 set_error_handler(__NAMESPACE__.'\exceptions_error_handler');
@@ -18,17 +18,17 @@ if($autoload == false) {
 	is_dir(dirname($autoloadPath)) || exitError(
 		'Application has not been installed correctly.'.PHP_EOL.
 			'Navigate to: '.__DIR__.PHP_EOL.
-			'Run: composer install --no-dev'.PHP_EOL,
+			'Run: composer install --no-dev',
 		1
 	);
 
 	file_exists($autoloadPath) || exitError(
-		'Autoload component is missing: '.$autoloadPath.PHP_EOL,
+		'Autoload component is missing: '.$autoloadPath,
 		1
 	);
 
 	is_readable($autoloadPath) || exitError(
-		'Autoload component is not readable: '.$autoloadPath.PHP_EOL,
+		'Autoload component is not readable: '.$autoloadPath,
 		1
 	);
 }
@@ -68,7 +68,7 @@ function exceptions_error_handler($severity, $message, $filename, $lineno) {
 }
 
 function exitError($message, $errorCode = 0) {
-	echo $message;
+	echo $message.PHP_EOL;
 	exit($errorCode);
 }
 
@@ -85,7 +85,7 @@ function setupStore($options) {
 
 	if($connection['driver'] === 'sqlite' && !file_exists($connection['database'])) {
 		touch($connection['database']) || exitError(
-			'SQLite database missing and can not be created: '.$connection['database'].PHP_EOL,
+			'SQLite database missing and can not be created: '.$connection['database'],
 			1
 		);
 	}

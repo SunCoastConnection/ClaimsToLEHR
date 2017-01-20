@@ -2,13 +2,13 @@
 
 namespace SunCoastConnection\ClaimsToEMR;
 
-use \SunCoastConnection\ClaimsToEMR\Document\Options;
+use \SunCoastConnection\ParseX12\Options;
 
 class X12N837 {
 
 	/**
 	 * Options object
-	 * @var \SunCoastConnection\ClaimsToEMR\Document\Options
+	 * @var \SunCoastConnection\ParseX12\Options
 	 */
 	protected $options;
 

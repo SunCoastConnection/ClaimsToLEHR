@@ -3,10 +3,10 @@
 namespace SunCoastConnection\ClaimsToEMR\Tests;
 
 use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
-use \SunCoastConnection\ClaimsToEMR\Document\Options;
-use \SunCoastConnection\ClaimsToEMR\Document\Raw;
 use \SunCoastConnection\ClaimsToEMR\X12N837;
-use \SunCoastConnection\ClaimsToEMR\X12N837\Document;
+use \SunCoastConnection\ParseX12N837\Document;
+use \SunCoastConnection\ParseX12\Options;
+use \SunCoastConnection\ParseX12\Raw;
 
 class X12N837Test extends BaseTestCase {
 

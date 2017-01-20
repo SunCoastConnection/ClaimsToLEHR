@@ -7,10 +7,10 @@ use \Illuminate\Container\Container;
 use \Illuminate\Database\Capsule\Manager;
 use \Illuminate\Database\Events\QueryExecuted;
 use \Illuminate\Events\Dispatcher;
-use \SunCoastConnection\ClaimsToEMR\Document\Options;
 use \SunCoastConnection\ClaimsToEMR\Models;
 use \SunCoastConnection\ClaimsToEMR\Store\Database;
 use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
+use \SunCoastConnection\ParseX12\Options;
 use \org\bovigo\vfs\vfsStream;
 
 class DatabaseTest extends BaseTestCase {
