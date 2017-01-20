@@ -6,7 +6,6 @@ use \SunCoastConnection\ClaimsToEMR\Store;
 use \SunCoastConnection\ParseX12N837\Envelope;
 use \SunCoastConnection\ParseX12N837\Loop;
 use \SunCoastConnection\ParseX12N837\Segment;
-use \SunCoastConnection\ParseX12N837\X12N837;
 use \SunCoastConnection\ParseX12\Section\Root;
 
 class Cache {

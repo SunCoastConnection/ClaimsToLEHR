@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "suncoast-connection/parsex12n837": "dev-master",
+        "suncoast-connection/parsex12n837": "0.1.*",
         "symfony/finder": "3.0.*",
         "illuminate/database": "5.2.*",
         "illuminate/events": "5.2.*"
