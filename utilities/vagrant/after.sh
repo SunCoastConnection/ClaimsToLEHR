@@ -29,7 +29,3 @@ mysql -u homestead -psecret -e "SET PASSWORD=PASSWORD('secret');"
 
 echo "## Enabling XDebug PHP Module"
 sudo phpenmod xdebug
-
-echo "## Refreshing the system packages"
-sudo apt-get update
-sudo apt-get upgrade

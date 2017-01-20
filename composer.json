@@ -10,8 +10,8 @@
         }
     ],
     "require": {
+        "suncoast-connection/parsex12n837": "dev-master",
         "symfony/finder": "3.0.*",
-        "illuminate/config": "5.2.*",
         "illuminate/database": "5.2.*",
         "illuminate/events": "5.2.*"
    	},
@@ -34,5 +34,16 @@
     },
     "config": {
         "preferred-install": "dist"
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:SunCoastConnection/ParseX12.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:SunCoastConnection/ParseX12N837.git"
+        }
+    ],
+    "minimum-stability": "dev"
 }

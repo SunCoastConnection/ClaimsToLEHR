@@ -7,8 +7,8 @@ use \Illuminate\Database\Capsule\Manager;
 use \Illuminate\Database\Eloquent\Model;
 use \Illuminate\Database\Events\QueryExecuted;
 use \Illuminate\Events\Dispatcher;
-use \SunCoastConnection\ClaimsToEMR\Document\Options;
 use \SunCoastConnection\ClaimsToEMR\Store;
+use \SunCoastConnection\ParseX12\Options;
 
 class Database extends Store {
 

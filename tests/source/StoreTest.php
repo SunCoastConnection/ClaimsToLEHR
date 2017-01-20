@@ -2,10 +2,10 @@
 
 namespace SunCoastConnection\ClaimsToEMR\Tests;
 
-use \SunCoastConnection\ClaimsToEMR\Document\Options;
 use \SunCoastConnection\ClaimsToEMR\Store;
 use \SunCoastConnection\ClaimsToEMR\Tests\BaseTestCase;
 use \SunCoastConnection\ClaimsToEMR\Tests\StoreMock;
+use \SunCoastConnection\ParseX12\Options;
 
 class StoreTest extends BaseTestCase {
 
