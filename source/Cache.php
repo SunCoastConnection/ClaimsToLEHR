@@ -19,7 +19,7 @@ class Cache {
 	 *
 	 * @return \SunCoastConnection\ParseX12N837\Cache  Cache object
 	 */
-	static public function getInstance(Store $store) {
+	public static function getInstance(Store $store) {
 		return new static($store);
 	}
 
@@ -285,7 +285,8 @@ class Cache {
 		}
 
 		if(count($formEncounter)) {
-			$formEncounter = array_merge([
+			$formEncounter = array_merge(
+				[
 					'reason' => 'Imported Encounter',
 					'onset_date' => '0000-00-00 00:00:00',
 					'sensitivity' => 'normal',
@@ -343,7 +344,8 @@ class Cache {
 		}
 
 		if(count($form)) {
-			$form = array_merge([
+			$form = array_merge(
+				[
 					'form_name' => 'New Patient Encounter',
 					'groupname' => 'Default',
 					'authorized' => 1,
@@ -376,7 +378,8 @@ class Cache {
 		}
 
 		if(count($group)) {
-			$group = array_merge([
+			$group = array_merge(
+				[
 					'name' => 'Default',
 				],
 				$group
@@ -407,7 +410,8 @@ class Cache {
 		}
 
 		if(count($insuranceCompany)) {
-			$insuranceCompany = array_merge([
+			$insuranceCompany = array_merge(
+				[
 					'attn' => 'Claims',
 				],
 				$insuranceCompany
@@ -473,7 +477,8 @@ class Cache {
 		}
 
 		if(count($insuranceData)) {
-			$insuranceData = array_merge([
+			$insuranceData = array_merge(
+				[
 					'subscriber_country' => 'USA',
 				],
 				$insuranceData
@@ -532,7 +537,8 @@ class Cache {
 		}
 
 		if(count($patientData)) {
-			$patientData = array_merge([
+			$patientData = array_merge(
+				[
 					'language' => 'English',
 				],
 				$patientData
@@ -557,7 +563,8 @@ class Cache {
 		}
 
 		if(count($phoneNumber)) {
-			$phoneNumber = array_merge([
+			$phoneNumber = array_merge(
+				[
 					'country_code' => '+1',
 					'type' => '2',
 				],
@@ -583,9 +590,14 @@ class Cache {
 		}
 
 		if(array_key_exists('NM1', $data)) {
-			$user['username'] = strtolower(preg_replace("/[^A-Za-z]/", '',
-				(string) $data['NM1']->element('NM103').$data['NM1']->element('NM104')
-			));
+			$user['username'] = strtolower(
+				preg_replace(
+					"/[^A-Za-z]/",
+					'',
+					(string) $data['NM1']->element('NM103').$data['NM1']->element('NM104')
+				)
+			);
+
 			$user['lname'] = (string) $data['NM1']->element('NM103');
 			$user['fname'] = (string) $data['NM1']->element('NM104');
 			$user['mname'] = (string) $data['NM1']->element('NM105');
@@ -597,7 +609,8 @@ class Cache {
 		}
 
 		if(count($user)) {
-			$user = array_merge([
+			$user = array_merge(
+				[
 					'password' => '70702b9402107c11ef9d18d9daad4ff1',
 					'authorized' => 1,
 					'federaltaxid' => '',

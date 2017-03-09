@@ -32,7 +32,7 @@ abstract class Store {
 	 *
 	 * @return \SunCoastConnection\ClaimsToEMR\Store  Store object
 	 */
-	static public function getInstance(Options $options) {
+	public static function getInstance(Options $options) {
 		return new static($options);
 	}
 

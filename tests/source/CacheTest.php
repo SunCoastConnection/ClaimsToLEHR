@@ -904,7 +904,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::storeFormEncounter()
 	 */
-	public function testStoreFormEncounterWithSegmentDTP_431() {
+	public function testStoreFormEncounterWithSegmentDTPWith431() {
 		$data = [
 			'DTP-431' => $this->getMockery(
 				Segment\DTP::class
@@ -2163,7 +2163,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop1000()
 	 */
-	public function testProcessLoop1000WithSegmentNM101_40() {
+	public function testProcessLoop1000WithSegmentNM101With40() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop1000::class,
 			[ 'NM1', 'N3', 'N4', 'REF' ],
@@ -2223,7 +2223,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop1000()
 	 */
-	public function testProcessLoop1000WithSegmentNM101_41() {
+	public function testProcessLoop1000WithSegmentNM101With41() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop1000::class,
 			[ 'NM1', 'N3', 'N4', 'REF' ],
@@ -2499,7 +2499,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2010()
 	 */
-	public function testProcessLoop2010WithSegmentNM101_85() {
+	public function testProcessLoop2010WithSegmentNM101With85() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2010::class,
 			[ 'NM1', 'N3', 'N4', 'DMG', 'REF' ],
@@ -2558,7 +2558,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2010()
 	 */
-	public function testProcessLoop2010WithSegmentNM101_87() {
+	public function testProcessLoop2010WithSegmentNM101With87() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2010::class,
 			[ 'NM1', 'N3', 'N4', 'DMG', 'REF' ],
@@ -2617,7 +2617,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2010()
 	 */
-	public function testProcessLoop2010WithSegmentNM101_ILAndNoLoop2000_SBR() {
+	public function testProcessLoop2010WithSegmentNM101WithILAndNoLoop2000WithSBR() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2010::class,
 			[ 'NM1', 'N3', 'N4', 'DMG', 'REF' ],
@@ -2650,7 +2650,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2010()
 	 */
-	public function testProcessLoop2010WithSegmentNM101_ILAndLoop2000_SBR() {
+	public function testProcessLoop2010WithSegmentNM101WithILAndLoop2000WithSBR() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2010::class,
 			[ 'NM1', 'N3', 'N4', 'DMG', 'REF' ],
@@ -2718,7 +2718,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2010()
 	 */
-	public function testProcessLoop2010WithSegmentNM101_PR() {
+	public function testProcessLoop2010WithSegmentNM101WithPR() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2010::class,
 			[ 'NM1', 'N3', 'N4', 'DMG', 'REF' ],
@@ -2770,7 +2770,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2010()
 	 */
-	public function testProcessLoop2010WithSegmentNM101_QC() {
+	public function testProcessLoop2010WithSegmentNM101WithQC() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2010::class,
 			[ 'NM1', 'N3', 'N4', 'DMG', 'REF' ],
@@ -3217,7 +3217,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2310()
 	 */
-	public function testProcessLoop2310WithSegmentNM101_77() {
+	public function testProcessLoop2310WithSegmentNM101With77() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2310::class,
 			[ 'NM1', 'N3', 'N4', 'PRV' ],
@@ -3268,7 +3268,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2310()
 	 */
-	public function testProcessLoop2310WithSegmentNM101_82() {
+	public function testProcessLoop2310WithSegmentNM101With82() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2310::class,
 			[ 'NM1', 'N3', 'N4', 'PRV' ],
@@ -3317,7 +3317,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2310()
 	 */
-	public function testProcessLoop2310WithSegmentNM101_DN() {
+	public function testProcessLoop2310WithSegmentNM101WithDN() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2310::class,
 			[ 'NM1', 'N3', 'N4', 'PRV' ],
@@ -3366,7 +3366,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2310()
 	 */
-	public function testProcessLoop2310WithSegmentNM101_DQ() {
+	public function testProcessLoop2310WithSegmentNM101WithDQ() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2310::class,
 			[ 'NM1', 'N3', 'N4', 'PRV' ],
@@ -3554,7 +3554,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2330()
 	 */
-	public function testProcessLoop2330WithSegmentNM101_77() {
+	public function testProcessLoop2330WithSegmentNM101With77() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2330::class,
 			[ 'NM1', 'N3', 'N4', 'REF' ],
@@ -3605,7 +3605,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2330()
 	 */
-	public function testProcessLoop2330WithSegmentNM101_82() {
+	public function testProcessLoop2330WithSegmentNM101With82() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2330::class,
 			[ 'NM1', 'N3', 'N4', 'REF' ],
@@ -3654,7 +3654,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2330()
 	 */
-	public function testProcessLoop2330WithSegmentNM101_85() {
+	public function testProcessLoop2330WithSegmentNM101With85() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2330::class,
 			[ 'NM1', 'N3', 'N4', 'REF' ],
@@ -3713,7 +3713,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2330()
 	 */
-	public function testProcessLoop2330WithSegmentNM101_DN() {
+	public function testProcessLoop2330WithSegmentNM101WithDN() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2330::class,
 			[ 'NM1', 'N3', 'N4', 'REF' ],
@@ -3762,7 +3762,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2330()
 	 */
-	public function testProcessLoop2330WithSegmentNM101_DQ() {
+	public function testProcessLoop2330WithSegmentNM101WithDQ() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2330::class,
 			[ 'NM1', 'N3', 'N4', 'REF' ],
@@ -3795,7 +3795,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2330()
 	 */
-	public function testProcessLoop2330WithSegmentNM101_IL() {
+	public function testProcessLoop2330WithSegmentNM101WithIL() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2330::class,
 			[ 'NM1', 'N3', 'N4', 'REF' ],
@@ -3863,7 +3863,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2330()
 	 */
-	public function testProcessLoop2330WithSegmentNM101_PR() {
+	public function testProcessLoop2330WithSegmentNM101WithPR() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2330::class,
 			[ 'NM1', 'N3', 'N4', 'REF' ],
@@ -4159,7 +4159,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2400()
 	 */
-	public function testProcessLoop2400WithLoop2300_HI() {
+	public function testProcessLoop2400WithLoop2300WithHI() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2400::class,
 			[ 'SV1', 'DTP', 'NTE' ]
@@ -4210,7 +4210,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2420()
 	 */
-	public function testProcessLoop2420WithSegmentNM101_77() {
+	public function testProcessLoop2420WithSegmentNM101With77() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2420::class,
 			[ 'NM1', 'N3', 'N4', 'PRV' ],
@@ -4261,7 +4261,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2420()
 	 */
-	public function testProcessLoop2420WithSegmentNM101_82() {
+	public function testProcessLoop2420WithSegmentNM101With82() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2420::class,
 			[ 'NM1', 'N3', 'N4', 'PRV' ],
@@ -4310,7 +4310,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2420()
 	 */
-	public function testProcessLoop2420WithSegmentNM101_DK() {
+	public function testProcessLoop2420WithSegmentNM101WithDK() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2420::class,
 			[ 'NM1', 'N3', 'N4', 'PRV' ],
@@ -4369,7 +4369,7 @@ class CacheTest extends BaseTestCase {
 	/**
 	 * @covers SunCoastConnection\ClaimsToEMR\Cache::processLoop2420()
 	 */
-	public function testProcessLoop2420WithSegmentNM101_DN() {
+	public function testProcessLoop2420WithSegmentNM101WithDN() {
 		$mockObjects = $this->setupTestProcessLoop(
 			Loop\Loop2420::class,
 			[ 'NM1', 'N3', 'N4', 'PRV' ],

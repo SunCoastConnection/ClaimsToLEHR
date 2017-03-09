@@ -113,8 +113,8 @@ class DatabaseTest extends BaseTestCase {
 		);
 
 		$dispatcher = $this->getMockery(
-			'overload:'.Dispatcher::class)
-		;
+			'overload:'.Dispatcher::class
+		);
 
 		$manager->shouldReceive('setEventDispatcher')
 			->once();
